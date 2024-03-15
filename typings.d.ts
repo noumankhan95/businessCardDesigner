@@ -38,3 +38,20 @@ type ArrowItem = {
   height: number;
   id: number;
 };
+
+type SquareItem = {
+  width: number;
+  height: number;
+  id: number;
+};
+type TriangleItem = {
+  width: number;
+  height: number;
+  id: number;
+};
+
+type PolygonItem = {
+  width: number;
+  height: number;
+  id: number;
+};

@@ -24,6 +24,9 @@ import TextImageItem from "./TextImageItem";
 import CircleComponent from "./CircleComponent";
 import StarComponent from "./StarComponent";
 import ArrowComponent from "./ArrowShapeComponent";
+import SquareComponent from "./SquareShapeComponent";
+import TriangleComponent from "./TriangleShapeComponent";
+import PolygonShapeComponent from "./PolygonShapeComponent";
 
 const padding = 6; // Padding value
 const borderPadding = 10;
@@ -45,7 +48,17 @@ const BusinessCard: React.FC<BusinessCardProps> = ({
   const [circles, setcircles] = useState<CircleItem[]>([]);
   const [stars, setstars] = useState<StarItem[]>([]);
   const [arrow, setarrow] = useState<ArrowItem[]>([]);
-
+  const [square, setsquare] = useState<SquareItem[]>([]);
+  const [triangle, settriangle] = useState<TriangleItem[]>([]);
+  const [polygon, setpolygon] = useState<PolygonItem[]>([]);
+  const [selectedId, selectShape] = React.useState<{
+    square: number;
+    circle: number;
+    triangle: number;
+    polygon: number;
+    star: number;
+    arrow: number;
+  }>({ circle: 0, polygon: 0, square: 0, star: 0, triangle: 0, arrow: 0 });
   const handleBackgroundColorChange = (color: string) => {
     setBackgroundColor(color);
   };
@@ -58,12 +71,27 @@ const BusinessCard: React.FC<BusinessCardProps> = ({
     } else if (name === "Arrow") {
       setarrow((p) => [
         ...p,
-        { height: 20, width: 20, id: (circles.length ?? 0) + 1 },
+        { height: 20, width: 20, id: (arrow.length ?? 0) + 1 },
       ]);
     } else if (name === "Star") {
       setstars((p) => [
         ...p,
-        { height: 20, width: 20, id: (circles.length ?? 0) + 1 },
+        { height: 20, width: 20, id: (stars.length ?? 0) + 1 },
+      ]);
+    } else if (name == "Square") {
+      setsquare((p) => [
+        ...p,
+        { height: 20, width: 20, id: (square.length ?? 0) + 1 },
+      ]);
+    } else if (name === "Triangle") {
+      settriangle((p) => [
+        ...p,
+        { height: 20, width: 20, id: (triangle.length ?? 0) + 1 },
+      ]);
+    } else if (name === "Polygon") {
+      setpolygon((p) => [
+        ...p,
+        { height: 20, width: 20, id: (polygon.length ?? 0) + 1 },
       ]);
     }
   };
@@ -159,20 +187,42 @@ const BusinessCard: React.FC<BusinessCardProps> = ({
     }
   };
 
-  console.log(cardImages, "cardimages");
-
-  console.log(imageRefs, "Imagerefs");
-
+  console.log("Selected Id", selectedId);
+  const CheckDeselect = (
+    e: KonvaEventObject<MouseEvent> | KonvaEventObject<TouchEvent>
+  ) => {
+    // deselect when clicked on empty area
+    console.log("here clicked");
+    const clickedOnEmpty =
+      e.target.attrs.name === "background" || e.target == e.target.getStage();
+    if (clickedOnEmpty) {
+      selectShape({
+        arrow: 0,
+        circle: 0,
+        polygon: 0,
+        square: 0,
+        star: 0,
+        triangle: 0,
+      });
+    }
+  };
   return (
     <div className="space-y-5">
       <div className="flex flex-row justify-start items-start">
-        <Stage width={width} height={height} ref={canvasRef}>
+        <Stage
+          width={width}
+          height={height}
+          ref={canvasRef}
+          onMouseDown={CheckDeselect}
+          onTouchStart={CheckDeselect}
+        >
           <Layer>
             <Group width={width} height={height}>
               <Rect
                 fill={backgroundColor}
                 width={width - canvasPadding}
                 height={height - canvasPadding}
+                name="background"
               />
               {backgroundImage && (
                 <Image width={width} height={height} image={backgroundImage} />
@@ -211,6 +261,10 @@ const BusinessCard: React.FC<BusinessCardProps> = ({
                       Theight={height}
                       Twidth={width}
                       handleShapeItemChange={handleShapeItemChange}
+                      onSelect={() => {
+                        selectShape((p) => ({ ...p, circle: c.id }));
+                      }}
+                      isSelected={selectedId.circle == c.id}
                     />
                   </React.Fragment>
                 ))}
@@ -223,6 +277,10 @@ const BusinessCard: React.FC<BusinessCardProps> = ({
                       Theight={height}
                       Twidth={width}
                       handleShapeItemChange={handleShapeItemChange}
+                      onSelect={() => {
+                        selectShape((p) => ({ ...p, star: c.id }));
+                      }}
+                      isSelected={selectedId.star == c.id}
                     />
                   </React.Fragment>
                 ))}
@@ -235,6 +293,58 @@ const BusinessCard: React.FC<BusinessCardProps> = ({
                       Theight={height}
                       Twidth={width}
                       handleShapeItemChange={handleShapeItemChange}
+                      onSelect={() => {
+                        selectShape((p) => ({ ...p, arrow: c.id }));
+                      }}
+                      isSelected={selectedId.arrow == c.id}
+                    />
+                  </React.Fragment>
+                ))}
+              {square &&
+                square.map((c) => (
+                  <React.Fragment key={c.id}>
+                    <SquareComponent
+                      {...c}
+                      canvasPadding={canvasPadding}
+                      Theight={height}
+                      Twidth={width}
+                      handleShapeItemChange={handleShapeItemChange}
+                      onSelect={() => {
+                        selectShape((p) => ({ ...p, square: c.id }));
+                      }}
+                      isSelected={selectedId.square == c.id}
+                    />
+                  </React.Fragment>
+                ))}
+              {triangle &&
+                triangle.map((c) => (
+                  <React.Fragment key={c.id}>
+                    <TriangleComponent
+                      {...c}
+                      canvasPadding={canvasPadding}
+                      Theight={height}
+                      Twidth={width}
+                      handleShapeItemChange={handleShapeItemChange}
+                      onSelect={() => {
+                        selectShape((p) => ({ ...p, triangle: c.id }));
+                      }}
+                      isSelected={selectedId.triangle == c.id}
+                    />
+                  </React.Fragment>
+                ))}
+              {polygon &&
+                polygon.map((c) => (
+                  <React.Fragment key={c.id}>
+                    <PolygonShapeComponent
+                      {...c}
+                      canvasPadding={canvasPadding}
+                      Theight={height}
+                      Twidth={width}
+                      handleShapeItemChange={handleShapeItemChange}
+                      onSelect={() => {
+                        selectShape((p) => ({ ...p, polygon: c.id }));
+                      }}
+                      isSelected={selectedId.polygon == c.id}
                     />
                   </React.Fragment>
                 ))}
@@ -584,6 +694,58 @@ function ShapeItemOptions({
                   stroke-width="2"
                 ></circle>{" "}
               </g>{" "}
+            </g>
+          </svg>
+        </div>
+        <div
+          className="w-20 h-14 cursor-pointer"
+          onClick={handleShapeAddition.bind(null, "Triangle")}
+          id="Triangle"
+        >
+          <svg
+            fill="#000000"
+            version="1.1"
+            id="Capa_1"
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 31.999 32"
+            transform="rotate(180)"
+          >
+            <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+            <g
+              id="SVGRepo_tracerCarrier"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            ></g>
+            <g id="SVGRepo_iconCarrier">
+              {" "}
+              <g>
+                {" "}
+                <path d="M31.92,5.021l-14.584,22.5c-0.089,0.138-0.241,0.223-0.406,0.229c-0.004,0-0.009,0-0.014,0 c-0.16,0-0.312-0.076-0.404-0.205L0.096,5.044C-0.015,4.893-0.031,4.69,0.054,4.523C0.139,4.354,0.312,4.25,0.5,4.25h31 c0.183,0,0.352,0.1,0.438,0.261C32.026,4.67,32.019,4.867,31.92,5.021z"></path>{" "}
+              </g>{" "}
+            </g>
+          </svg>
+        </div>
+
+        <div
+          className="w-20 h-14 cursor-pointer"
+          onClick={handleShapeAddition.bind(null, "Polygon")}
+          id="Polygon"
+        >
+          <svg
+            viewBox="0 0 16 16"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="#000000"
+            className="bi bi-pentagon-fill"
+          >
+            <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+            <g
+              id="SVGRepo_tracerCarrier"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            ></g>
+            <g id="SVGRepo_iconCarrier">
+              {" "}
+              <path d="m8 0 8 6.5-3 9.5H3L0 6.5 8 0z"></path>{" "}
             </g>
           </svg>
         </div>

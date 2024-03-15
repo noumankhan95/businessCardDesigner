@@ -3,14 +3,17 @@ import { KonvaEventObject } from "konva/lib/Node";
 import React, { useEffect, useState } from "react";
 import { Circle, Transformer } from "react-konva";
 function CircleComponent({
-  height,
   width,
+  height,
   Theight,
   Twidth,
   canvasPadding,
   id,
   handleShapeItemChange,
+  isSelected,
+  onSelect,
 }: {
+  isSelected: boolean;
   width: number;
   height: number;
   canvasPadding: number;
@@ -23,19 +26,19 @@ function CircleComponent({
     id: number,
     value: string
   ) => void;
+  onSelect: () => void;
 }) {
-  const [selectedShapeId, setselectedShapeId] = useState<any>();
   const shapeRef = React.useRef<any>();
   const [transformerRef, setTransformerRef] = useState<any>(null);
   useEffect(() => {
-    if (selectedShapeId && transformerRef) {
+    if (isSelected && transformerRef) {
       // we need to attach transformer manually
       console.log("transform ref in useEffect", transformerRef);
 
       transformerRef?.nodes([shapeRef.current]);
       transformerRef?.getLayer()?.batchDraw();
     }
-  }, [selectedShapeId, transformerRef]);
+  }, [isSelected, transformerRef]);
 
   const CircleDragEnd = (e: KonvaEventObject<DragEvent>, id: number) => {
     if (e.target.x() >= Twidth - canvasPadding) {
@@ -75,6 +78,8 @@ function CircleComponent({
   return (
     <>
       <Circle
+        onClick={onSelect}
+        onTap={onSelect}
         ref={shapeRef}
         x={width / 2} // x-coordinate of the circle center
         y={height / 2} // y-coordinate of the circle center
@@ -82,7 +87,6 @@ function CircleComponent({
         fill="black" // fill color of the circle
         stroke="black" // border color of the circle
         strokeWidth={2} // border width of the circle
-        onClick={() => setselectedShapeId(id)}
         onDragEnd={(e) => CircleDragEnd(e, id)}
         draggable
         onTransformEnd={(e) => {
@@ -106,7 +110,7 @@ function CircleComponent({
           //   );
         }}
       />
-      {selectedShapeId === id && (
+      {isSelected && (
         <Transformer
           ref={(node) => {
             console.log(node);

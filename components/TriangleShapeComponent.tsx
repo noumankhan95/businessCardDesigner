@@ -1,8 +1,8 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Group, Star, Transformer } from "react-konva";
+import { Group, Line, Transformer } from "react-konva";
 import { KonvaEventObject } from "konva/lib/Node";
 
-function StarComponent({
+function TriangleComponent({
   width,
   height,
   Theight,
@@ -39,7 +39,10 @@ function StarComponent({
     }
   }, [isSelected]);
 
-  const StarDragEnd = (e: KonvaEventObject<DragEvent>, id: number | null) => {
+  const TriangleDragEnd = (
+    e: KonvaEventObject<DragEvent>,
+    id: number | null
+  ) => {
     if (!id) return;
 
     const newX = Math.max(
@@ -51,8 +54,8 @@ function StarComponent({
       Math.min(Theight - canvasPadding, e.target.y())
     );
 
-    handleShapeItemChange("Star", "x", id, newX.toString());
-    handleShapeItemChange("Star", "y", id, newY.toString());
+    handleShapeItemChange("Triangle", "x", id, newX.toString());
+    handleShapeItemChange("Triangle", "y", id, newY.toString());
 
     e.currentTarget.position({
       x: newX,
@@ -65,18 +68,17 @@ function StarComponent({
     <Group
       ref={groupRef}
       draggable
-      onDragEnd={(e) => StarDragEnd(e, id)}
+      onDragEnd={(e) => TriangleDragEnd(e, id)}
       x={width / 2}
       y={height / 2}
       onClick={onSelect}
       onTap={onSelect}
     >
-      <Star
+      <Line
         ref={shapeRef}
-        numPoints={5}
-        innerRadius={20}
-        outerRadius={40}
-        fill="yellow"
+        points={[0, -50, 50, 50, -50, 50]} // Points defining the triangle
+        closed // Indicates that the shape is closed
+        fill="black"
         stroke="black"
         strokeWidth={2}
       />
@@ -85,4 +87,4 @@ function StarComponent({
   );
 }
 
-export default StarComponent;
+export default TriangleComponent;

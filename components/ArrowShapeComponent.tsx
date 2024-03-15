@@ -3,14 +3,17 @@ import { KonvaEventObject } from "konva/lib/Node";
 import React, { useEffect, useState } from "react";
 import { Arrow, Transformer } from "react-konva";
 function ArrowComponent({
-  height,
   width,
+  height,
   Theight,
   Twidth,
   canvasPadding,
   id,
   handleShapeItemChange,
+  isSelected,
+  onSelect,
 }: {
+  isSelected: boolean;
   width: number;
   height: number;
   canvasPadding: number;
@@ -23,19 +26,19 @@ function ArrowComponent({
     id: number,
     value: string
   ) => void;
+  onSelect: () => void;
 }) {
-  const [selectedShapeId, setselectedShapeId] = useState<any>();
   const shapeRef = React.useRef<any>();
   const [transformerRef, setTransformerRef] = useState<any>(null);
   useEffect(() => {
-    if (selectedShapeId && transformerRef) {
+    if (isSelected && transformerRef) {
       // we need to attach transformer manually
       console.log("transform ref in useEffect", transformerRef);
 
       transformerRef?.nodes([shapeRef.current]);
       transformerRef?.getLayer()?.batchDraw();
     }
-  }, [selectedShapeId, transformerRef]);
+  }, [isSelected, transformerRef]);
 
   const ArrowDragEnd = (e: KonvaEventObject<DragEvent>, id: number) => {
     if (e.target.x() >= Twidth - canvasPadding) {
@@ -75,6 +78,8 @@ function ArrowComponent({
   return (
     <>
       <Arrow
+        onClick={onSelect}
+        onTap={onSelect}
         points={[0, 0, 100, 0]}
         ref={shapeRef}
         x={width / 2} // x-coordinate of the Arrow center
@@ -83,7 +88,6 @@ function ArrowComponent({
         fill="black" // fill color of the Arrow
         stroke="black" // border color of the Arrow
         strokeWidth={2} // border width of the Arrow
-        onClick={() => setselectedShapeId(id)}
         onDragEnd={(e) => ArrowDragEnd(e, id)}
         draggable
         onTransformEnd={(e) => {
@@ -107,7 +111,7 @@ function ArrowComponent({
           //   );
         }}
       />
-      {selectedShapeId === id && (
+      {isSelected && (
         <Transformer
           ref={(node) => {
             console.log(node);

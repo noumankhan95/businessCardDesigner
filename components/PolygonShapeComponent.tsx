@@ -1,8 +1,8 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Group, Star, Transformer } from "react-konva";
+import { Group, Line, Transformer } from "react-konva";
 import { KonvaEventObject } from "konva/lib/Node";
 
-function StarComponent({
+function PolygonComponent({
   width,
   height,
   Theight,
@@ -28,18 +28,22 @@ function StarComponent({
   ) => void;
   onSelect: () => void;
 }) {
+  // const [selectedShapeId, setSelectedShapeId] = useState<number | null>(null);
   const shapeRef = useRef<any>();
   const groupRef = useRef<any>();
   const transformerRef = useRef<any>();
 
   useEffect(() => {
     if (isSelected && transformerRef.current !== null) {
-      transformerRef.current.nodes([shapeRef.current]);
+      transformerRef?.current?.nodes([shapeRef.current]);
       transformerRef.current.getLayer().batchDraw();
     }
   }, [isSelected]);
 
-  const StarDragEnd = (e: KonvaEventObject<DragEvent>, id: number | null) => {
+  const PolygonDragEnd = (
+    e: KonvaEventObject<DragEvent>,
+    id: number | null
+  ) => {
     if (!id) return;
 
     const newX = Math.max(
@@ -51,8 +55,8 @@ function StarComponent({
       Math.min(Theight - canvasPadding, e.target.y())
     );
 
-    handleShapeItemChange("Star", "x", id, newX.toString());
-    handleShapeItemChange("Star", "y", id, newY.toString());
+    handleShapeItemChange("Polygon", "x", id, newX.toString());
+    handleShapeItemChange("Polygon", "y", id, newY.toString());
 
     e.currentTarget.position({
       x: newX,
@@ -60,23 +64,23 @@ function StarComponent({
     });
     e.target?.getLayer()?.batchDraw();
   };
-
+  console.log("selected", isSelected);
   return (
     <Group
       ref={groupRef}
       draggable
-      onDragEnd={(e) => StarDragEnd(e, id)}
+      // onClick={() => setisSelected(id)}
+      onDragEnd={(e) => PolygonDragEnd(e, id)}
       x={width / 2}
       y={height / 2}
       onClick={onSelect}
       onTap={onSelect}
     >
-      <Star
+      <Line
         ref={shapeRef}
-        numPoints={5}
-        innerRadius={20}
-        outerRadius={40}
-        fill="yellow"
+        points={[0, -50, 47, -16, 29, 40, -29, 40, -47, -16]}
+        closed
+        fill="black"
         stroke="black"
         strokeWidth={2}
       />
@@ -85,4 +89,4 @@ function StarComponent({
   );
 }
 
-export default StarComponent;
+export default PolygonComponent;

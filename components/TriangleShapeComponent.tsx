@@ -13,7 +13,6 @@ function TriangleComponent({
   isSelected,
   onSelect,
 }: {
-  isSelected: boolean;
   width: number;
   height: number;
   canvasPadding: number;
@@ -26,6 +25,8 @@ function TriangleComponent({
     id: number,
     value: string
   ) => void;
+  isSelected: boolean;
+
   onSelect: () => void;
 }) {
   const shapeRef = useRef<any>();

@@ -6,29 +6,35 @@ function TextImageItem({
   handleTextAlignmentChange,
   height,
   width,
+  isSelected,
+  onSelect,
 }: {
   textbox: any;
   canvasPadding: number;
   width: number;
   height: number;
   handleTextAlignmentChange: any;
+  isSelected: boolean;
+
+  onSelect: () => void;
 }) {
   const shapeRef = React.useRef<any>();
-  const [selectedTextId, setselectedTextId] = useState<any>();
 
   const [transformerRef, setTransformerRef] = useState<any>(null);
   useEffect(() => {
-    if (selectedTextId && transformerRef) {
+    if (isSelected && transformerRef) {
       // we need to attach transformer manually
       console.log("transform ref in useEffect", transformerRef);
 
       transformerRef?.nodes([shapeRef.current]);
       transformerRef?.getLayer()?.batchDraw();
     }
-  }, [selectedTextId, transformerRef]);
+  }, [isSelected, transformerRef]);
   return (
     <>
       <Text
+        onClick={onSelect}
+        onTap={onSelect}
         key={textbox.id}
         x={
           textbox.textAlign === "left"
@@ -44,9 +50,6 @@ function TextImageItem({
         fill={textbox.fill}
         draggable
         ref={shapeRef}
-        onClick={() => {
-          setselectedTextId(textbox.id);
-        }}
         wrap="word"
         onTransformEnd={(e) => {
           console.log("transform end", e);
@@ -84,7 +87,7 @@ function TextImageItem({
         }}
       />
 
-      {selectedTextId === textbox.id && (
+      {isSelected && (
         <Transformer
           ref={(node) => {
             console.log(node);

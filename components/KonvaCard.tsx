@@ -58,7 +58,18 @@ const BusinessCard: React.FC<BusinessCardProps> = ({
     polygon: number;
     star: number;
     arrow: number;
-  }>({ circle: 0, polygon: 0, square: 0, star: 0, triangle: 0, arrow: 0 });
+    textbox: number;
+    image: number;
+  }>({
+    circle: 0,
+    polygon: 0,
+    square: 0,
+    star: 0,
+    triangle: 0,
+    arrow: 0,
+    image: 0,
+    textbox: 0,
+  });
   const handleBackgroundColorChange = (color: string) => {
     setBackgroundColor(color);
   };
@@ -203,6 +214,8 @@ const BusinessCard: React.FC<BusinessCardProps> = ({
         square: 0,
         star: 0,
         triangle: 0,
+        image: 0,
+        textbox: 0,
       });
     }
   };
@@ -236,6 +249,10 @@ const BusinessCard: React.FC<BusinessCardProps> = ({
                     height={height}
                     width={width}
                     key={textbox.id}
+                    onSelect={() => {
+                      selectShape((p) => ({ ...p, textbox: textbox.id }));
+                    }}
+                    isSelected={selectedId.textbox == textbox.id}
                   />
                 );
               })}
@@ -249,6 +266,10 @@ const BusinessCard: React.FC<BusinessCardProps> = ({
                       canvasPadding={canvasPadding}
                       {...i}
                       setcardImages={setcardImages}
+                      onSelect={() => {
+                        selectShape((p) => ({ ...p, image: i.id }));
+                      }}
+                      isSelected={selectedId.image == i.id}
                     />
                   </React.Fragment>
                 ))}

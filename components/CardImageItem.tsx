@@ -14,6 +14,8 @@ function CardImageItem({
   id,
   source,
   setcardImages,
+  isSelected,
+  onSelect,
 }: {
   height: number;
   width: number;
@@ -24,8 +26,10 @@ function CardImageItem({
   id: number;
   source: any;
   setcardImages: any;
+  isSelected: boolean;
+
+  onSelect: () => void;
 }) {
-  const [selectedImageId, setselectedImageId] = useState<any>();
   //   const TransformRef = useRef<any>();
   const shapeRef = React.useRef<any>();
   const [transformerRef, setTransformerRef] = useState<any>(null);
@@ -63,30 +67,29 @@ function CardImageItem({
     }
   };
   useEffect(() => {
-    if (selectedImageId && transformerRef) {
+    if (isSelected && transformerRef) {
       // we need to attach transformer manually
       console.log("transform ref in useEffect", transformerRef);
 
       transformerRef?.nodes([shapeRef.current]);
       transformerRef?.getLayer()?.batchDraw();
     }
-  }, [selectedImageId, transformerRef]);
+  }, [isSelected, transformerRef]);
   console.log("transform ref", transformerRef);
   console.log("shape ref", shapeRef);
-  console.log("seklelcted image id", selectedImageId);
+  console.log("seklelcted image id", isSelected);
 
   return (
     <>
       <Image
+        onClick={onSelect}
+        onTap={onSelect}
         width={width}
         height={height}
         image={source}
         key={id}
         ref={shapeRef}
         draggable
-        onClick={(e) => {
-          setselectedImageId(id);
-        }}
         onDragEnd={(e) => ImageDragEnd(e, id)}
         onTransform={(e) => {
           console.log("start");
@@ -112,7 +115,7 @@ function CardImageItem({
           );
         }}
       />
-      {selectedImageId === id && (
+      {isSelected && (
         <Transformer
           ref={(node) => {
             console.log(node);

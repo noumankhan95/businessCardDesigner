@@ -1,7 +1,20 @@
 "use client";
+import { KonvaEventObject } from "konva/lib/Node";
+import { ImageConfig } from "konva/lib/shapes/Image";
 import React, { useEffect, useRef, useState } from "react";
-import { Stage, Layer, Rect, Image, Text, Group, Line } from "react-konva";
-
+import {
+  Stage,
+  Layer,
+  Rect,
+  Image,
+  Text,
+  Group,
+  Line,
+  Transformer,
+  KonvaNodeComponent,
+} from "react-konva";
+import CardImageItem from "./CardImageItem";
+import TextImageItem from "./TextImageItem";
 interface TextBox {
   id: number;
   text: string;
@@ -17,6 +30,7 @@ interface CardImage {
   id: number;
   x?: number;
   y?: number;
+  rotation?: number;
 }
 interface BusinessCardProps {
   width: number;
@@ -39,7 +53,7 @@ const BusinessCard: React.FC<BusinessCardProps> = ({
   const [cardImages, setcardImages] = useState<CardImage[]>([]);
   const cardImageRef = useRef<HTMLInputElement | null>(null);
   const [editType, seteditType] = useState<string>("");
-
+  const imageRefs = useRef<(HTMLImageElement | null)[]>([]);
   const handleBackgroundColorChange = (color: string) => {
     setBackgroundColor(color);
   };
@@ -122,7 +136,11 @@ const BusinessCard: React.FC<BusinessCardProps> = ({
       p.map((c) => (c.id === id ? { ...c, [type]: value } : c))
     );
   };
+
   console.log(cardImages, "cardimages");
+
+  console.log(imageRefs, "Imagerefs");
+
   return (
     <div className="space-y-5">
       <div className="flex flex-row justify-start items-start">
@@ -138,108 +156,29 @@ const BusinessCard: React.FC<BusinessCardProps> = ({
                 <Image width={width} height={height} image={backgroundImage} />
               )}
               {textboxes?.map((textbox) => {
-                console.log(textbox);
                 return (
-                  <Text
+                  <TextImageItem
+                    textbox={textbox}
+                    canvasPadding={canvasPadding}
+                    handleTextAlignmentChange={handleTextAlignmentChange}
+                    height={height}
+                    width={width}
                     key={textbox.id}
-                    x={
-                      textbox.textAlign === "left"
-                        ? canvasPadding // Align left
-                        : textbox.textAlign === "center"
-                        ? width / 2 // Align center
-                        : width - canvasPadding * 4 // Align right
-                    }
-                    y={canvasPadding}
-                    text={textbox.text}
-                    align={textbox.textAlign}
-                    fontSize={textbox.fontSize}
-                    fill={textbox.fill}
-                    draggable
-                    onClick={() => {
-                      const newAlignment =
-                        textbox.textAlign === "left"
-                          ? "center"
-                          : textbox.textAlign === "center"
-                          ? "right"
-                          : "left";
-                      handleTextAlignmentChange(textbox.id, newAlignment);
-                    }}
-                    wrap="word"
-                    onDragEnd={(e) => {
-                      if (e.target.x() >= width - canvasPadding) {
-                        console.log("true");
-                        handleTextAlignmentChange(textbox.id, "center");
-                        const newX = width / 2;
-
-                        e.currentTarget.x(newX);
-
-                        e.target?.getLayer()?.batchDraw();
-                      } else if (e.target.x() < canvasPadding) {
-                        console.log("true here");
-                        const newX = width / 2;
-                        e.currentTarget.x(newX);
-                        handleTextAlignmentChange(textbox.id, "center");
-                        e.target?.getLayer()?.batchDraw();
-                      }
-                      if (e.target.y() >= height - canvasPadding) {
-                        console.log("true");
-                        handleTextAlignmentChange(textbox.id, "center");
-                        const newX = height / 2;
-                        e.currentTarget.y(newX);
-
-                        e.target?.getLayer()?.batchDraw();
-                      } else if (e.target.y() < canvasPadding) {
-                        console.log("true here y");
-                        const newX = height / 2;
-                        e.currentTarget.y(newX);
-                        handleTextAlignmentChange(textbox.id, "center");
-                        e.target?.getLayer()?.batchDraw();
-                      }
-                    }}
                   />
                 );
               })}
               {cardImages &&
                 cardImages.map((i) => (
-                  <Image
-                    width={i.width}
-                    height={i.height}
-                    image={i.source}
-                    key={i.id}
-                    draggable
-                    onDragEnd={(e) => {
-                      if (e.target.x() >= width - canvasPadding) {
-                        console.log("true");
-                        handleCardChange(i.id, "x", (width / 2).toString());
-                        const newX = width / 2;
-
-                        e.currentTarget.x(newX);
-
-                        e.target?.getLayer()?.batchDraw();
-                      } else if (e.target.x() < canvasPadding) {
-                        console.log("true here");
-                        const newX = width / 2;
-                        e.currentTarget.x(newX);
-                        handleCardChange(i.id, "x", (width / 2).toString());
-                        e.target?.getLayer()?.batchDraw();
-                      }
-                      if (e.target.y() >= height - canvasPadding) {
-                        console.log("true");
-                        handleCardChange(i.id, "y", (height / 2).toString());
-                        const newX = height / 2;
-                        e.currentTarget.y(newX);
-
-                        e.target?.getLayer()?.batchDraw();
-                      } else if (e.target.y() < canvasPadding) {
-                        console.log("true here y");
-                        const newX = height / 2;
-                        e.currentTarget.y(newX);
-                        handleCardChange(i.id, "y", (height / 2).toString());
-
-                        e.target?.getLayer()?.batchDraw();
-                      }
-                    }}
-                  />
+                  <React.Fragment key={i.id}>
+                    <CardImageItem
+                      Theight={height}
+                      Twidth={width}
+                      handleCardChange={handleCardChange}
+                      canvasPadding={canvasPadding}
+                      {...i}
+                      setcardImages={setcardImages}
+                    />
+                  </React.Fragment>
                 ))}
               {backgroundImage && !isdownloading && (
                 <Line

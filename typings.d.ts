@@ -21,6 +21,27 @@ interface BusinessCardProps {
   canvasPadding: number;
 }
 
+interface canvasProps extends BusinessCardProps {
+  textboxes: TextBox[];
+  setTextboxes: Dispatch<SetStateAction<TextBox[]>>;
+  cardImages: CardImage[];
+  setcardImages: Dispatch<SetStateAction<CardImage[]>>;
+  circles: CircleItem[];
+  setcircles: Dispatch<SetStateAction<CircleItem[]>>;
+  stars: StarItem[];
+  setstars: Dispatch<SetStateAction<StarItem[]>>;
+  arrow: ArrowItem[];
+  setarrow: Dispatch<SetStateAction<ArrowItem[]>>;
+  square: SquareItem[];
+  setsquare: Dispatch<SetStateAction<SquareItem[]>>;
+  triangle: TriangleItem[];
+  settriangle: Dispatch<SetStateAction<TriangleItem[]>>;
+  polygon: PolygonItem[];
+  setpolygon: Dispatch<SetStateAction<PolygonItem[]>>;
+  cardIcons: IconItem[];
+  setcardIcons: Dispatch<SetStateAction<IconItem[]>>;
+  canvasPadding: number;
+}
 type CircleItem = {
   width: string;
   height: string;

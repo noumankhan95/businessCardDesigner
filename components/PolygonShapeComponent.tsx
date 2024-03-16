@@ -12,10 +12,12 @@ function PolygonComponent({
   handleShapeItemChange,
   isSelected,
   onSelect,
+  fill,
+  stroke,
 }: {
   isSelected: boolean;
-  width: number;
-  height: number;
+  width: string;
+  height: string;
   canvasPadding: number;
   Theight: number;
   Twidth: number;
@@ -27,6 +29,8 @@ function PolygonComponent({
     value: string
   ) => void;
   onSelect: () => void;
+  fill: string;
+  stroke: string;
 }) {
   // const [selectedShapeId, setSelectedShapeId] = useState<number | null>(null);
   const shapeRef = useRef<any>();
@@ -64,15 +68,15 @@ function PolygonComponent({
     });
     e.target?.getLayer()?.batchDraw();
   };
-  console.log("selected", isSelected);
+  console.log("selected", height, "w ", typeof width);
   return (
     <Group
       ref={groupRef}
       draggable
       // onClick={() => setisSelected(id)}
       onDragEnd={(e) => PolygonDragEnd(e, id)}
-      x={width / 2}
-      y={height / 2}
+      x={Twidth / 2}
+      y={Theight / 2}
       onClick={onSelect}
       onTap={onSelect}
     >
@@ -80,9 +84,11 @@ function PolygonComponent({
         ref={shapeRef}
         points={[0, -50, 47, -16, 29, 40, -29, 40, -47, -16]}
         closed
-        fill="black"
-        stroke="black"
+        fill={fill}
+        stroke={stroke} // border color of the Arrow
         strokeWidth={2}
+        height={43}
+        width={parseInt(width)}
       />
       {isSelected && <Transformer ref={transformerRef} rotateEnabled={true} />}
     </Group>

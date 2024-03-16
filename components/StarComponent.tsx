@@ -12,10 +12,12 @@ function StarComponent({
   handleShapeItemChange,
   isSelected,
   onSelect,
+  fill,
+  stroke,
 }: {
   isSelected: boolean;
-  width: number;
-  height: number;
+  width: string;
+  height: string;
   canvasPadding: number;
   Theight: number;
   Twidth: number;
@@ -27,6 +29,8 @@ function StarComponent({
     value: string
   ) => void;
   onSelect: () => void;
+  fill: string;
+  stroke: string;
 }) {
   const shapeRef = useRef<any>();
   const groupRef = useRef<any>();
@@ -66,8 +70,10 @@ function StarComponent({
       ref={groupRef}
       draggable
       onDragEnd={(e) => StarDragEnd(e, id)}
-      x={width / 2}
-      y={height / 2}
+      height={parseInt(height)}
+      width={parseInt(height)}
+      x={Twidth / 2}
+      y={Theight / 2}
       onClick={onSelect}
       onTap={onSelect}
     >
@@ -76,8 +82,9 @@ function StarComponent({
         numPoints={5}
         innerRadius={20}
         outerRadius={40}
-        fill="yellow"
-        stroke="black"
+        fill={fill}
+        stroke={stroke} // border color of the Arrow
+
         strokeWidth={2}
       />
       {isSelected && <Transformer ref={transformerRef} rotateEnabled={true} />}

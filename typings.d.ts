@@ -22,36 +22,55 @@ interface BusinessCardProps {
 }
 
 type CircleItem = {
-  width: number;
-  height: number;
+  width: string;
+  height: string;
   id: number;
+  fill: string;
+  stroke: string;
 };
 
 type StarItem = {
-  width: number;
-  height: number;
+  width: string;
+  height: string;
   id: number;
+  fill: string;
+  stroke: string;
 };
 
 type ArrowItem = {
-  width: number;
-  height: number;
+  width: string;
+  height: string;
   id: number;
+  fill: string;
+  stroke: string;
 };
 
 type SquareItem = {
-  width: number;
-  height: number;
+  width: string;
+  height: string;
   id: number;
+  fill: string;
+  stroke: string;
 };
 type TriangleItem = {
-  width: number;
-  height: number;
+  width: string;
+  height: string;
   id: number;
+  fill: string;
+  stroke: string;
 };
 
 type PolygonItem = {
-  width: number;
-  height: number;
+  width: string;
+  height: string;
   id: number;
+  fill: string;
+  stroke: string;
+};
+
+type IconItem = {
+  name: string;
+  color: string;
+  id: number;
+  stroke: string;
 };

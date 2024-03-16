@@ -12,10 +12,12 @@ function CircleComponent({
   handleShapeItemChange,
   isSelected,
   onSelect,
+  fill,
+  stroke,
 }: {
   isSelected: boolean;
-  width: number;
-  height: number;
+  width: string;
+  height: string;
   canvasPadding: number;
   Theight: number;
   Twidth: number;
@@ -27,6 +29,8 @@ function CircleComponent({
     value: string
   ) => void;
   onSelect: () => void;
+  fill: string;
+  stroke: string;
 }) {
   const shapeRef = React.useRef<any>();
   const [transformerRef, setTransformerRef] = useState<any>(null);
@@ -81,11 +85,13 @@ function CircleComponent({
         onClick={onSelect}
         onTap={onSelect}
         ref={shapeRef}
-        x={width / 2} // x-coordinate of the circle center
-        y={height / 2} // y-coordinate of the circle center
+        height={parseInt(height)}
+        width={parseInt(width)}
+        x={Twidth / 2}
+        y={Theight / 2}
         radius={50} // radius of the circle
-        fill="black" // fill color of the circle
-        stroke="black" // border color of the circle
+        fill={fill} // fill color of the circle
+        stroke={stroke} // border color of the Arrow
         strokeWidth={2} // border width of the circle
         onDragEnd={(e) => CircleDragEnd(e, id)}
         draggable

@@ -12,10 +12,12 @@ function ArrowComponent({
   handleShapeItemChange,
   isSelected,
   onSelect,
+  fill,
+  stroke,
 }: {
   isSelected: boolean;
-  width: number;
-  height: number;
+  width: string;
+  height: string;
   canvasPadding: number;
   Theight: number;
   Twidth: number;
@@ -27,6 +29,8 @@ function ArrowComponent({
     value: string
   ) => void;
   onSelect: () => void;
+  fill: string;
+  stroke: string;
 }) {
   const shapeRef = React.useRef<any>();
   const [transformerRef, setTransformerRef] = useState<any>(null);
@@ -82,11 +86,13 @@ function ArrowComponent({
         onTap={onSelect}
         points={[0, 0, 100, 0]}
         ref={shapeRef}
-        x={width / 2} // x-coordinate of the Arrow center
-        y={height / 2} // y-coordinate of the Arrow center
+        height={parseInt(height)}
+        width={parseInt(width)}
+        x={Twidth / 2}
+        y={Theight / 2}
         radius={50} // radius of the Arrow
-        fill="black" // fill color of the Arrow
-        stroke="black" // border color of the Arrow
+        fill={fill} // fill color of the Arrow
+        stroke={stroke} // border color of the Arrow
         strokeWidth={2} // border width of the Arrow
         onDragEnd={(e) => ArrowDragEnd(e, id)}
         draggable

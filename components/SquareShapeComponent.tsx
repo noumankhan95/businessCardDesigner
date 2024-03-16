@@ -12,10 +12,12 @@ function SquareComponent({
   handleShapeItemChange,
   isSelected,
   onSelect,
+  fill,
+  stroke,
 }: {
   isSelected: boolean;
-  width: number;
-  height: number;
+  width: string;
+  height: string;
   canvasPadding: number;
   Theight: number;
   Twidth: number;
@@ -27,6 +29,8 @@ function SquareComponent({
     value: string
   ) => void;
   onSelect: () => void;
+  fill: string;
+  stroke: string;
 }) {
   const shapeRef = useRef<any>();
   const groupRef = useRef<any>();
@@ -60,14 +64,16 @@ function SquareComponent({
     });
     e.target?.getLayer()?.batchDraw();
   };
-
+  console.log("square", height, " ", typeof width);
   return (
     <Group
       ref={groupRef}
       draggable
       onDragEnd={(e) => SquareDragEnd(e, id)}
-      x={width / 2}
-      y={height / 2}
+      height={parseInt(height)}
+      width={parseInt(width)}
+      x={Twidth / 2}
+      y={Theight / 2}
       onClick={onSelect}
       onTap={onSelect}
     >
@@ -75,8 +81,9 @@ function SquareComponent({
         ref={shapeRef}
         width={100} // Width of the square
         height={100} // Height of the square
-        fill="black"
-        stroke="black"
+        fill={fill}
+        stroke={stroke} // border color of the Arrow
+
         strokeWidth={2}
       />
       {isSelected && <Transformer ref={transformerRef} rotateEnabled={true} />}

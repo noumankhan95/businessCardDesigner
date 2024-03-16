@@ -12,9 +12,11 @@ function TriangleComponent({
   handleShapeItemChange,
   isSelected,
   onSelect,
+  fill,
+  stroke,
 }: {
-  width: number;
-  height: number;
+  width: string;
+  height: string;
   canvasPadding: number;
   Theight: number;
   Twidth: number;
@@ -26,8 +28,9 @@ function TriangleComponent({
     value: string
   ) => void;
   isSelected: boolean;
-
+  fill: string;
   onSelect: () => void;
+  stroke: string;
 }) {
   const shapeRef = useRef<any>();
   const groupRef = useRef<any>();
@@ -70,8 +73,10 @@ function TriangleComponent({
       ref={groupRef}
       draggable
       onDragEnd={(e) => TriangleDragEnd(e, id)}
-      x={width / 2}
-      y={height / 2}
+      height={parseInt(height)}
+      width={parseInt(width)}
+      x={Twidth / 2}
+      y={Theight / 2}
       onClick={onSelect}
       onTap={onSelect}
     >
@@ -79,8 +84,8 @@ function TriangleComponent({
         ref={shapeRef}
         points={[0, -50, 50, 50, -50, 50]} // Points defining the triangle
         closed // Indicates that the shape is closed
-        fill="black"
-        stroke="black"
+        fill={fill}
+        stroke={stroke} // border color of the Arrow
         strokeWidth={2}
       />
       {isSelected && <Transformer ref={transformerRef} rotateEnabled={true} />}

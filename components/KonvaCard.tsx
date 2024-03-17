@@ -29,6 +29,9 @@ const BusinessCard: React.FC<BusinessCardProps> = ({
   const [backTriangle, setbackTriangle] = useState<TriangleItem[]>([]);
   const [backPolygon, setbackPolygon] = useState<PolygonItem[]>([]);
   const [backCardIcons, setbackCardIcons] = useState<IconItem[]>([]);
+  const [backgroundColor, setBackgroundColor] = useState<string>("#ffffff");
+  const [BackSidebackgroundColor, setBackSideBackgroundColor] =
+    useState<string>("#ffffff");
 
   return (
     <div className="space-y-5">
@@ -70,6 +73,8 @@ const BusinessCard: React.FC<BusinessCardProps> = ({
           setpolygon={setpolygon}
           cardIcons={cardIcons}
           setcardIcons={setcardIcons}
+          backgroundColor={backgroundColor}
+          setBackgroundColor={setBackgroundColor}
         />
       )}
       {!showFront && (
@@ -95,6 +100,8 @@ const BusinessCard: React.FC<BusinessCardProps> = ({
           setpolygon={setbackPolygon}
           cardIcons={backCardIcons}
           setcardIcons={setbackCardIcons}
+          backgroundColor={BackSidebackgroundColor}
+          setBackgroundColor={setBackSideBackgroundColor}
         />
       )}
     </div>

@@ -14,6 +14,11 @@ function TriangleComponent({
   onSelect,
   fill,
   stroke,
+  rotation,
+  scaleX,
+  scaleY,
+  x,
+  y,
 }: {
   width: string;
   height: string;
@@ -25,12 +30,17 @@ function TriangleComponent({
     name: string,
     attr: string,
     id: number,
-    value: string
+    value: string | number
   ) => void;
   isSelected: boolean;
   fill: string;
   onSelect: () => void;
   stroke: string;
+  x: number;
+  y: number;
+  scaleX: number;
+  scaleY: number;
+  rotation: number;
 }) {
   const shapeRef = useRef<any>();
   const groupRef = useRef<any>();
@@ -49,44 +59,79 @@ function TriangleComponent({
   ) => {
     if (!id) return;
 
-    const newX = Math.max(
-      canvasPadding,
-      Math.min(Twidth - canvasPadding, e.target.x())
-    );
-    const newY = Math.max(
-      canvasPadding,
-      Math.min(Theight - canvasPadding, e.target.y())
-    );
+    if (e.target.x() >= Twidth - canvasPadding) {
+      console.log("true");
+      handleShapeItemChange("triangle", "x", id, Twidth / 2);
+      const newX = Twidth / 2;
 
-    handleShapeItemChange("Triangle", "x", id, newX.toString());
-    handleShapeItemChange("Triangle", "y", id, newY.toString());
+      e.currentTarget.x(newX);
 
-    e.currentTarget.position({
-      x: newX,
-      y: newY,
-    });
-    e.target?.getLayer()?.batchDraw();
+      e.target?.getLayer()?.batchDraw();
+    } else if (e.target.x() < canvasPadding) {
+      console.log("true here");
+      const newX = Twidth / 2;
+      e.currentTarget.x(newX);
+      handleShapeItemChange("triangle", "x", id, Twidth / 2);
+
+      e.target?.getLayer()?.batchDraw();
+    }
+    if (e.target.y() >= Theight - canvasPadding) {
+      console.log("true");
+      handleShapeItemChange("triangle", "y", id, Theight / 2);
+
+      const newX = Theight / 2;
+      e.currentTarget.y(newX);
+
+      e.target?.getLayer()?.batchDraw();
+    } else if (e.target.y() < canvasPadding) {
+      console.log("true here y");
+      const newX = Theight / 2;
+      e.currentTarget.y(newX);
+      handleShapeItemChange("triangle", "y", id, Theight / 2);
+
+      e.target?.getLayer()?.batchDraw();
+    } else {
+      handleShapeItemChange("triangle", "x", id, e.currentTarget.x());
+      handleShapeItemChange("triangle", "y", id, e.currentTarget.y());
+    }
   };
 
   return (
-    <Group
-      ref={groupRef}
-      draggable
-      onDragEnd={(e) => TriangleDragEnd(e, id)}
-      height={parseInt(height)}
-      width={parseInt(width)}
-      x={Twidth / 2}
-      y={Theight / 2}
-      onClick={onSelect}
-      onTap={onSelect}
-    >
+    <Group ref={groupRef}>
       <Line
         ref={shapeRef}
         points={[0, -50, 50, 50, -50, 50]} // Points defining the triangle
         closed // Indicates that the shape is closed
         fill={fill}
-        stroke={stroke} // border color of the Arrow
+        stroke={stroke} // border color of the triangle
         strokeWidth={2}
+        draggable
+        onDragEnd={(e) => TriangleDragEnd(e, id)}
+        height={parseInt(height)}
+        width={parseInt(width)}
+        x={x}
+        y={y}
+        scaleX={scaleX}
+        scaleY={scaleY}
+        rotation={rotation}
+        onClick={onSelect}
+        onTap={onSelect}
+        onTransformEnd={(e) => {
+          console.log("transform end");
+          const node = e.currentTarget;
+          const scaleX = node.scaleX();
+          const scaleY = node.scaleY();
+
+          // update width and height
+          // node.width(node.width() * scaleX);
+          // node.height(node.height() * scaleY);
+
+          // update rotation
+          const rotation = node.rotation();
+          handleShapeItemChange("triangle", "rotation", id, rotation);
+          handleShapeItemChange("triangle", "scaleX", id, scaleX);
+          handleShapeItemChange("triangle", "scaleY", id, scaleY);
+        }}
       />
       {isSelected && <Transformer ref={transformerRef} rotateEnabled={true} />}
     </Group>

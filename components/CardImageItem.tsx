@@ -16,6 +16,11 @@ function CardImageItem({
   setcardImages,
   isSelected,
   onSelect,
+  x,
+  y,
+  scaleX,
+  scaleY,
+  rotation,
 }: {
   height: number;
   width: number;
@@ -27,8 +32,12 @@ function CardImageItem({
   source: any;
   setcardImages: any;
   isSelected: boolean;
-
+  x: number;
+  y: number;
   onSelect: () => void;
+  scaleX: number;
+  scaleY: number;
+  rotation: number;
 }) {
   //   const TransformRef = useRef<any>();
   const shapeRef = React.useRef<any>();
@@ -37,7 +46,7 @@ function CardImageItem({
   const ImageDragEnd = (e: KonvaEventObject<DragEvent>, id: number) => {
     if (e.target.x() >= Twidth - canvasPadding) {
       console.log("true");
-      handleCardChange(id, "x", (Twidth / 2).toString());
+      handleCardChange(id, "x", Twidth / 2);
       const newX = Twidth / 2;
 
       e.currentTarget.x(newX);
@@ -47,12 +56,12 @@ function CardImageItem({
       console.log("true here");
       const newX = Twidth / 2;
       e.currentTarget.x(newX);
-      handleCardChange(id, "x", (Twidth / 2).toString());
+      handleCardChange(id, "x", Twidth / 2);
       e.target?.getLayer()?.batchDraw();
     }
     if (e.target.y() >= Theight - canvasPadding) {
       console.log("true");
-      handleCardChange(id, "y", (Theight / 2).toString());
+      handleCardChange(id, "y", Theight / 2);
       const newX = Theight / 2;
       e.currentTarget.y(newX);
 
@@ -61,9 +70,12 @@ function CardImageItem({
       console.log("true here y");
       const newX = Theight / 2;
       e.currentTarget.y(newX);
-      handleCardChange(id, "y", (Theight / 2).toString());
+      handleCardChange(id, "y", Theight / 2);
 
       e.target?.getLayer()?.batchDraw();
+    } else {
+      handleCardChange(id, "x", e.target.x());
+      handleCardChange(id, "y", e.target.y());
     }
   };
   useEffect(() => {
@@ -89,6 +101,11 @@ function CardImageItem({
         image={source}
         key={id}
         ref={shapeRef}
+        rotation={rotation}
+        x={x}
+        y={y}
+        scaleX={scaleX}
+        scaleY={scaleY}
         draggable
         onDragEnd={(e) => ImageDragEnd(e, id)}
         onTransform={(e) => {
@@ -101,18 +118,22 @@ function CardImageItem({
           const scaleY = node.scaleY();
 
           // update width and height
-          node.width(node.width() * scaleX);
-          node.height(node.height() * scaleY);
-          node.scaleX(1);
-          node.scaleY(1);
+          // node.width(node.width() * scaleX);
+          // node.height(node.height() * scaleY);
+          // node.scaleX(1);
+          // node.scaleY(1);
+          const rotation = node.rotation();
 
           // update rotation
-          const rotation = node.rotation();
-          setcardImages((prevImages: any) =>
-            prevImages.map((img: any) =>
-              img.id === id ? { ...img, rotation: rotation } : img
-            )
-          );
+          handleCardChange(id, "scaleX", scaleX);
+          handleCardChange(id, "scaleY", scaleY);
+          handleCardChange(id, "rotation", rotation);
+
+          // setcardImages((prevImages: any) =>
+          //   prevImages.map((img: any) =>
+          //     img.id === id ? { ...img, rotation: rotation } : img
+          //   )
+          // );
         }}
       />
       {isSelected && (

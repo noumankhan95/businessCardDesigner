@@ -14,6 +14,11 @@ function CircleComponent({
   onSelect,
   fill,
   stroke,
+  x,
+  y,
+  scaleX,
+  scaleY,
+  rotation,
 }: {
   isSelected: boolean;
   width: string;
@@ -26,11 +31,16 @@ function CircleComponent({
     name: string,
     attr: string,
     id: number,
-    value: string
+    value: string | number
   ) => void;
   onSelect: () => void;
   fill: string;
   stroke: string;
+  x: number;
+  y: number;
+  scaleX: number;
+  scaleY: number;
+  rotation: number;
 }) {
   const shapeRef = React.useRef<any>();
   const [transformerRef, setTransformerRef] = useState<any>(null);
@@ -47,7 +57,7 @@ function CircleComponent({
   const CircleDragEnd = (e: KonvaEventObject<DragEvent>, id: number) => {
     if (e.target.x() >= Twidth - canvasPadding) {
       console.log("true");
-      handleShapeItemChange("Circle", "x", id, (Twidth / 2).toString());
+      handleShapeItemChange("circle", "x", id, (Twidth / 2).toString());
       const newX = Twidth / 2;
 
       e.currentTarget.x(newX);
@@ -57,13 +67,13 @@ function CircleComponent({
       console.log("true here");
       const newX = Twidth / 2;
       e.currentTarget.x(newX);
-      handleShapeItemChange("Circle", "x", id, (Twidth / 2).toString());
+      handleShapeItemChange("circle", "x", id, (Twidth / 2).toString());
 
       e.target?.getLayer()?.batchDraw();
     }
     if (e.target.y() >= Theight - canvasPadding) {
       console.log("true");
-      handleShapeItemChange("Circle", "y", id, (Theight / 2).toString());
+      handleShapeItemChange("circle", "y", id, (Theight / 2).toString());
 
       const newX = Theight / 2;
       e.currentTarget.y(newX);
@@ -73,9 +83,13 @@ function CircleComponent({
       console.log("true here y");
       const newX = Theight / 2;
       e.currentTarget.y(newX);
-      handleShapeItemChange("Circle", "y", id, (Theight / 2).toString());
+      handleShapeItemChange("circle", "y", id, (Theight / 2).toString());
 
       e.target?.getLayer()?.batchDraw();
+    } else {
+      console.log("Call now");
+      handleShapeItemChange("circle", "x", id, e.currentTarget.x());
+      handleShapeItemChange("circle", "y", id, e.currentTarget.y());
     }
   };
 
@@ -87,8 +101,11 @@ function CircleComponent({
         ref={shapeRef}
         height={parseInt(height)}
         width={parseInt(width)}
-        x={Twidth / 2}
-        y={Theight / 2}
+        x={x}
+        y={y}
+        rotation={rotation}
+        scaleY={scaleY}
+        scaleX={scaleX}
         radius={50} // radius of the circle
         fill={fill} // fill color of the circle
         stroke={stroke} // border color of the Arrow
@@ -97,23 +114,21 @@ function CircleComponent({
         draggable
         onTransformEnd={(e) => {
           console.log("transform end");
-          //   const node = e.currentTarget;
-          //   const scaleX = node.scaleX();
-          //   const scaleY = node.scaleY();
+          const node = e.currentTarget;
+          const scaleX = node.scaleX();
+          const scaleY = node.scaleY();
 
-          //   // update width and height
-          //   node.width(node.width() * scaleX);
-          //   node.height(node.height() * scaleY);
-          //   node.scaleX(1);
-          //   node.scaleY(1);
+          // update width and height
+          // node.width(node.width() * scaleX);
+          // node.height(node.height() * scaleY);
+          node.scaleX(1);
+          node.scaleY(1);
 
-          //   // update rotation
-          //   const rotation = node.rotation();
-          //   setcardImages((prevImages: any) =>
-          //     prevImages.map((img: any) =>
-          //       img.id === id ? { ...img, rotation: rotation } : img
-          //     )
-          //   );
+          // update rotation
+          const rotation = node.rotation();
+          handleShapeItemChange("circle", "rotation", id, rotation);
+          handleShapeItemChange("circle", "scaleX", id, scaleX);
+          handleShapeItemChange("circle", "scaleY", id, scaleY);
         }}
       />
       {isSelected && (

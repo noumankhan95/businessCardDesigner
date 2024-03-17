@@ -53,8 +53,9 @@ const Canvas: React.FC<canvasProps> = ({
   stars,
   textboxes,
   triangle,
+  backgroundColor,
+  setBackgroundColor,
 }) => {
-  const [backgroundColor, setBackgroundColor] = useState<string>("#ffffff");
   const [backgroundImage, setBackgroundImage] = useState<any>(null);
   const [isdownloading, setisdownloading] = useState<boolean>();
   const [forceRender, setForceRender] = useState(false);
@@ -90,7 +91,7 @@ const Canvas: React.FC<canvasProps> = ({
   };
   const handleShapeAddition = (name: string) => {
     if (name === "Circle") {
-      setcircles((p: any) => [
+      setcircles((p: CircleItem[]) => [
         ...p,
         {
           height: "20",
@@ -98,10 +99,15 @@ const Canvas: React.FC<canvasProps> = ({
           id: (circles.length ?? 0) + 1,
           fill: "black",
           stroke: "black",
+          x: width / 2,
+          y: height / 2,
+          scaleX: 1,
+          scaleY: 1,
+          rotation: 0,
         },
       ]);
     } else if (name === "Arrow") {
-      setarrow((p: any) => [
+      setarrow((p: ArrowItem[]) => [
         ...p,
         {
           height: "20",
@@ -109,10 +115,15 @@ const Canvas: React.FC<canvasProps> = ({
           id: (arrow.length ?? 0) + 1,
           fill: "black",
           stroke: "black",
+          x: width / 2,
+          y: height / 2,
+          scaleX: 1,
+          scaleY: 1,
+          rotation: 0,
         },
       ]);
     } else if (name === "Star") {
-      setstars((p: any) => [
+      setstars((p: StarItem[]) => [
         ...p,
         {
           height: "20",
@@ -120,10 +131,15 @@ const Canvas: React.FC<canvasProps> = ({
           id: (stars.length ?? 0) + 1,
           fill: "black",
           stroke: "black",
+          x: width / 2,
+          y: height / 2,
+          scaleX: 1,
+          scaleY: 1,
+          rotation: 0,
         },
       ]);
     } else if (name == "Square") {
-      setsquare((p: any) => [
+      setsquare((p: SquareItem[]) => [
         ...p,
         {
           height: "20",
@@ -131,10 +147,15 @@ const Canvas: React.FC<canvasProps> = ({
           id: (square.length ?? 0) + 1,
           fill: "black",
           stroke: "black",
+          x: width / 2,
+          y: height / 2,
+          scaleX: 1,
+          scaleY: 1,
+          rotation: 0,
         },
       ]);
     } else if (name === "Triangle") {
-      settriangle((p: any) => [
+      settriangle((p: TriangleItem[]) => [
         ...p,
         {
           height: "20",
@@ -142,10 +163,15 @@ const Canvas: React.FC<canvasProps> = ({
           id: (triangle.length ?? 0) + 1,
           fill: "black",
           stroke: "black",
+          x: width / 2,
+          y: height / 2,
+          scaleX: 1,
+          scaleY: 1,
+          rotation: 0,
         },
       ]);
     } else if (name === "Polygon") {
-      setpolygon((p: any) => [
+      setpolygon((p: PolygonItem[]) => [
         ...p,
         {
           height: "20",
@@ -153,6 +179,11 @@ const Canvas: React.FC<canvasProps> = ({
           id: (polygon.length ?? 0) + 1,
           fill: "black",
           stroke: "black",
+          x: width / 2,
+          y: height / 2,
+          scaleX: 1,
+          scaleY: 1,
+          rotation: 0,
         },
       ]);
     }
@@ -181,6 +212,17 @@ const Canvas: React.FC<canvasProps> = ({
     setTextboxes((prevState: any) =>
       prevState.map((textbox: any) =>
         textbox.id === id ? { ...textbox, textAlign: alignment } : textbox
+      )
+    );
+  };
+  const handleCardPositionChange = (
+    id: number,
+    property: string,
+    value: string | number
+  ) => {
+    setTextboxes((prevState: any) =>
+      prevState.map((textbox: any) =>
+        textbox.id === id ? { ...textbox, [property]: value } : textbox
       )
     );
   };
@@ -230,21 +272,30 @@ const Canvas: React.FC<canvasProps> = ({
       )
     );
   }
-  const handleCardChange = (id: number, type: string, value: string) => {
+  const handleCardChange = (
+    id: number,
+    type: string,
+    value: string | number
+  ) => {
     setcardImages((p: any) =>
       p.map((c: any) => (c.id === id ? { ...c, [type]: value } : c))
     );
   };
-  const handleIconChange = (id: number, type: string, value: string) => {
+  const handleIconChange = (
+    id: number,
+    type: string,
+    value: string | number
+  ) => {
     setcardIcons((p: any) =>
       p.map((c: any) => (c.id === id ? { ...c, [type]: value } : c))
     );
   };
+
   const handleShapeItemChange = (
     name: string,
     attr: string,
     id: number,
-    value: string
+    value: string | number
   ) => {
     if (name === "circle") {
       setcircles((p: any) =>
@@ -263,12 +314,12 @@ const Canvas: React.FC<canvasProps> = ({
         p.map((c: any) => (c.id === id ? { ...c, [attr]: value } : c))
       );
     } else if (name == "arrow") {
-      setstars((p: any) =>
+      setarrow((p: any) =>
         p.map((c: any) => (c.id === id ? { ...c, [attr]: value } : c))
       );
     } else if (name == "triangle") {
-      settriangle((p: any) =>
-        p.map((c: any) => (c.id === id ? { ...c, [attr]: value } : c))
+      settriangle((p: TriangleItem[]) =>
+        p.map((c: TriangleItem) => (c.id === id ? { ...c, [attr]: value } : c))
       );
     }
   };
@@ -295,13 +346,18 @@ const Canvas: React.FC<canvasProps> = ({
     }
   };
   const handleIconAddition = (name: string) => {
-    setcardIcons((p: any) => [
+    setcardIcons((p: IconItem[]) => [
       ...p,
       {
         name,
         color: "black",
         id: (cardIcons.length ?? 0) + 1,
         stroke: "black",
+        x: width / 2,
+        y: height / 2,
+        scaleX: 1,
+        scaleY: 1,
+        rotation: 0,
       },
     ]);
   };
@@ -339,6 +395,7 @@ const Canvas: React.FC<canvasProps> = ({
                       selectShape((p) => ({ ...p, textbox: textbox.id }));
                     }}
                     isSelected={selectedId.textbox == textbox.id}
+                    handleCardPosition={handleCardPositionChange}
                   />
                 );
               })}
@@ -460,6 +517,7 @@ const Canvas: React.FC<canvasProps> = ({
                   <IconComponent
                     iconName={c.name}
                     key={c.name}
+                    {...c}
                     color={c.color}
                     Theight={height}
                     Twidth={width}
@@ -468,6 +526,8 @@ const Canvas: React.FC<canvasProps> = ({
                     }}
                     isSelected={selectedId.icon == c.id}
                     stroke={c.stroke}
+                    handleIconChange={handleIconChange}
+                    canvasPadding={canvasPadding}
                   />
                 ))}
               {backgroundImage && !isdownloading && (
@@ -504,6 +564,11 @@ const Canvas: React.FC<canvasProps> = ({
                     fontSize: 16,
                     text: "Enter Text",
                     textAlign: "center",
+                    scaleX: 1,
+                    scaleY: 1,
+                    rotation: 0,
+                    x: width / 2,
+                    y: height / 2,
                   },
                 ]);
               }}
@@ -535,6 +600,11 @@ const Canvas: React.FC<canvasProps> = ({
                       height: 190,
                       source: img,
                       id: (cardImages.length ?? 0) + 1,
+                      scaleX: 1,
+                      scaleY: 1,
+                      rotation: 0,
+                      x: width / 2,
+                      y: height / 2,
                     },
                   ]);
                 };

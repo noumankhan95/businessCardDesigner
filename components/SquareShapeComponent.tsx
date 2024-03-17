@@ -14,6 +14,11 @@ function SquareComponent({
   onSelect,
   fill,
   stroke,
+  rotation,
+  scaleX,
+  scaleY,
+  x,
+  y,
 }: {
   isSelected: boolean;
   width: string;
@@ -26,11 +31,16 @@ function SquareComponent({
     name: string,
     attr: string,
     id: number,
-    value: string
+    value: string | number
   ) => void;
   onSelect: () => void;
   fill: string;
   stroke: string;
+  x: number;
+  y: number;
+  scaleX: number;
+  scaleY: number;
+  rotation: number;
 }) {
   const shapeRef = useRef<any>();
   const groupRef = useRef<any>();
@@ -46,45 +56,74 @@ function SquareComponent({
   const SquareDragEnd = (e: KonvaEventObject<DragEvent>, id: number | null) => {
     if (!id) return;
 
-    const newX = Math.max(
-      canvasPadding,
-      Math.min(Twidth - canvasPadding, e.target.x())
-    );
-    const newY = Math.max(
-      canvasPadding,
-      Math.min(Theight - canvasPadding, e.target.y())
-    );
+    if (!id) return;
 
-    handleShapeItemChange("Square", "x", id, newX.toString());
-    handleShapeItemChange("Square", "y", id, newY.toString());
+    if (e.target.x() >= Twidth - canvasPadding) {
+      console.log("true");
+      handleShapeItemChange("square", "x", id, Twidth / 2);
+      const newX = Twidth / 2;
 
-    e.currentTarget.position({
-      x: newX,
-      y: newY,
-    });
-    e.target?.getLayer()?.batchDraw();
+      e.currentTarget.x(newX);
+
+      e.target?.getLayer()?.batchDraw();
+    } else if (e.target.x() < canvasPadding) {
+      console.log("true here");
+      const newX = Twidth / 2;
+      e.currentTarget.x(newX);
+      handleShapeItemChange("square", "x", id, Twidth / 2);
+
+      e.target?.getLayer()?.batchDraw();
+    }
+    if (e.target.y() >= Theight - canvasPadding) {
+      console.log("true");
+      handleShapeItemChange("square", "y", id, Theight / 2);
+
+      const newX = Theight / 2;
+      e.currentTarget.y(newX);
+
+      e.target?.getLayer()?.batchDraw();
+    } else if (e.target.y() < canvasPadding) {
+      console.log("true here y");
+      const newX = Theight / 2;
+      e.currentTarget.y(newX);
+      handleShapeItemChange("square", "y", id, Theight / 2);
+
+      e.target?.getLayer()?.batchDraw();
+    } else {
+      handleShapeItemChange("square", "x", id, e.currentTarget.x());
+      handleShapeItemChange("square", "y", id, e.currentTarget.y());
+    }
   };
   console.log("square", height, " ", typeof width);
   return (
-    <Group
-      ref={groupRef}
-      draggable
-      onDragEnd={(e) => SquareDragEnd(e, id)}
-      height={parseInt(height)}
-      width={parseInt(width)}
-      x={Twidth / 2}
-      y={Theight / 2}
-      onClick={onSelect}
-      onTap={onSelect}
-    >
+    <Group>
       <Rect
+        draggable
+        onClick={onSelect}
+        onTap={onSelect}
         ref={shapeRef}
-        width={100} // Width of the square
-        height={100} // Height of the square
         fill={fill}
         stroke={stroke} // border color of the Arrow
-
         strokeWidth={2}
+        x={x}
+        y={y}
+        scaleX={scaleX}
+        scaleY={scaleY}
+        rotation={rotation}
+        onDragEnd={(e) => SquareDragEnd(e, id)}
+        height={parseInt(height)}
+        width={parseInt(width)}
+        onTransformEnd={(e) => {
+          console.log("transform end");
+          const node = e.currentTarget;
+          const scaleX = node.scaleX();
+          const scaleY = node.scaleY();
+
+          const rotation = node.rotation();
+          handleShapeItemChange("square", "rotation", id, rotation);
+          handleShapeItemChange("square", "scaleX", id, scaleX);
+          handleShapeItemChange("square", "scaleY", id, scaleY);
+        }}
       />
       {isSelected && <Transformer ref={transformerRef} rotateEnabled={true} />}
     </Group>

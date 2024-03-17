@@ -14,6 +14,11 @@ function ArrowComponent({
   onSelect,
   fill,
   stroke,
+  rotation,
+  scaleX,
+  scaleY,
+  x,
+  y,
 }: {
   isSelected: boolean;
   width: string;
@@ -26,11 +31,16 @@ function ArrowComponent({
     name: string,
     attr: string,
     id: number,
-    value: string
+    value: string | number
   ) => void;
   onSelect: () => void;
   fill: string;
   stroke: string;
+  x: number;
+  y: number;
+  scaleX: number;
+  scaleY: number;
+  rotation: number;
 }) {
   const shapeRef = React.useRef<any>();
   const [transformerRef, setTransformerRef] = useState<any>(null);
@@ -47,7 +57,7 @@ function ArrowComponent({
   const ArrowDragEnd = (e: KonvaEventObject<DragEvent>, id: number) => {
     if (e.target.x() >= Twidth - canvasPadding) {
       console.log("true");
-      handleShapeItemChange("Arrow", "x", id, (Twidth / 2).toString());
+      handleShapeItemChange("arrow", "x", id, Twidth / 2);
       const newX = Twidth / 2;
 
       e.currentTarget.x(newX);
@@ -57,13 +67,13 @@ function ArrowComponent({
       console.log("true here");
       const newX = Twidth / 2;
       e.currentTarget.x(newX);
-      handleShapeItemChange("Arrow", "x", id, (Twidth / 2).toString());
+      handleShapeItemChange("arrow", "x", id, Twidth / 2);
 
       e.target?.getLayer()?.batchDraw();
     }
     if (e.target.y() >= Theight - canvasPadding) {
       console.log("true");
-      handleShapeItemChange("Arrow", "y", id, (Theight / 2).toString());
+      handleShapeItemChange("arrow", "y", id, Theight / 2);
 
       const newX = Theight / 2;
       e.currentTarget.y(newX);
@@ -73,9 +83,12 @@ function ArrowComponent({
       console.log("true here y");
       const newX = Theight / 2;
       e.currentTarget.y(newX);
-      handleShapeItemChange("Arrow", "y", id, (Theight / 2).toString());
+      handleShapeItemChange("arrow", "y", id, Theight / 2);
 
       e.target?.getLayer()?.batchDraw();
+    } else {
+      handleShapeItemChange("arrow", "x", id, e.currentTarget.x());
+      handleShapeItemChange("arrow", "y", id, e.currentTarget.y());
     }
   };
 
@@ -88,8 +101,11 @@ function ArrowComponent({
         ref={shapeRef}
         height={parseInt(height)}
         width={parseInt(width)}
-        x={Twidth / 2}
-        y={Theight / 2}
+        x={x}
+        y={y}
+        scaleX={scaleX}
+        scaleY={scaleY}
+        rotation={rotation}
         radius={50} // radius of the Arrow
         fill={fill} // fill color of the Arrow
         stroke={stroke} // border color of the Arrow
@@ -98,23 +114,19 @@ function ArrowComponent({
         draggable
         onTransformEnd={(e) => {
           console.log("transform end");
-          //   const node = e.currentTarget;
-          //   const scaleX = node.scaleX();
-          //   const scaleY = node.scaleY();
+          const node = e.currentTarget;
+          const scaleX = node.scaleX();
+          const scaleY = node.scaleY();
 
-          //   // update width and height
-          //   node.width(node.width() * scaleX);
-          //   node.height(node.height() * scaleY);
-          //   node.scaleX(1);
-          //   node.scaleY(1);
+          // update width and height
+          // node.width(node.width() * scaleX);
+          // node.height(node.height() * scaleY);
 
-          //   // update rotation
-          //   const rotation = node.rotation();
-          //   setcardImages((prevImages: any) =>
-          //     prevImages.map((img: any) =>
-          //       img.id === id ? { ...img, rotation: rotation } : img
-          //     )
-          //   );
+          // update rotation
+          const rotation = node.rotation();
+          handleShapeItemChange("arrow", "rotation", id, rotation);
+          handleShapeItemChange("arrow", "scaleX", id, scaleX);
+          handleShapeItemChange("arrow", "scaleY", id, scaleY);
         }}
       />
       {isSelected && (

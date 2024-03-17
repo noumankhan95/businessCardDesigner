@@ -4,6 +4,11 @@ interface TextBox {
   textAlign: "left" | "center" | "right";
   fontSize: number;
   fill: string;
+  x: number;
+  y: number;
+  scaleX: number;
+  scaleY: number;
+  rotation: number;
 }
 
 interface CardImage {
@@ -11,9 +16,11 @@ interface CardImage {
   height: number;
   source: CanvasImageSource;
   id: number;
-  x?: number;
-  y?: number;
-  rotation?: number;
+  x: number;
+  y: number;
+  scaleX: number;
+  scaleY: number;
+  rotation: number;
 }
 interface BusinessCardProps {
   width: number;
@@ -41,6 +48,8 @@ interface canvasProps extends BusinessCardProps {
   cardIcons: IconItem[];
   setcardIcons: Dispatch<SetStateAction<IconItem[]>>;
   canvasPadding: number;
+  backgroundColor: string;
+  setBackgroundColor: Dispatch<SetStateAction<string>>;
 }
 type CircleItem = {
   width: string;
@@ -48,6 +57,11 @@ type CircleItem = {
   id: number;
   fill: string;
   stroke: string;
+  x: number;
+  y: number;
+  scaleX: number;
+  scaleY: number;
+  rotation: number;
 };
 
 type StarItem = {
@@ -56,6 +70,11 @@ type StarItem = {
   id: number;
   fill: string;
   stroke: string;
+  x: number;
+  y: number;
+  scaleX: number;
+  scaleY: number;
+  rotation: number;
 };
 
 type ArrowItem = {
@@ -64,6 +83,11 @@ type ArrowItem = {
   id: number;
   fill: string;
   stroke: string;
+  x: number;
+  y: number;
+  scaleX: number;
+  scaleY: number;
+  rotation: number;
 };
 
 type SquareItem = {
@@ -72,6 +96,11 @@ type SquareItem = {
   id: number;
   fill: string;
   stroke: string;
+  x: number;
+  y: number;
+  scaleX: number;
+  scaleY: number;
+  rotation: number;
 };
 type TriangleItem = {
   width: string;
@@ -79,6 +108,11 @@ type TriangleItem = {
   id: number;
   fill: string;
   stroke: string;
+  x: number;
+  y: number;
+  scaleX: number;
+  scaleY: number;
+  rotation: number;
 };
 
 type PolygonItem = {
@@ -87,6 +121,11 @@ type PolygonItem = {
   id: number;
   fill: string;
   stroke: string;
+  x: number;
+  y: number;
+  scaleX: number;
+  scaleY: number;
+  rotation: number;
 };
 
 type IconItem = {
@@ -94,4 +133,9 @@ type IconItem = {
   color: string;
   id: number;
   stroke: string;
+  x: number;
+  y: number;
+  scaleX: number;
+  scaleY: number;
+  rotation: number;
 };

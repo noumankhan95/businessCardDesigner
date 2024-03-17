@@ -8,6 +8,7 @@ function TextImageItem({
   width,
   isSelected,
   onSelect,
+  handleCardPosition,
 }: {
   textbox: any;
   canvasPadding: number;
@@ -15,6 +16,11 @@ function TextImageItem({
   height: number;
   handleTextAlignmentChange: any;
   isSelected: boolean;
+  handleCardPosition: (
+    id: number,
+    property: string,
+    value: string | number
+  ) => void;
 
   onSelect: () => void;
 }) {
@@ -37,13 +43,12 @@ function TextImageItem({
         onTap={onSelect}
         key={textbox.id}
         x={
-          textbox.textAlign === "left"
-            ? canvasPadding // Align left
-            : textbox.textAlign === "center"
-            ? width / 2 // Align center
-            : width - canvasPadding * 4 // Align right
+          textbox.x // Align right
         }
-        y={canvasPadding}
+        y={textbox.y}
+        scaleX={textbox.scaleX}
+        scaleY={textbox.scaleY}
+        rotation={textbox.rotation}
         text={textbox.text}
         align={textbox.textAlign}
         fontSize={textbox.fontSize}
@@ -51,9 +56,6 @@ function TextImageItem({
         draggable
         ref={shapeRef}
         wrap="word"
-        onTransformEnd={(e) => {
-          console.log("transform end", e);
-        }}
         onDragEnd={(e) => {
           if (e.target.x() >= width - canvasPadding) {
             console.log("true");
@@ -83,7 +85,34 @@ function TextImageItem({
             e.currentTarget.y(newX);
             handleTextAlignmentChange(textbox.id, "center");
             e.target?.getLayer()?.batchDraw();
+          } else {
+            handleCardPosition(textbox.id, "x", e.target.x());
+            handleCardPosition(textbox.id, "y", e.target.y());
           }
+        }}
+        onTransformEnd={(e) => {
+          console.log("transform");
+          const node = e.currentTarget;
+          const scaleX = node.scaleX();
+          const scaleY = node.scaleY();
+
+          // update width and height
+          // node.width(node.width() * scaleX);
+          // node.height(node.height() * scaleY);
+          // node.scaleX(1);
+          // node.scaleY(1);
+          const rotation = node.rotation();
+
+          // update rotation
+          handleCardPosition(textbox.id, "scaleX", scaleX);
+          handleCardPosition(textbox.id, "scaleY", scaleY);
+          handleCardPosition(textbox.id, "rotation", rotation);
+
+          // setcardImages((prevImages: any) =>
+          //   prevImages.map((img: any) =>
+          //     img.id === id ? { ...img, rotation: rotation } : img
+          //   )
+          // );
         }}
       />
 

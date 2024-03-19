@@ -18,17 +18,37 @@ import {
   Star,
   RegularPolygon,
 } from "react-konva";
-import { Button, TextField } from "@mui/material";
+import {
+  Box,
+  Button,
+  Select,
+  TextField,
+  Paper,
+  InputAdornment,
+  Container,
+  Typography,
+  MenuItem,
+} from "@mui/material";
+import { BsFonts } from "react-icons/bs";
+import { IoMdDownload } from "react-icons/io";
+import { CgShapeHexagon } from "react-icons/cg";
+import { FaRegImage } from "react-icons/fa";
+import { RiFontSize2 } from "react-icons/ri";
+import { IoTrashBinOutline } from "react-icons/io5";
+import { FaAlignJustify } from "react-icons/fa6";
+import { MdLayers } from "react-icons/md";
 import CardImageItem from "./CardImageItem";
 import TextImageItem from "./TextImageItem";
 import CircleComponent from "./CircleComponent";
 import StarComponent from "./StarComponent";
 import ArrowComponent from "./ArrowShapeComponent";
+import { IoShapesOutline } from "react-icons/io5";
 import SquareComponent from "./SquareShapeComponent";
 import TriangleComponent from "./TriangleShapeComponent";
 import PolygonShapeComponent from "./PolygonShapeComponent";
 import ListIcons from "./ListIconsComponent";
 import IconComponent from "./IconComponent";
+import { IoIosAdd } from "react-icons/io";
 const padding = 6; // Padding value
 const borderPadding = 10;
 const Canvas: React.FC<canvasProps> = ({
@@ -112,6 +132,18 @@ const Canvas: React.FC<canvasProps> = ({
   const handleBackgroundColorChange = (color: string) => {
     setBackgroundColor(color);
   };
+  const [selectedTexts, setselectedTexts] = useState<TextBox[]>(() =>
+    selectedId.textbox
+      ? textboxes.filter((i) => i.id === selectedId.textbox)
+      : textboxes
+  );
+  useEffect(() => {
+    setselectedTexts(
+      selectedId.textbox
+        ? textboxes.filter((i) => i.id === selectedId.textbox)
+        : textboxes
+    );
+  }, [selectedId.textbox, textboxes]);
   const handleShapeAddition = (name: string) => {
     if (name === "Circle") {
       setcircles((p: CircleItem[]) => [
@@ -604,6 +636,68 @@ const Canvas: React.FC<canvasProps> = ({
             </Group>
           </Layer>
         </Stage>
+        <div className="flex flex-col justify-start space-y-3 items-center px-5">
+          <Button
+            className="p-4 bg-blue-600 text-white rounded-md"
+            onClick={(e) => {
+              seteditType("text");
+            }}
+            sx={{ padding: "20px" }}
+            variant="outlined"
+            color="secondary"
+            startIcon={<RiFontSize2 />}
+          >
+            Text
+          </Button>
+          <Button
+            className="p-4 bg-blue-600 text-white rounded-md"
+            onClick={(e) => {
+              seteditType("image");
+            }}
+            variant="outlined"
+            color="secondary"
+            sx={{ padding: "20px" }}
+            startIcon={<FaRegImage />}
+          >
+            Image
+          </Button>
+
+          <Button
+            className="p-20"
+            onClick={(e) => {
+              seteditType("shape");
+            }}
+            variant="outlined"
+            color="secondary"
+            sx={{ padding: "20px" }}
+            startIcon={<IoShapesOutline />}
+          >
+            Shape
+          </Button>
+          <Button
+            className="p-4 bg-blue-600 text-white rounded-md"
+            onClick={(e) => {
+              seteditType("icon");
+            }}
+            variant="outlined"
+            sx={{ padding: "20px" }}
+            color="secondary"
+            startIcon={<CgShapeHexagon />}
+          >
+            Icons
+          </Button>
+          <Button
+            onClick={() => {
+              setisdownloading(true);
+              handleDownload();
+            }}
+            variant="contained"
+            color="secondary"
+            startIcon={<IoMdDownload />}
+          >
+            Download
+          </Button>
+        </div>
         {/* {
           <div className="flex flex-col gap-4">
             <Button
@@ -717,49 +811,7 @@ const Canvas: React.FC<canvasProps> = ({
           };
         }}
       />
-      <div className="w-full flex justify-between items-center">
-        <Button
-          className="p-4 bg-blue-600 text-white rounded-md"
-          onClick={(e) => {
-            seteditType("text");
-          }}
-          variant="contained"
-          color="secondary"
-        >
-          Edit Text
-        </Button>
-        <Button
-          className="p-4 bg-blue-600 text-white rounded-md"
-          onClick={(e) => {
-            seteditType("image");
-          }}
-          variant="contained"
-          color="secondary"
-        >
-          Edit Image
-        </Button>
 
-        <Button
-          className="p-4 bg-blue-600 text-white rounded-md"
-          onClick={(e) => {
-            seteditType("shape");
-          }}
-          variant="contained"
-          color="secondary"
-        >
-          Edit Shape
-        </Button>
-        <Button
-          className="p-4 bg-blue-600 text-white rounded-md"
-          onClick={(e) => {
-            seteditType("icon");
-          }}
-          variant="contained"
-          color="secondary"
-        >
-          Edit Icons
-        </Button>
-      </div>
       <div className="w-full flex items-center gap-5 justify-start">
         <TextField
           type="color"
@@ -797,8 +849,110 @@ const Canvas: React.FC<canvasProps> = ({
           />
         </Button>
       </div>
+      <Typography variant="h4">Customize</Typography>
       {editType === "text" && (
         <>
+          {selectedTexts?.map((textbox) => (
+            <Box
+              className="flex flex-row justify-around items-end space-x-2"
+              key={textbox.id}
+            >
+              <Box className="space-x-2">
+                <TextField
+                  type="text"
+                  value={textbox.text}
+                  onChange={(e) => handleTextChange(textbox.id, e.target.value)}
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <BsFonts />
+                      </InputAdornment>
+                    ),
+                  }}
+                />
+              </Box>
+              <Box
+                display={"flex"}
+                flexDirection={"row"}
+                alignItems="center"
+                className="space-x-3"
+              >
+                <FaAlignJustify />
+                <Select
+                  value={textbox.textAlign}
+                  onChange={(e) =>
+                    handleTextAlignmentChange(
+                      textbox.id,
+                      e.target.value as "left" | "center" | "right"
+                    )
+                  }
+                >
+                  <MenuItem value="left">Left</MenuItem>
+                  <MenuItem value="center">Center</MenuItem>
+                  <MenuItem value="right">Right</MenuItem>
+                </Select>
+              </Box>
+              <Box>
+                <h1>Change Font Size</h1>
+                <TextField
+                  type="number"
+                  placeholder="Change Text Size"
+                  defaultValue={textbox.fontSize}
+                  onChange={(e) => {
+                    handleFontChange(textbox.id, parseInt(e.target.value));
+                  }}
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <RiFontSize2 />
+                      </InputAdornment>
+                    ),
+                  }}
+                />
+              </Box>
+              <Box>
+                <h1>Change Font Color</h1>
+                <TextField
+                  type="color"
+                  className="w-24"
+                  placeholder="Change Text Color"
+                  defaultValue={textbox.fill}
+                  onChange={(e) => {
+                    handleColorChange(textbox.id, e.target.value);
+                  }}
+                />
+              </Box>
+              <Button
+                className="p-4 bg-blue-600 text-white  rounded-md"
+                onClick={(e) => {
+                  setbringToTop((p) => ({
+                    ...p,
+                    textbox: { count: p.textbox.count + 1, id: textbox.id },
+                  }));
+                }}
+                variant="contained"
+                color="secondary"
+                startIcon={<MdLayers />}
+              >
+                Bring To Top
+              </Button>
+              <Box>
+                <Button
+                  className="text-red-700 cursor-pointer"
+                  onClick={(e) => {
+                    setTextboxes((p: any) =>
+                      p.filter((i: any) => i.id !== textbox.id)
+                    );
+                  }}
+                  variant="outlined"
+                  startIcon={<IoTrashBinOutline />}
+                  color="error"
+                >
+                  Delete
+                </Button>
+              </Box>
+            </Box>
+          ))}
           <Button
             className="p-4 bg-blue-600 text-white rounded-md"
             onClick={(e) => {
@@ -820,101 +974,17 @@ const Canvas: React.FC<canvasProps> = ({
             }}
             variant="contained"
             color="secondary"
+            startIcon={<IoIosAdd />}
           >
             Add TextBox
           </Button>
-          {textboxes.map((textbox) => (
-            <div
-              className="flex flex-row justify-around items-center"
-              key={textbox.id}
-            >
-              <div>
-                <TextField
-                  type="text"
-                  value={textbox.text}
-                  onChange={(e) => handleTextChange(textbox.id, e.target.value)}
-                />
-                <select
-                  value={textbox.textAlign}
-                  onChange={(e) =>
-                    handleTextAlignmentChange(
-                      textbox.id,
-                      e.target.value as "left" | "center" | "right"
-                    )
-                  }
-                >
-                  <option value="left">Left</option>
-                  <option value="center">Center</option>
-                  <option value="right">Right</option>
-                </select>
-              </div>
-              <div>
-                <h1>Change Font Size</h1>
-                <TextField
-                  type="number"
-                  placeholder="Change Text Size"
-                  defaultValue={textbox.fontSize}
-                  onChange={(e) => {
-                    handleFontChange(textbox.id, parseInt(e.target.value));
-                  }}
-                />
-              </div>
-              <div>
-                <h1>Change Font Color</h1>
-
-                <TextField
-                  type="color"
-                  placeholder="Change Text Color"
-                  defaultValue={textbox.fill}
-                  onChange={(e) => {
-                    handleColorChange(textbox.id, e.target.value);
-                  }}
-                />
-              </div>
-              <Button
-                className="p-4 bg-blue-600 text-white rounded-md"
-                onClick={(e) => {
-                  setbringToTop((p) => ({
-                    ...p,
-                    textbox: { count: p.textbox.count + 1, id: textbox.id },
-                  }));
-                }}
-                variant="contained"
-                color="secondary"
-              >
-                Bring To Top
-              </Button>
-              <div>
-                <h1
-                  className="text-red-700 cursor-pointer"
-                  onClick={(e) => {
-                    setTextboxes((p: any) =>
-                      p.filter((i: any) => i.id !== textbox.id)
-                    );
-                  }}
-                >
-                  Delete
-                </h1>
-              </div>
-            </div>
-          ))}
         </>
       )}
       {editType === "image" && (
         <>
-          <Button
-            className="p-4 bg-blue-600 text-white rounded-md"
-            onClick={(e) => {
-              cardImageRef.current?.click();
-            }}
-            variant="contained"
-            color="secondary"
-          >
-            Add Image
-          </Button>
           {cardImages?.map((cardimage) => (
             <div
-              className="flex flex-row justify-around items-center"
+              className="flex flex-row justify-around items-end"
               key={cardimage.id}
             >
               <div>
@@ -926,6 +996,13 @@ const Canvas: React.FC<canvasProps> = ({
                   onChange={(e) => {
                     handleCardChange(cardimage.id, "width", e.target.value);
                   }}
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <RiFontSize2 />
+                      </InputAdornment>
+                    ),
+                  }}
                 />
               </div>
               <div>
@@ -936,6 +1013,13 @@ const Canvas: React.FC<canvasProps> = ({
                   defaultValue={cardimage.height}
                   onChange={(e) => {
                     handleCardChange(cardimage.id, "height", e.target.value);
+                  }}
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <RiFontSize2 />
+                      </InputAdornment>
+                    ),
                   }}
                 />
               </div>
@@ -949,37 +1033,42 @@ const Canvas: React.FC<canvasProps> = ({
                 }}
                 variant="contained"
                 color="secondary"
+                startIcon={<MdLayers />}
               >
                 Bring To Top
               </Button>
               <div>
-                <h1
+                <Button
                   className="text-red-700 cursor-pointer"
                   onClick={(e) => {
                     setcardImages((p: any) =>
                       p.filter((i: any) => i.id !== cardimage.id)
                     );
                   }}
+                  startIcon={<IoTrashBinOutline />}
+                  color="error"
+                  variant="outlined"
                 >
                   Delete
-                </h1>
+                </Button>
               </div>
             </div>
           ))}
+          <Button
+            className="p-4 bg-blue-600 text-white rounded-md"
+            onClick={(e) => {
+              cardImageRef.current?.click();
+            }}
+            variant="contained"
+            color="secondary"
+            startIcon={<IoIosAdd />}
+          >
+            Add Image
+          </Button>
         </>
       )}
       {editType === "shape" && (
         <>
-          <Button
-            className="p-4 bg-blue-600 text-white rounded-md"
-            onClick={(e) => {
-              seteditType("Addshape");
-            }}
-            variant="contained"
-            color="secondary"
-          >
-            Add Shape
-          </Button>
           {stars?.map((star) => (
             <div
               className="flex flex-row justify-around items-center"
@@ -989,6 +1078,7 @@ const Canvas: React.FC<canvasProps> = ({
                 <h1>Change Color</h1>
                 <TextField
                   type="color"
+                  className="w-24"
                   placeholder="Change Color Size"
                   defaultValue={star.fill}
                   onChange={(e) => {
@@ -1005,6 +1095,7 @@ const Canvas: React.FC<canvasProps> = ({
                 <h1>Change Stroke Color</h1>
                 <TextField
                   type="color"
+                  className="w-24"
                   placeholder="Change Stroke Color Size"
                   defaultValue={star.fill}
                   onChange={(e) => {
@@ -1027,20 +1118,24 @@ const Canvas: React.FC<canvasProps> = ({
                 }}
                 variant="contained"
                 color="secondary"
+                startIcon={<MdLayers />}
               >
                 Bring To Top
               </Button>
               <div>
-                <h1
+                <Button
                   className="text-red-700 cursor-pointer"
                   onClick={(e) => {
                     setstars((p: any) =>
                       p.filter((i: any) => i.id !== star.id)
                     );
                   }}
+                  variant="outlined"
+                  color="error"
+                  startIcon={<IoTrashBinOutline />}
                 >
                   Delete
-                </h1>
+                </Button>
               </div>
             </div>
           ))}
@@ -1053,6 +1148,7 @@ const Canvas: React.FC<canvasProps> = ({
                 <h1>Change Stroke Color</h1>
                 <TextField
                   type="color"
+                  className="w-24"
                   placeholder="Change Color Size"
                   defaultValue={square.stroke}
                   onChange={(e) => {
@@ -1069,6 +1165,7 @@ const Canvas: React.FC<canvasProps> = ({
                 <h1>Change Color</h1>
                 <TextField
                   type="color"
+                  className="w-24"
                   placeholder="Change Color Size"
                   defaultValue={square.fill}
                   onChange={(e) => {
@@ -1091,11 +1188,15 @@ const Canvas: React.FC<canvasProps> = ({
                 }}
                 variant="contained"
                 color="secondary"
+                startIcon={<MdLayers />}
               >
                 Bring To Top
               </Button>
               <div>
-                <h1
+                <Button
+                  variant="outlined"
+                  color="error"
+                  startIcon={<IoTrashBinOutline />}
                   className="text-red-700 cursor-pointer"
                   onClick={(e) => {
                     setsquare((p: any) =>
@@ -1104,7 +1205,7 @@ const Canvas: React.FC<canvasProps> = ({
                   }}
                 >
                   Delete
-                </h1>
+                </Button>
               </div>
             </div>
           ))}
@@ -1117,6 +1218,7 @@ const Canvas: React.FC<canvasProps> = ({
                 <h1>Change Stroke</h1>
                 <TextField
                   type="color"
+                  className="w-24"
                   placeholder="Change Stroke"
                   defaultValue={triangle.stroke}
                   onChange={(e) => {
@@ -1133,6 +1235,7 @@ const Canvas: React.FC<canvasProps> = ({
                 <h1>Change Color</h1>
                 <TextField
                   type="color"
+                  className="w-24"
                   placeholder="Change Color"
                   defaultValue={triangle.fill}
                   onChange={(e) => {
@@ -1158,20 +1261,24 @@ const Canvas: React.FC<canvasProps> = ({
                 }}
                 variant="contained"
                 color="secondary"
+                startIcon={<MdLayers />}
               >
                 Bring To Top
               </Button>
               <div>
-                <h1
+                <Button
                   className="text-red-700 cursor-pointer"
                   onClick={(e) => {
                     settriangle((p: any) =>
                       p.filter((i: any) => i.id !== triangle.id)
                     );
                   }}
+                  variant="outlined"
+                  color="error"
+                  startIcon={<IoTrashBinOutline />}
                 >
                   Delete
-                </h1>
+                </Button>
               </div>
             </div>
           ))}
@@ -1184,6 +1291,7 @@ const Canvas: React.FC<canvasProps> = ({
                 <h1>Change Stroke Color</h1>
                 <TextField
                   type="color"
+                  className="w-24"
                   placeholder="Change Stroke Color"
                   defaultValue={circle.stroke}
                   onChange={(e) => {
@@ -1200,6 +1308,7 @@ const Canvas: React.FC<canvasProps> = ({
                 <h1>Change Color</h1>
                 <TextField
                   type="color"
+                  className="w-24"
                   placeholder="Change Color"
                   defaultValue={circle.fill}
                   onChange={(e) => {
@@ -1222,20 +1331,24 @@ const Canvas: React.FC<canvasProps> = ({
                 }}
                 variant="contained"
                 color="secondary"
+                startIcon={<MdLayers />}
               >
                 Bring To Top
               </Button>
               <div>
-                <h1
+                <Button
                   className="text-red-700 cursor-pointer"
                   onClick={(e) => {
                     setcircles((p: any) =>
                       p.filter((i: any) => i.id !== circle.id)
                     );
                   }}
+                  variant="outlined"
+                  color="error"
+                  startIcon={<IoTrashBinOutline />}
                 >
                   Delete
-                </h1>
+                </Button>
               </div>
             </div>
           ))}
@@ -1248,6 +1361,7 @@ const Canvas: React.FC<canvasProps> = ({
                 <h1>Change Stroke Color</h1>
                 <TextField
                   type="color"
+                  className="w-24"
                   placeholder="Change Stroke Color"
                   defaultValue={arrow.stroke}
                   onChange={(e) => {
@@ -1264,6 +1378,7 @@ const Canvas: React.FC<canvasProps> = ({
                 <h1>Change Color</h1>
                 <TextField
                   type="color"
+                  className="w-24"
                   placeholder="Change Color"
                   defaultValue={arrow.fill}
                   onChange={(e) => {
@@ -1286,20 +1401,24 @@ const Canvas: React.FC<canvasProps> = ({
                 }}
                 variant="contained"
                 color="secondary"
+                startIcon={<MdLayers />}
               >
                 Bring To Top
               </Button>
               <div>
-                <h1
+                <Button
                   className="text-red-700 cursor-pointer"
                   onClick={(e) => {
                     setarrow((p: any) =>
                       p.filter((i: any) => i.id !== arrow.id)
                     );
                   }}
+                  variant="outlined"
+                  color="error"
+                  startIcon={<IoTrashBinOutline />}
                 >
                   Delete
-                </h1>
+                </Button>
               </div>
             </div>
           ))}
@@ -1312,6 +1431,7 @@ const Canvas: React.FC<canvasProps> = ({
                 <h1>Change Stroke Color</h1>
                 <TextField
                   type="color"
+                  className="w-24"
                   placeholder="Change Stroke"
                   defaultValue={polygon.stroke}
                   onChange={(e) => {
@@ -1334,6 +1454,7 @@ const Canvas: React.FC<canvasProps> = ({
                 }}
                 variant="contained"
                 color="secondary"
+                startIcon={<MdLayers />}
               >
                 Bring To Top
               </Button>
@@ -1341,6 +1462,7 @@ const Canvas: React.FC<canvasProps> = ({
                 <h1>Change Color</h1>
                 <TextField
                   type="color"
+                  className="w-24"
                   placeholder="Change Color Size"
                   defaultValue={polygon.fill}
                   onChange={(e) => {
@@ -1354,33 +1476,37 @@ const Canvas: React.FC<canvasProps> = ({
                 />
               </div>
               <div>
-                <h1
+                <Button
                   className="text-red-700 cursor-pointer"
                   onClick={(e) => {
                     setpolygon((p: any) =>
                       p.filter((i: any) => i.id !== polygon.id)
                     );
                   }}
+                  variant="outlined"
+                  color="error"
+                  startIcon={<IoTrashBinOutline />}
                 >
                   Delete
-                </h1>
+                </Button>
               </div>
             </div>
           ))}
+          <Button
+            className="p-4 bg-blue-600 text-white rounded-md"
+            onClick={(e) => {
+              seteditType("Addshape");
+            }}
+            variant="contained"
+            color="secondary"
+            startIcon={<IoIosAdd />}
+          >
+            Add Shape
+          </Button>
         </>
       )}
       {editType === "icon" && (
         <>
-          <Button
-            className="p-4 bg-blue-600 text-white rounded-md"
-            onClick={(e) => {
-              seteditType("Addicon");
-            }}
-            variant="contained"
-            color="secondary"
-          >
-            Add Icon
-          </Button>
           {cardIcons?.map((c) => (
             <div
               className="flex flex-row justify-around items-center"
@@ -1390,6 +1516,7 @@ const Canvas: React.FC<canvasProps> = ({
                 <h1>Change Color</h1>
                 <TextField
                   type="color"
+                  className="w-24"
                   placeholder="Change Color Size"
                   defaultValue={c.color}
                   onChange={(e) => {
@@ -1408,6 +1535,7 @@ const Canvas: React.FC<canvasProps> = ({
                 }}
                 variant="contained"
                 color="secondary"
+                startIcon={<MdLayers />}
               >
                 Bring To Top
               </Button>
@@ -1423,19 +1551,33 @@ const Canvas: React.FC<canvasProps> = ({
                 />
               </div>
               <div>
-                <h1
+                <Button
                   className="text-red-700 cursor-pointer"
                   onClick={(e) => {
                     setcardIcons((p: any) =>
                       p.filter((i: any) => i.id !== c.id)
                     );
                   }}
+                  variant="outlined"
+                  color="error"
+                  startIcon={<IoTrashBinOutline />}
                 >
                   Delete
-                </h1>
+                </Button>
               </div>
             </div>
           ))}
+          <Button
+            className="p-4 bg-blue-600 text-white rounded-md"
+            onClick={(e) => {
+              seteditType("Addicon");
+            }}
+            variant="contained"
+            color="secondary"
+            startIcon={<IoIosAdd />}
+          >
+            Add Icon
+          </Button>
         </>
       )}
       {editType === "Addshape" && (
@@ -1444,17 +1586,6 @@ const Canvas: React.FC<canvasProps> = ({
       {editType === "Addicon" && (
         <ListIcons handleShapeAddition={handleIconAddition} />
       )}
-      <br />
-      <Button
-        onClick={() => {
-          setisdownloading(true);
-          handleDownload();
-        }}
-        variant="contained"
-        color="secondary"
-      >
-        Download Canvas
-      </Button>
     </section>
   );
 };

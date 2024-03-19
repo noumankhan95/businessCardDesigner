@@ -19,7 +19,7 @@ const BusinessCard: React.FC<BusinessCardProps> = ({
   const [triangle, settriangle] = useState<TriangleItem[]>([]);
   const [polygon, setpolygon] = useState<PolygonItem[]>([]);
   const [cardIcons, setcardIcons] = useState<IconItem[]>([]);
-  const [backShowFront, setbackShowFront] = useState<boolean>(false);
+  // const [backShowFront, setbackShowFront] = useState<boolean>(false);
   const [backTextboxes, setbackTextboxes] = useState<TextBox[]>([]);
   const [backCardImages, setbackCardImages] = useState<CardImage[]>([]);
   const [backCircles, setbackCircles] = useState<CircleItem[]>([]);
@@ -37,17 +37,17 @@ const BusinessCard: React.FC<BusinessCardProps> = ({
 
   return (
     <div className="space-y-5">
-      <div className="flex flex-row justify-around items-center">
+      <div className="flex flex-row justify-start items-center">
         <Button
           onClick={() => {
-            setshowFront(true);
+            setshowFront((p) => !p);
           }}
           variant="contained"
           color="secondary"
         >
-          Show Front
+          Show {showFront ? "Front" : "Back"}
         </Button>
-        <Button
+        {/* <Button
           onClick={() => {
             setshowFront(false);
           }}
@@ -55,7 +55,7 @@ const BusinessCard: React.FC<BusinessCardProps> = ({
           color="secondary"
         >
           Show Back
-        </Button>
+        </Button> */}
       </div>
 
       {showFront && (

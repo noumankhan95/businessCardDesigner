@@ -502,22 +502,19 @@ const Canvas: React.FC<canvasProps> = ({
     setcardIcons((p: IconItem[]) => [
       ...p,
       {
+        id: (p.length ?? 0) + 1,
         name,
         color: "black",
         stroke: "black",
         x: width / 2,
         y: height / 2,
-        scaleX: 0.2,
-        scaleY: 0.1,
+        scaleX: 0.09,
+        scaleY: 0.09,
         rotation: 0,
-        id: (p.length ?? 0) + 1,
       },
     ]);
   }, []);
-  console.log(
-    "|item",
-    Object.entries(selectedId).find(([i, a]) => a != 0)?.[0]
-  );
+  console.log(cardIcons, "Cardicons");
   return (
     <section className="space-y-4 w-full">
       <div className="flex flex-row justify-center items-start">
@@ -555,6 +552,7 @@ const Canvas: React.FC<canvasProps> = ({
                     key={textbox.id}
                     onSelect={() => {
                       selectShape((p) => ({ ...p, textbox: textbox.id }));
+                      seteditType("text");
                     }}
                     isSelected={selectedId.textbox == textbox.id}
                     handleCardPosition={handleCardPositionChange}
@@ -575,6 +573,7 @@ const Canvas: React.FC<canvasProps> = ({
                       setcardImages={setcardImages}
                       onSelect={() => {
                         selectShape((p) => ({ ...p, image: i.id }));
+                        seteditType("image");
                       }}
                       isSelected={selectedId.image == i.id}
                       bringToTop={bringToTop.image.id === i.id}
@@ -593,6 +592,8 @@ const Canvas: React.FC<canvasProps> = ({
                       handleShapeItemChange={handleShapeItemChange}
                       onSelect={() => {
                         selectShape((p) => ({ ...p, circle: c.id }));
+                        setshapeIdSelected(true);
+                        seteditType("shape");
                       }}
                       isSelected={selectedId.circle == c.id}
                       bringToTop={c.id === bringToTop.circle.id}
@@ -613,6 +614,7 @@ const Canvas: React.FC<canvasProps> = ({
                         selectShape((p) => ({ ...p, star: c.id }));
 
                         setshapeIdSelected(true);
+                        seteditType("shape");
                       }}
                       isSelected={selectedId.star == c.id}
                       bringToTop={c.id === bringToTop.star.id}
@@ -633,6 +635,7 @@ const Canvas: React.FC<canvasProps> = ({
                         selectShape((p) => ({ ...p, arrow: c.id }));
 
                         setshapeIdSelected(true);
+                        seteditType("shape");
                       }}
                       isSelected={selectedId.arrow == c.id}
                       bringToTop={c.id === bringToTop.arrow.id}
@@ -653,6 +656,7 @@ const Canvas: React.FC<canvasProps> = ({
                         selectShape((p) => ({ ...p, square: c.id }));
 
                         setshapeIdSelected(true);
+                        seteditType("shape");
                       }}
                       isSelected={selectedId.square == c.id}
                       bringToTop={c.id === bringToTop.square.id}
@@ -672,6 +676,7 @@ const Canvas: React.FC<canvasProps> = ({
                       onSelect={() => {
                         selectShape((p) => ({ ...p, triangle: c.id }));
                         setshapeIdSelected(true);
+                        seteditType("shape");
                       }}
                       isSelected={selectedId.triangle == c.id}
                       bringToTop={c.id === bringToTop.triangle.id}
@@ -691,6 +696,7 @@ const Canvas: React.FC<canvasProps> = ({
                       onSelect={() => {
                         selectShape((p) => ({ ...p, polygon: c.id }));
                         setshapeIdSelected(true);
+                        seteditType("shape");
                       }}
                       isSelected={selectedId.polygon == c.id}
                       bringToTop={c.id === bringToTop.polygon.id}
@@ -702,13 +708,14 @@ const Canvas: React.FC<canvasProps> = ({
                 cardIcons.map((c) => (
                   <IconComponent
                     iconName={c.name}
-                    key={c.name}
+                    key={c.id}
                     {...c}
                     color={c.color}
                     Theight={height}
                     Twidth={width}
                     onSelect={() => {
                       selectShape((p) => ({ ...p, icon: c.id }));
+                      seteditType("icon");
                     }}
                     isSelected={selectedId.icon == c.id}
                     stroke={c.stroke}

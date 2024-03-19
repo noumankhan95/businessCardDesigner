@@ -19,6 +19,8 @@ function PolygonComponent({
   scaleY,
   x,
   y,
+  bringToTop,
+  ToplayerCount,
 }: {
   isSelected: boolean;
   width: string;
@@ -41,6 +43,8 @@ function PolygonComponent({
   scaleX: number;
   scaleY: number;
   rotation: number;
+  bringToTop: boolean;
+  ToplayerCount: number;
 }) {
   // const [selectedShapeId, setSelectedShapeId] = useState<number | null>(null);
   const shapeRef = useRef<any>();
@@ -96,9 +100,15 @@ function PolygonComponent({
       handleShapeItemChange("polygon", "y", id, e.currentTarget.y());
     }
   };
+  useEffect(() => {
+    if (bringToTop) {
+      console.log("top polygon", shapeRef.current.moveUp());
+      shapeRef.current.moveUp();
+    }
+  }, [bringToTop, ToplayerCount]);
   console.log("selected", height, "w ", typeof width);
   return (
-    <Group ref={groupRef}>
+    <>
       <Line
         ref={shapeRef}
         points={[0, -50, 47, -16, 29, 40, -29, 40, -47, -16]}
@@ -136,7 +146,7 @@ function PolygonComponent({
         }}
       />
       {isSelected && <Transformer ref={transformerRef} rotateEnabled={true} />}
-    </Group>
+    </>
   );
 }
 

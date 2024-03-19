@@ -18,7 +18,7 @@ import {
   Star,
   RegularPolygon,
 } from "react-konva";
-
+import { Button, TextField } from "@mui/material";
 import CardImageItem from "./CardImageItem";
 import TextImageItem from "./TextImageItem";
 import CircleComponent from "./CircleComponent";
@@ -55,8 +55,10 @@ const Canvas: React.FC<canvasProps> = ({
   triangle,
   backgroundColor,
   setBackgroundColor,
+  backgroundImage,
+  setBackgroundImage,
 }) => {
-  const [backgroundImage, setBackgroundImage] = useState<any>(null);
+  // const [backgroundImage, setBackgroundImage] = useState<any>(null);
   const [isdownloading, setisdownloading] = useState<boolean>();
   const [forceRender, setForceRender] = useState(false);
   const canvasRef = useRef<any>(null);
@@ -85,6 +87,27 @@ const Canvas: React.FC<canvasProps> = ({
     image: 0,
     textbox: 0,
     icon: 0,
+  });
+  const [bringToTop, setbringToTop] = React.useState<{
+    square: { id: number; count: number };
+    circle: { id: number; count: number };
+    triangle: { id: number; count: number };
+    polygon: { id: number; count: number };
+    star: { id: number; count: number };
+    arrow: { id: number; count: number };
+    textbox: { id: number; count: number };
+    image: { id: number; count: number };
+    icon: { id: number; count: number };
+  }>({
+    circle: { id: 0, count: 0 },
+    polygon: { id: 0, count: 0 },
+    square: { id: 0, count: 0 },
+    star: { id: 0, count: 0 },
+    triangle: { id: 0, count: 0 },
+    arrow: { id: 0, count: 0 },
+    image: { id: 0, count: 0 },
+    textbox: { id: 0, count: 0 },
+    icon: { id: 0, count: 0 },
   });
   const handleBackgroundColorChange = (color: string) => {
     setBackgroundColor(color);
@@ -192,7 +215,6 @@ const Canvas: React.FC<canvasProps> = ({
     const img = new window.Image();
     img.src = url;
     img.onload = () => {
-      setBackgroundImage(new window.Image(width, height));
       setBackgroundImage(img);
     };
   };
@@ -329,8 +351,14 @@ const Canvas: React.FC<canvasProps> = ({
     e: KonvaEventObject<MouseEvent> | KonvaEventObject<TouchEvent>
   ) => {
     // deselect when clicked on empty area
+    // const clickedOnEmpty =
+    //   e.target.attrs.name === "background" ||
+    //   e.target.attrs.name === "backgroundImage" ||
+    //   e.target == e.target.getStage();
+    const item = Object.entries(selectedId).find(([shape, id]) => !!id)?.[0];
+    console.log("name", e.target.name());
     const clickedOnEmpty =
-      e.target.attrs.name === "background" || e.target == e.target.getStage();
+      !e.target.name().includes("anchor") && item !== e.target.name();
     if (clickedOnEmpty) {
       selectShape({
         arrow: 0,
@@ -355,14 +383,16 @@ const Canvas: React.FC<canvasProps> = ({
         stroke: "black",
         x: width / 2,
         y: height / 2,
-        scaleX: 1,
-        scaleY: 1,
+        scaleX: 0.2,
+        scaleY: 0.1,
         rotation: 0,
       },
     ]);
   };
+
+  console.log("background Image", backgroundImage);
   return (
-    <section>
+    <section className="space-y-4">
       <div className="flex flex-row justify-start items-start">
         <Stage
           width={width}
@@ -375,12 +405,17 @@ const Canvas: React.FC<canvasProps> = ({
             <Group width={width} height={height}>
               <Rect
                 fill={backgroundColor}
-                width={width - canvasPadding}
-                height={height - canvasPadding}
+                width={width}
+                height={height}
                 name="background"
               />
               {backgroundImage && (
-                <Image width={width} height={height} image={backgroundImage} />
+                <Image
+                  width={width}
+                  height={height}
+                  image={backgroundImage!}
+                  name="backgroundImage"
+                />
               )}
               {textboxes?.map((textbox) => {
                 return (
@@ -396,6 +431,8 @@ const Canvas: React.FC<canvasProps> = ({
                     }}
                     isSelected={selectedId.textbox == textbox.id}
                     handleCardPosition={handleCardPositionChange}
+                    bringToTop={textbox.id === bringToTop.textbox.id}
+                    ToplayerCount={bringToTop.textbox.count}
                   />
                 );
               })}
@@ -413,6 +450,8 @@ const Canvas: React.FC<canvasProps> = ({
                         selectShape((p) => ({ ...p, image: i.id }));
                       }}
                       isSelected={selectedId.image == i.id}
+                      bringToTop={bringToTop.image.id === i.id}
+                      ToplayerCount={bringToTop.image.count}
                     />
                   </React.Fragment>
                 ))}
@@ -429,6 +468,8 @@ const Canvas: React.FC<canvasProps> = ({
                         selectShape((p) => ({ ...p, circle: c.id }));
                       }}
                       isSelected={selectedId.circle == c.id}
+                      bringToTop={c.id === bringToTop.circle.id}
+                      ToplayerCount={bringToTop.circle.count}
                     />
                   </React.Fragment>
                 ))}
@@ -445,6 +486,8 @@ const Canvas: React.FC<canvasProps> = ({
                         selectShape((p) => ({ ...p, star: c.id }));
                       }}
                       isSelected={selectedId.star == c.id}
+                      bringToTop={c.id === bringToTop.star.id}
+                      ToplayerCount={bringToTop.star.count}
                     />
                   </React.Fragment>
                 ))}
@@ -461,6 +504,8 @@ const Canvas: React.FC<canvasProps> = ({
                         selectShape((p) => ({ ...p, arrow: c.id }));
                       }}
                       isSelected={selectedId.arrow == c.id}
+                      bringToTop={c.id === bringToTop.arrow.id}
+                      ToplayerCount={bringToTop.arrow.count}
                     />
                   </React.Fragment>
                 ))}
@@ -477,6 +522,8 @@ const Canvas: React.FC<canvasProps> = ({
                         selectShape((p) => ({ ...p, square: c.id }));
                       }}
                       isSelected={selectedId.square == c.id}
+                      bringToTop={c.id === bringToTop.square.id}
+                      ToplayerCount={bringToTop.square.count}
                     />
                   </React.Fragment>
                 ))}
@@ -493,6 +540,8 @@ const Canvas: React.FC<canvasProps> = ({
                         selectShape((p) => ({ ...p, triangle: c.id }));
                       }}
                       isSelected={selectedId.triangle == c.id}
+                      bringToTop={c.id === bringToTop.triangle.id}
+                      ToplayerCount={bringToTop.triangle.count}
                     />
                   </React.Fragment>
                 ))}
@@ -509,6 +558,8 @@ const Canvas: React.FC<canvasProps> = ({
                         selectShape((p) => ({ ...p, polygon: c.id }));
                       }}
                       isSelected={selectedId.polygon == c.id}
+                      bringToTop={c.id === bringToTop.polygon.id}
+                      ToplayerCount={bringToTop.polygon.count}
                     />
                   </React.Fragment>
                 ))}
@@ -528,6 +579,8 @@ const Canvas: React.FC<canvasProps> = ({
                     stroke={c.stroke}
                     handleIconChange={handleIconChange}
                     canvasPadding={canvasPadding}
+                    bringToTop={c.id === bringToTop.icon.id}
+                    ToplayerCount={bringToTop.icon.count}
                   />
                 ))}
               {backgroundImage && !isdownloading && (
@@ -551,9 +604,9 @@ const Canvas: React.FC<canvasProps> = ({
             </Group>
           </Layer>
         </Stage>
-        {
+        {/* {
           <div className="flex flex-col gap-4">
-            <button
+            <Button
               className="p-4 bg-blue-600 text-white rounded-md"
               onClick={(e) => {
                 setTextboxes((p: any) => [
@@ -572,18 +625,22 @@ const Canvas: React.FC<canvasProps> = ({
                   },
                 ]);
               }}
+              variant="contained"
+              color="secondary"
             >
               Add TextBox
-            </button>
-            <button
+            </Button>
+            <Button
               className="p-4 bg-blue-600 text-white rounded-md"
               onClick={(e) => {
                 cardImageRef.current?.click();
               }}
+              variant="contained"
+              color="secondary"
             >
               Add Image
-            </button>
-            <input
+            </Button>
+            <TextField
               type="file"
               hidden
               ref={cardImageRef}
@@ -610,540 +667,794 @@ const Canvas: React.FC<canvasProps> = ({
                 };
               }}
             />
-            <button
+            <Button
               className="p-4 bg-blue-600 text-white rounded-md"
               onClick={(e) => {
                 seteditType("Addshape");
               }}
+              variant="contained"
+              color="secondary"
             >
               Add Shape
-            </button>
-            <button
+            </Button>
+            <Button
               className="p-4 bg-blue-600 text-white rounded-md"
               onClick={(e) => {
                 seteditType("Addicon");
               }}
+              variant="contained"
+              color="secondary"
             >
               Add Icon
-            </button>
+            </Button>
           </div>
-        }
+        } */}
       </div>
-      <div className="w-full">
-        <button
+      <input
+        type="file"
+        hidden
+        ref={cardImageRef}
+        onChange={(e) => {
+          const img = new window.Image();
+          img.src = URL.createObjectURL(e.target?.files?.[0]!);
+          img.onload = () => {
+            console.log("loaded");
+
+            setcardImages((prevImages: any) => [
+              ...prevImages,
+              {
+                width: 130,
+                height: 190,
+                source: img,
+                id: (cardImages.length ?? 0) + 1,
+                scaleX: 1,
+                scaleY: 1,
+                rotation: 0,
+                x: width / 2,
+                y: height / 2,
+              },
+            ]);
+          };
+        }}
+      />
+      <div className="w-full flex justify-between items-center">
+        <Button
           className="p-4 bg-blue-600 text-white rounded-md"
           onClick={(e) => {
             seteditType("text");
           }}
+          variant="contained"
+          color="secondary"
         >
           Edit Text
-        </button>
-        <button
+        </Button>
+        <Button
           className="p-4 bg-blue-600 text-white rounded-md"
           onClick={(e) => {
             seteditType("image");
           }}
+          variant="contained"
+          color="secondary"
         >
           Edit Image
-        </button>
-        <button
+        </Button>
+
+        <Button
           className="p-4 bg-blue-600 text-white rounded-md"
           onClick={(e) => {
             seteditType("shape");
           }}
+          variant="contained"
+          color="secondary"
         >
           Edit Shape
-        </button>
-        <button
+        </Button>
+        <Button
           className="p-4 bg-blue-600 text-white rounded-md"
           onClick={(e) => {
             seteditType("icon");
           }}
+          variant="contained"
+          color="secondary"
         >
           Edit Icons
-        </button>
+        </Button>
       </div>
-      <div className="w-full">
-        <input
+      <div className="w-full flex items-center gap-5 justify-start">
+        <TextField
           type="color"
           value={backgroundColor}
           onChange={(e) => handleBackgroundColorChange(e.target.value)}
+          InputProps={{
+            // Style input element
+            style: {
+              width: "50px", // Set width of the input
+              height: "50px", // Set height of the input
+            },
+          }}
         />
-        <input
+
+        {/* <TextField
+          placeholder="Choose Background Image"
+          title="Choose Background Image"
           type="file"
           accept="image/*"
           onChange={(e) =>
             handleBackgroundImageChange(URL.createObjectURL(e.target.files![0]))
           }
-        />
+        /> */}
+        <Button variant="outlined" component="label" color="secondary">
+          Upload Background Image
+          <input
+            type="file"
+            accept="image/*"
+            hidden
+            onChange={(e) =>
+              handleBackgroundImageChange(
+                URL.createObjectURL(e.target.files![0])
+              )
+            }
+          />
+        </Button>
       </div>
-      {editType === "text" &&
-        textboxes.map((textbox) => (
-          <div
-            className="flex flex-row justify-around items-center"
-            key={textbox.id}
+      {editType === "text" && (
+        <>
+          <Button
+            className="p-4 bg-blue-600 text-white rounded-md"
+            onClick={(e) => {
+              setTextboxes((p: any) => [
+                ...(p || []),
+                {
+                  id: (textboxes?.length ?? 0) + 1,
+                  fill: "black",
+                  fontSize: 16,
+                  text: "Enter Text",
+                  textAlign: "center",
+                  scaleX: 1,
+                  scaleY: 1,
+                  rotation: 0,
+                  x: width / 2,
+                  y: height / 2,
+                },
+              ]);
+            }}
+            variant="contained"
+            color="secondary"
           >
-            <div>
-              <input
-                type="text"
-                value={textbox.text}
-                onChange={(e) => handleTextChange(textbox.id, e.target.value)}
-              />
-              <select
-                value={textbox.textAlign}
-                onChange={(e) =>
-                  handleTextAlignmentChange(
-                    textbox.id,
-                    e.target.value as "left" | "center" | "right"
-                  )
-                }
-              >
-                <option value="left">Left</option>
-                <option value="center">Center</option>
-                <option value="right">Right</option>
-              </select>
-            </div>
-            <div>
-              <h1>Change Font Size</h1>
-              <input
-                type="number"
-                min={1}
-                placeholder="Change Text Size"
-                defaultValue={textbox.fontSize}
-                onChange={(e) => {
-                  handleFontChange(textbox.id, parseInt(e.target.value));
-                }}
-              />
-            </div>
-            <div>
-              <h1>Change Font Color</h1>
+            Add TextBox
+          </Button>
+          {textboxes.map((textbox) => (
+            <div
+              className="flex flex-row justify-around items-center"
+              key={textbox.id}
+            >
+              <div>
+                <TextField
+                  type="text"
+                  value={textbox.text}
+                  onChange={(e) => handleTextChange(textbox.id, e.target.value)}
+                />
+                <select
+                  value={textbox.textAlign}
+                  onChange={(e) =>
+                    handleTextAlignmentChange(
+                      textbox.id,
+                      e.target.value as "left" | "center" | "right"
+                    )
+                  }
+                >
+                  <option value="left">Left</option>
+                  <option value="center">Center</option>
+                  <option value="right">Right</option>
+                </select>
+              </div>
+              <div>
+                <h1>Change Font Size</h1>
+                <TextField
+                  type="number"
+                  placeholder="Change Text Size"
+                  defaultValue={textbox.fontSize}
+                  onChange={(e) => {
+                    handleFontChange(textbox.id, parseInt(e.target.value));
+                  }}
+                />
+              </div>
+              <div>
+                <h1>Change Font Color</h1>
 
-              <input
-                type="color"
-                placeholder="Change Text Color"
-                defaultValue={textbox.fill}
-                onChange={(e) => {
-                  handleColorChange(textbox.id, e.target.value);
-                }}
-              />
-            </div>
-            <div>
-              <h1
-                className="text-red-700 cursor-pointer"
+                <TextField
+                  type="color"
+                  placeholder="Change Text Color"
+                  defaultValue={textbox.fill}
+                  onChange={(e) => {
+                    handleColorChange(textbox.id, e.target.value);
+                  }}
+                />
+              </div>
+              <Button
+                className="p-4 bg-blue-600 text-white rounded-md"
                 onClick={(e) => {
-                  setTextboxes((p: any) =>
-                    p.filter((i: any) => i.id !== textbox.id)
-                  );
+                  setbringToTop((p) => ({
+                    ...p,
+                    textbox: { count: p.textbox.count + 1, id: textbox.id },
+                  }));
                 }}
+                variant="contained"
+                color="secondary"
               >
-                Delete
-              </h1>
+                Bring To Top
+              </Button>
+              <div>
+                <h1
+                  className="text-red-700 cursor-pointer"
+                  onClick={(e) => {
+                    setTextboxes((p: any) =>
+                      p.filter((i: any) => i.id !== textbox.id)
+                    );
+                  }}
+                >
+                  Delete
+                </h1>
+              </div>
             </div>
-          </div>
-        ))}
-      {editType === "image" &&
-        cardImages?.map((cardimage) => (
-          <div
-            className="flex flex-row justify-around items-center"
-            key={cardimage.id}
+          ))}
+        </>
+      )}
+      {editType === "image" && (
+        <>
+          <Button
+            className="p-4 bg-blue-600 text-white rounded-md"
+            onClick={(e) => {
+              cardImageRef.current?.click();
+            }}
+            variant="contained"
+            color="secondary"
           >
-            <div>
-              <h1>Change Width </h1>
-              <input
-                type="number"
-                min={1}
-                placeholder="Change Text Size"
-                defaultValue={cardimage.width}
-                onChange={(e) => {
-                  handleCardChange(cardimage.id, "width", e.target.value);
-                }}
-              />
-            </div>
-            <div>
-              <h1>Change Height</h1>
-              <input
-                type="number"
-                min={1}
-                placeholder="Change Text Size"
-                defaultValue={cardimage.height}
-                onChange={(e) => {
-                  handleCardChange(cardimage.id, "height", e.target.value);
-                }}
-              />
-            </div>
-            <div>
-              <h1
-                className="text-red-700 cursor-pointer"
+            Add Image
+          </Button>
+          {cardImages?.map((cardimage) => (
+            <div
+              className="flex flex-row justify-around items-center"
+              key={cardimage.id}
+            >
+              <div>
+                <h1>Change Width </h1>
+                <TextField
+                  type="number"
+                  placeholder="Change Text Size"
+                  defaultValue={cardimage.width}
+                  onChange={(e) => {
+                    handleCardChange(cardimage.id, "width", e.target.value);
+                  }}
+                />
+              </div>
+              <div>
+                <h1>Change Height</h1>
+                <TextField
+                  type="number"
+                  placeholder="Change Text Size"
+                  defaultValue={cardimage.height}
+                  onChange={(e) => {
+                    handleCardChange(cardimage.id, "height", e.target.value);
+                  }}
+                />
+              </div>
+              <Button
+                className="p-4 bg-blue-600 text-white rounded-md"
                 onClick={(e) => {
-                  setcardImages((p: any) =>
-                    p.filter((i: any) => i.id !== cardimage.id)
-                  );
+                  setbringToTop((p) => ({
+                    ...p,
+                    image: { id: cardimage.id, count: p.image.count + 1 },
+                  }));
                 }}
+                variant="contained"
+                color="secondary"
               >
-                Delete
-              </h1>
+                Bring To Top
+              </Button>
+              <div>
+                <h1
+                  className="text-red-700 cursor-pointer"
+                  onClick={(e) => {
+                    setcardImages((p: any) =>
+                      p.filter((i: any) => i.id !== cardimage.id)
+                    );
+                  }}
+                >
+                  Delete
+                </h1>
+              </div>
             </div>
-          </div>
-        ))}
-      {editType === "shape" &&
-        stars?.map((star) => (
-          <div
-            className="flex flex-row justify-around items-center"
-            key={star.id}
+          ))}
+        </>
+      )}
+      {editType === "shape" && (
+        <>
+          <Button
+            className="p-4 bg-blue-600 text-white rounded-md"
+            onClick={(e) => {
+              seteditType("Addshape");
+            }}
+            variant="contained"
+            color="secondary"
           >
-            <div>
-              <h1>Change Color</h1>
-              <input
-                type="color"
-                placeholder="Change Color Size"
-                defaultValue={star.fill}
-                onChange={(e) => {
-                  handleShapeItemChange(
-                    "star",
-                    "fill",
-                    star.id,
-                    e.target.value
-                  );
-                }}
-              />
-            </div>
-            <div>
-              <h1>Change Stroke Color</h1>
-              <input
-                type="color"
-                placeholder="Change Stroke Color Size"
-                defaultValue={star.fill}
-                onChange={(e) => {
-                  handleShapeItemChange(
-                    "star",
-                    "stroke",
-                    star.id,
-                    e.target.value
-                  );
-                }}
-              />
-            </div>
-            <div>
-              <h1
-                className="text-red-700 cursor-pointer"
+            Add Shape
+          </Button>
+          {stars?.map((star) => (
+            <div
+              className="flex flex-row justify-around items-center"
+              key={star.id}
+            >
+              <div>
+                <h1>Change Color</h1>
+                <TextField
+                  type="color"
+                  placeholder="Change Color Size"
+                  defaultValue={star.fill}
+                  onChange={(e) => {
+                    handleShapeItemChange(
+                      "star",
+                      "fill",
+                      star.id,
+                      e.target.value
+                    );
+                  }}
+                />
+              </div>
+              <div>
+                <h1>Change Stroke Color</h1>
+                <TextField
+                  type="color"
+                  placeholder="Change Stroke Color Size"
+                  defaultValue={star.fill}
+                  onChange={(e) => {
+                    handleShapeItemChange(
+                      "star",
+                      "stroke",
+                      star.id,
+                      e.target.value
+                    );
+                  }}
+                />
+              </div>
+              <Button
+                className="p-4 bg-blue-600 text-white rounded-md"
                 onClick={(e) => {
-                  setstars((p: any) => p.filter((i: any) => i.id !== star.id));
+                  setbringToTop((p) => ({
+                    ...p,
+                    star: { count: p.star.count + 1, id: star.id },
+                  }));
                 }}
+                variant="contained"
+                color="secondary"
               >
-                Delete
-              </h1>
+                Bring To Top
+              </Button>
+              <div>
+                <h1
+                  className="text-red-700 cursor-pointer"
+                  onClick={(e) => {
+                    setstars((p: any) =>
+                      p.filter((i: any) => i.id !== star.id)
+                    );
+                  }}
+                >
+                  Delete
+                </h1>
+              </div>
             </div>
-          </div>
-        ))}
-      {editType === "shape" &&
-        square?.map((square) => (
-          <div
-            className="flex flex-row justify-around items-center"
-            key={square.id}
+          ))}
+          {square?.map((square) => (
+            <div
+              className="flex flex-row justify-around items-center"
+              key={square.id}
+            >
+              <div>
+                <h1>Change Stroke Color</h1>
+                <TextField
+                  type="color"
+                  placeholder="Change Color Size"
+                  defaultValue={square.stroke}
+                  onChange={(e) => {
+                    handleShapeItemChange(
+                      "square",
+                      "fill",
+                      square.id,
+                      e.target.value
+                    );
+                  }}
+                />
+              </div>
+              <div>
+                <h1>Change Color</h1>
+                <TextField
+                  type="color"
+                  placeholder="Change Color Size"
+                  defaultValue={square.fill}
+                  onChange={(e) => {
+                    handleShapeItemChange(
+                      "square",
+                      "fill",
+                      square.id,
+                      e.target.value
+                    );
+                  }}
+                />
+              </div>
+              <Button
+                className="p-4 bg-blue-600 text-white rounded-md"
+                onClick={(e) => {
+                  setbringToTop((p) => ({
+                    ...p,
+                    square: { count: p.square.count + 1, id: square.id },
+                  }));
+                }}
+                variant="contained"
+                color="secondary"
+              >
+                Bring To Top
+              </Button>
+              <div>
+                <h1
+                  className="text-red-700 cursor-pointer"
+                  onClick={(e) => {
+                    setsquare((p: any) =>
+                      p.filter((i: any) => i.id !== square.id)
+                    );
+                  }}
+                >
+                  Delete
+                </h1>
+              </div>
+            </div>
+          ))}
+          {triangle?.map((triangle) => (
+            <div
+              className="flex flex-row justify-around items-center"
+              key={triangle.id}
+            >
+              <div>
+                <h1>Change Stroke</h1>
+                <TextField
+                  type="color"
+                  placeholder="Change Stroke"
+                  defaultValue={triangle.stroke}
+                  onChange={(e) => {
+                    handleShapeItemChange(
+                      "triangle",
+                      "stroke",
+                      triangle.id,
+                      e.target.value
+                    );
+                  }}
+                />
+              </div>
+              <div>
+                <h1>Change Color</h1>
+                <TextField
+                  type="color"
+                  placeholder="Change Color"
+                  defaultValue={triangle.fill}
+                  onChange={(e) => {
+                    handleShapeItemChange(
+                      "triangle",
+                      "fill",
+                      triangle.id,
+                      e.target.value
+                    );
+                  }}
+                />
+              </div>
+              <Button
+                className="p-4 bg-blue-600 text-white rounded-md"
+                onClick={(e) => {
+                  setbringToTop((p) => ({
+                    ...p,
+                    triangle: {
+                      count: p.triangle.count + 1,
+                      id: triangle.id,
+                    },
+                  }));
+                }}
+                variant="contained"
+                color="secondary"
+              >
+                Bring To Top
+              </Button>
+              <div>
+                <h1
+                  className="text-red-700 cursor-pointer"
+                  onClick={(e) => {
+                    settriangle((p: any) =>
+                      p.filter((i: any) => i.id !== triangle.id)
+                    );
+                  }}
+                >
+                  Delete
+                </h1>
+              </div>
+            </div>
+          ))}
+          {circles?.map((circle) => (
+            <div
+              className="flex flex-row justify-around items-center"
+              key={circle.id}
+            >
+              <div>
+                <h1>Change Stroke Color</h1>
+                <TextField
+                  type="color"
+                  placeholder="Change Stroke Color"
+                  defaultValue={circle.stroke}
+                  onChange={(e) => {
+                    handleShapeItemChange(
+                      "circle",
+                      "stroke",
+                      circle.id,
+                      e.target.value
+                    );
+                  }}
+                />
+              </div>
+              <div>
+                <h1>Change Color</h1>
+                <TextField
+                  type="color"
+                  placeholder="Change Color"
+                  defaultValue={circle.fill}
+                  onChange={(e) => {
+                    handleShapeItemChange(
+                      "circle",
+                      "fill",
+                      circle.id,
+                      e.target.value
+                    );
+                  }}
+                />
+              </div>
+              <Button
+                className="p-4 bg-blue-600 text-white rounded-md"
+                onClick={(e) => {
+                  setbringToTop((p) => ({
+                    ...p,
+                    circle: { count: p.circle.count + 1, id: circle.id },
+                  }));
+                }}
+                variant="contained"
+                color="secondary"
+              >
+                Bring To Top
+              </Button>
+              <div>
+                <h1
+                  className="text-red-700 cursor-pointer"
+                  onClick={(e) => {
+                    setcircles((p: any) =>
+                      p.filter((i: any) => i.id !== circle.id)
+                    );
+                  }}
+                >
+                  Delete
+                </h1>
+              </div>
+            </div>
+          ))}
+          {arrow?.map((arrow) => (
+            <div
+              className="flex flex-row justify-around items-center"
+              key={arrow.id}
+            >
+              <div>
+                <h1>Change Stroke Color</h1>
+                <TextField
+                  type="color"
+                  placeholder="Change Stroke Color"
+                  defaultValue={arrow.stroke}
+                  onChange={(e) => {
+                    handleShapeItemChange(
+                      "arrow",
+                      "stroke",
+                      arrow.id,
+                      e.target.value
+                    );
+                  }}
+                />
+              </div>
+              <div>
+                <h1>Change Color</h1>
+                <TextField
+                  type="color"
+                  placeholder="Change Color"
+                  defaultValue={arrow.fill}
+                  onChange={(e) => {
+                    handleShapeItemChange(
+                      "arrow",
+                      "fill",
+                      arrow.id,
+                      e.target.value
+                    );
+                  }}
+                />
+              </div>
+              <Button
+                className="p-4 bg-blue-600 text-white rounded-md"
+                onClick={(e) => {
+                  setbringToTop((p) => ({
+                    ...p,
+                    arrow: { count: p.arrow.count + 1, id: arrow.id },
+                  }));
+                }}
+                variant="contained"
+                color="secondary"
+              >
+                Bring To Top
+              </Button>
+              <div>
+                <h1
+                  className="text-red-700 cursor-pointer"
+                  onClick={(e) => {
+                    setarrow((p: any) =>
+                      p.filter((i: any) => i.id !== arrow.id)
+                    );
+                  }}
+                >
+                  Delete
+                </h1>
+              </div>
+            </div>
+          ))}
+          {polygon?.map((polygon) => (
+            <div
+              className="flex flex-row justify-around items-center"
+              key={polygon.id}
+            >
+              <div>
+                <h1>Change Stroke Color</h1>
+                <TextField
+                  type="color"
+                  placeholder="Change Stroke"
+                  defaultValue={polygon.stroke}
+                  onChange={(e) => {
+                    handleShapeItemChange(
+                      "polygon",
+                      "stroke",
+                      polygon.id,
+                      e.target.value
+                    );
+                  }}
+                />
+              </div>
+              <Button
+                className="p-4 bg-blue-600 text-white rounded-md"
+                onClick={(e) => {
+                  setbringToTop((p) => ({
+                    ...p,
+                    polygon: { count: p.polygon.count + 1, id: polygon.id },
+                  }));
+                }}
+                variant="contained"
+                color="secondary"
+              >
+                Bring To Top
+              </Button>
+              <div>
+                <h1>Change Color</h1>
+                <TextField
+                  type="color"
+                  placeholder="Change Color Size"
+                  defaultValue={polygon.fill}
+                  onChange={(e) => {
+                    handleShapeItemChange(
+                      "polygon",
+                      "fill",
+                      polygon.id,
+                      e.target.value
+                    );
+                  }}
+                />
+              </div>
+              <div>
+                <h1
+                  className="text-red-700 cursor-pointer"
+                  onClick={(e) => {
+                    setpolygon((p: any) =>
+                      p.filter((i: any) => i.id !== polygon.id)
+                    );
+                  }}
+                >
+                  Delete
+                </h1>
+              </div>
+            </div>
+          ))}
+        </>
+      )}
+      {editType === "icon" && (
+        <>
+          <Button
+            className="p-4 bg-blue-600 text-white rounded-md"
+            onClick={(e) => {
+              seteditType("Addicon");
+            }}
+            variant="contained"
+            color="secondary"
           >
-            <div>
-              <h1>Change Stroke Color</h1>
-              <input
-                type="color"
-                placeholder="Change Color Size"
-                defaultValue={square.stroke}
-                onChange={(e) => {
-                  handleShapeItemChange(
-                    "square",
-                    "fill",
-                    square.id,
-                    e.target.value
-                  );
-                }}
-              />
-            </div>
-            <div>
-              <h1>Change Color</h1>
-              <input
-                type="color"
-                placeholder="Change Color Size"
-                defaultValue={square.fill}
-                onChange={(e) => {
-                  handleShapeItemChange(
-                    "square",
-                    "fill",
-                    square.id,
-                    e.target.value
-                  );
-                }}
-              />
-            </div>
-            <div>
-              <h1
-                className="text-red-700 cursor-pointer"
+            Add Icon
+          </Button>
+          {cardIcons?.map((c) => (
+            <div
+              className="flex flex-row justify-around items-center"
+              key={c.id}
+            >
+              <div>
+                <h1>Change Color</h1>
+                <TextField
+                  type="color"
+                  placeholder="Change Color Size"
+                  defaultValue={c.color}
+                  onChange={(e) => {
+                    handleIconChange(c.id, "color", e.target.value);
+                  }}
+                />
+              </div>
+              <Button
+                className="p-4 bg-blue-600 text-white rounded-md"
                 onClick={(e) => {
-                  setsquare((p: any) =>
-                    p.filter((i: any) => i.id !== square.id)
-                  );
+                  setbringToTop((p) => ({
+                    ...p,
+
+                    icon: { count: p.icon.count + 1, id: c.id },
+                  }));
                 }}
+                variant="contained"
+                color="secondary"
               >
-                Delete
-              </h1>
+                Bring To Top
+              </Button>
+              <div>
+                <h1>Change Stroke Color</h1>
+                <TextField
+                  type="color"
+                  placeholder="Change Stroke"
+                  defaultValue={c.color}
+                  onChange={(e) => {
+                    handleIconChange(c.id, "stroke", e.target.value);
+                  }}
+                />
+              </div>
+              <div>
+                <h1
+                  className="text-red-700 cursor-pointer"
+                  onClick={(e) => {
+                    setcardIcons((p: any) =>
+                      p.filter((i: any) => i.id !== c.id)
+                    );
+                  }}
+                >
+                  Delete
+                </h1>
+              </div>
             </div>
-          </div>
-        ))}
-      {editType === "shape" &&
-        triangle?.map((triangle) => (
-          <div
-            className="flex flex-row justify-around items-center"
-            key={triangle.id}
-          >
-            <div>
-              <h1>Change Stroke</h1>
-              <input
-                type="color"
-                placeholder="Change Stroke"
-                defaultValue={triangle.stroke}
-                onChange={(e) => {
-                  handleShapeItemChange(
-                    "triangle",
-                    "stroke",
-                    triangle.id,
-                    e.target.value
-                  );
-                }}
-              />
-            </div>
-            <div>
-              <h1>Change Color</h1>
-              <input
-                type="color"
-                placeholder="Change Color"
-                defaultValue={triangle.fill}
-                onChange={(e) => {
-                  handleShapeItemChange(
-                    "triangle",
-                    "fill",
-                    triangle.id,
-                    e.target.value
-                  );
-                }}
-              />
-            </div>
-            <div>
-              <h1
-                className="text-red-700 cursor-pointer"
-                onClick={(e) => {
-                  settriangle((p: any) =>
-                    p.filter((i: any) => i.id !== triangle.id)
-                  );
-                }}
-              >
-                Delete
-              </h1>
-            </div>
-          </div>
-        ))}
-      {editType === "shape" &&
-        circles?.map((circle) => (
-          <div
-            className="flex flex-row justify-around items-center"
-            key={circle.id}
-          >
-            <div>
-              <h1>Change Stroke Color</h1>
-              <input
-                type="color"
-                placeholder="Change Stroke Color"
-                defaultValue={circle.stroke}
-                onChange={(e) => {
-                  handleShapeItemChange(
-                    "circle",
-                    "stroke",
-                    circle.id,
-                    e.target.value
-                  );
-                }}
-              />
-            </div>
-            <div>
-              <h1>Change Color</h1>
-              <input
-                type="color"
-                placeholder="Change Color"
-                defaultValue={circle.fill}
-                onChange={(e) => {
-                  handleShapeItemChange(
-                    "circle",
-                    "fill",
-                    circle.id,
-                    e.target.value
-                  );
-                }}
-              />
-            </div>
-            <div>
-              <h1
-                className="text-red-700 cursor-pointer"
-                onClick={(e) => {
-                  setcircles((p: any) =>
-                    p.filter((i: any) => i.id !== circle.id)
-                  );
-                }}
-              >
-                Delete
-              </h1>
-            </div>
-          </div>
-        ))}
-      {editType === "shape" &&
-        arrow?.map((arrow) => (
-          <div
-            className="flex flex-row justify-around items-center"
-            key={arrow.id}
-          >
-            <div>
-              <h1>Change Stroke Color</h1>
-              <input
-                type="color"
-                placeholder="Change Stroke Color"
-                defaultValue={arrow.stroke}
-                onChange={(e) => {
-                  handleShapeItemChange(
-                    "arrow",
-                    "stroke",
-                    arrow.id,
-                    e.target.value
-                  );
-                }}
-              />
-            </div>
-            <div>
-              <h1>Change Color</h1>
-              <input
-                type="color"
-                placeholder="Change Color"
-                defaultValue={arrow.fill}
-                onChange={(e) => {
-                  handleShapeItemChange(
-                    "arrow",
-                    "fill",
-                    arrow.id,
-                    e.target.value
-                  );
-                }}
-              />
-            </div>
-            <div>
-              <h1
-                className="text-red-700 cursor-pointer"
-                onClick={(e) => {
-                  setarrow((p: any) => p.filter((i: any) => i.id !== arrow.id));
-                }}
-              >
-                Delete
-              </h1>
-            </div>
-          </div>
-        ))}
-      {editType === "shape" &&
-        polygon?.map((polygon) => (
-          <div
-            className="flex flex-row justify-around items-center"
-            key={polygon.id}
-          >
-            <div>
-              <h1>Change Stroke Color</h1>
-              <input
-                type="color"
-                placeholder="Change Stroke"
-                defaultValue={polygon.stroke}
-                onChange={(e) => {
-                  handleShapeItemChange(
-                    "polygon",
-                    "stroke",
-                    polygon.id,
-                    e.target.value
-                  );
-                }}
-              />
-            </div>
-            <div>
-              <h1>Change Color</h1>
-              <input
-                type="color"
-                placeholder="Change Color Size"
-                defaultValue={polygon.fill}
-                onChange={(e) => {
-                  handleShapeItemChange(
-                    "polygon",
-                    "fill",
-                    polygon.id,
-                    e.target.value
-                  );
-                }}
-              />
-            </div>
-            <div>
-              <h1
-                className="text-red-700 cursor-pointer"
-                onClick={(e) => {
-                  setpolygon((p: any) =>
-                    p.filter((i: any) => i.id !== polygon.id)
-                  );
-                }}
-              >
-                Delete
-              </h1>
-            </div>
-          </div>
-        ))}
-      {editType === "icon" &&
-        cardIcons.map((c) => (
-          <div className="flex flex-row justify-around items-center" key={c.id}>
-            <div>
-              <h1>Change Color</h1>
-              <input
-                type="color"
-                placeholder="Change Color Size"
-                defaultValue={c.color}
-                onChange={(e) => {
-                  handleIconChange(c.id, "color", e.target.value);
-                }}
-              />
-            </div>
-            <div>
-              <h1>Change Stroke Color</h1>
-              <input
-                type="color"
-                placeholder="Change Stroke"
-                defaultValue={c.color}
-                onChange={(e) => {
-                  handleIconChange(c.id, "stroke", e.target.value);
-                }}
-              />
-            </div>
-            <div>
-              <h1
-                className="text-red-700 cursor-pointer"
-                onClick={(e) => {
-                  setcardIcons((p: any) => p.filter((i: any) => i.id !== c.id));
-                }}
-              >
-                Delete
-              </h1>
-            </div>
-          </div>
-        ))}
+          ))}
+        </>
+      )}
       {editType === "Addshape" && (
         <ShapeItemOptions handleShapeAddition={handleShapeAddition} />
       )}
       {editType === "Addicon" && (
         <ListIcons handleShapeAddition={handleIconAddition} />
       )}
-      <button
+      <br />
+      <Button
         onClick={() => {
           setisdownloading(true);
           handleDownload();
         }}
+        variant="contained"
+        color="secondary"
       >
         Download Canvas
-      </button>
+      </Button>
     </section>
   );
 };

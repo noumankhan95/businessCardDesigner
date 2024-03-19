@@ -50,6 +50,8 @@ interface canvasProps extends BusinessCardProps {
   canvasPadding: number;
   backgroundColor: string;
   setBackgroundColor: Dispatch<SetStateAction<string>>;
+  backgroundImage: any;
+  setBackgroundImage: Dispatch<SetStateAction<any>>;
 }
 type CircleItem = {
   width: string;

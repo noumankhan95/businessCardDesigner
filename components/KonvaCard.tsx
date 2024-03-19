@@ -3,7 +3,7 @@
 import React, { useEffect, useRef, useState } from "react";
 
 import Canvas from "./Canvas";
-
+import { Button } from "@mui/material";
 const BusinessCard: React.FC<BusinessCardProps> = ({
   width,
   height,
@@ -32,23 +32,31 @@ const BusinessCard: React.FC<BusinessCardProps> = ({
   const [backgroundColor, setBackgroundColor] = useState<string>("#ffffff");
   const [BackSidebackgroundColor, setBackSideBackgroundColor] =
     useState<string>("#ffffff");
+  const [backgroundImage, setbackgroundImage] = useState<any>();
+  const [BacksidebackgroundImage, setBacksidebackgroundImage] = useState<any>();
 
   return (
     <div className="space-y-5">
-      <h1
-        onClick={() => {
-          setshowFront(true);
-        }}
-      >
-        Show Front
-      </h1>
-      <h1
-        onClick={() => {
-          setshowFront(false);
-        }}
-      >
-        Show Back
-      </h1>
+      <div className="flex flex-row justify-around items-center">
+        <Button
+          onClick={() => {
+            setshowFront(true);
+          }}
+          variant="contained"
+          color="secondary"
+        >
+          Show Front
+        </Button>
+        <Button
+          onClick={() => {
+            setshowFront(false);
+          }}
+          variant="contained"
+          color="secondary"
+        >
+          Show Back
+        </Button>
+      </div>
 
       {showFront && (
         <Canvas
@@ -75,6 +83,8 @@ const BusinessCard: React.FC<BusinessCardProps> = ({
           setcardIcons={setcardIcons}
           backgroundColor={backgroundColor}
           setBackgroundColor={setBackgroundColor}
+          backgroundImage={backgroundImage}
+          setBackgroundImage={setbackgroundImage}
         />
       )}
       {!showFront && (
@@ -102,6 +112,8 @@ const BusinessCard: React.FC<BusinessCardProps> = ({
           setcardIcons={setbackCardIcons}
           backgroundColor={BackSidebackgroundColor}
           setBackgroundColor={setBackSideBackgroundColor}
+          backgroundImage={BacksidebackgroundImage}
+          setBackgroundImage={setBacksidebackgroundImage}
         />
       )}
     </div>

@@ -21,6 +21,8 @@ function CardImageItem({
   scaleX,
   scaleY,
   rotation,
+  bringToTop,
+  ToplayerCount,
 }: {
   height: number;
   width: number;
@@ -38,12 +40,15 @@ function CardImageItem({
   scaleX: number;
   scaleY: number;
   rotation: number;
+  bringToTop: boolean;
+  ToplayerCount: number;
 }) {
   //   const TransformRef = useRef<any>();
   const shapeRef = React.useRef<any>();
   const [transformerRef, setTransformerRef] = useState<any>(null);
 
   const ImageDragEnd = (e: KonvaEventObject<DragEvent>, id: number) => {
+    e.target.move;
     if (e.target.x() >= Twidth - canvasPadding) {
       console.log("true");
       handleCardChange(id, "x", Twidth / 2);
@@ -87,6 +92,12 @@ function CardImageItem({
       transformerRef?.getLayer()?.batchDraw();
     }
   }, [isSelected, transformerRef]);
+  useEffect(() => {
+    if (bringToTop) {
+      console.log("top Image Again", shapeRef.current.moveUp());
+      shapeRef.current.moveUp();
+    }
+  }, [bringToTop, ToplayerCount]);
   console.log("transform ref", transformerRef);
   console.log("shape ref", shapeRef);
   console.log("seklelcted image id", isSelected);
@@ -116,7 +127,6 @@ function CardImageItem({
           const node = e.currentTarget;
           const scaleX = node.scaleX();
           const scaleY = node.scaleY();
-
           // update width and height
           // node.width(node.width() * scaleX);
           // node.height(node.height() * scaleY);

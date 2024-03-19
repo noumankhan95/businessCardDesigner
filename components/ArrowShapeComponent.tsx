@@ -19,6 +19,8 @@ function ArrowComponent({
   scaleY,
   x,
   y,
+  ToplayerCount,
+  bringToTop,
 }: {
   isSelected: boolean;
   width: string;
@@ -41,6 +43,8 @@ function ArrowComponent({
   scaleX: number;
   scaleY: number;
   rotation: number;
+  bringToTop: boolean;
+  ToplayerCount: number;
 }) {
   const shapeRef = React.useRef<any>();
   const [transformerRef, setTransformerRef] = useState<any>(null);
@@ -91,7 +95,12 @@ function ArrowComponent({
       handleShapeItemChange("arrow", "y", id, e.currentTarget.y());
     }
   };
-
+  useEffect(() => {
+    if (bringToTop) {
+      console.log("top polygon", shapeRef.current.moveUp());
+      shapeRef.current.moveUp();
+    }
+  }, [bringToTop, ToplayerCount]);
   return (
     <>
       <Arrow

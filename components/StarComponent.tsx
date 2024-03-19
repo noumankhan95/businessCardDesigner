@@ -19,6 +19,8 @@ function StarComponent({
   scaleY,
   x,
   y,
+  ToplayerCount,
+  bringToTop,
 }: {
   isSelected: boolean;
   width: string;
@@ -41,6 +43,8 @@ function StarComponent({
   scaleX: number;
   scaleY: number;
   rotation: number;
+  bringToTop: boolean;
+  ToplayerCount: number;
 }) {
   const shapeRef = useRef<any>();
   const groupRef = useRef<any>();
@@ -92,9 +96,15 @@ function StarComponent({
       handleShapeItemChange("star", "y", id, e.currentTarget.y());
     }
   };
+  useEffect(() => {
+    if (bringToTop) {
+      console.log("top star", shapeRef.current.moveUp());
+      shapeRef.current.moveUp();
+    }
+  }, [bringToTop, ToplayerCount]);
 
   return (
-    <Group ref={groupRef}>
+    <>
       <Star
         draggable
         onDragEnd={(e) => StarDragEnd(e, id)}
@@ -132,7 +142,7 @@ function StarComponent({
         }}
       />
       {isSelected && <Transformer ref={transformerRef} rotateEnabled={true} />}
-    </Group>
+    </>
   );
 }
 

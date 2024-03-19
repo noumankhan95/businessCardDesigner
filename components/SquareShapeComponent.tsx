@@ -19,6 +19,8 @@ function SquareComponent({
   scaleY,
   x,
   y,
+  ToplayerCount,
+  bringToTop,
 }: {
   isSelected: boolean;
   width: string;
@@ -41,6 +43,8 @@ function SquareComponent({
   scaleX: number;
   scaleY: number;
   rotation: number;
+  bringToTop: boolean;
+  ToplayerCount: number;
 }) {
   const shapeRef = useRef<any>();
   const groupRef = useRef<any>();
@@ -95,8 +99,14 @@ function SquareComponent({
     }
   };
   console.log("square", height, " ", typeof width);
+  useEffect(() => {
+    if (bringToTop) {
+      console.log("top square", shapeRef.current.moveUp());
+      shapeRef.current.moveUp();
+    }
+  }, [bringToTop, ToplayerCount]);
   return (
-    <Group>
+    <>
       <Rect
         draggable
         onClick={onSelect}
@@ -126,7 +136,7 @@ function SquareComponent({
         }}
       />
       {isSelected && <Transformer ref={transformerRef} rotateEnabled={true} />}
-    </Group>
+    </>
   );
 }
 

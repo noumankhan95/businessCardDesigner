@@ -19,6 +19,8 @@ function TriangleComponent({
   scaleY,
   x,
   y,
+  ToplayerCount,
+  bringToTop,
 }: {
   width: string;
   height: string;
@@ -41,6 +43,8 @@ function TriangleComponent({
   scaleX: number;
   scaleY: number;
   rotation: number;
+  bringToTop: boolean;
+  ToplayerCount: number;
 }) {
   const shapeRef = useRef<any>();
   const groupRef = useRef<any>();
@@ -95,9 +99,14 @@ function TriangleComponent({
       handleShapeItemChange("triangle", "y", id, e.currentTarget.y());
     }
   };
-
+  useEffect(() => {
+    if (bringToTop) {
+      console.log("top triangle", shapeRef.current.moveUp());
+      shapeRef.current.moveUp();
+    }
+  }, [bringToTop, ToplayerCount]);
   return (
-    <Group ref={groupRef}>
+    <>
       <Line
         ref={shapeRef}
         points={[0, -50, 50, 50, -50, 50]} // Points defining the triangle
@@ -134,7 +143,7 @@ function TriangleComponent({
         }}
       />
       {isSelected && <Transformer ref={transformerRef} rotateEnabled={true} />}
-    </Group>
+    </>
   );
 }
 

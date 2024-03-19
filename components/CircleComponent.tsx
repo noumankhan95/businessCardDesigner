@@ -19,6 +19,8 @@ function CircleComponent({
   scaleX,
   scaleY,
   rotation,
+  ToplayerCount,
+  bringToTop,
 }: {
   isSelected: boolean;
   width: string;
@@ -41,6 +43,8 @@ function CircleComponent({
   scaleX: number;
   scaleY: number;
   rotation: number;
+  bringToTop: boolean;
+  ToplayerCount: number;
 }) {
   const shapeRef = React.useRef<any>();
   const [transformerRef, setTransformerRef] = useState<any>(null);
@@ -92,10 +96,16 @@ function CircleComponent({
       handleShapeItemChange("circle", "y", id, e.currentTarget.y());
     }
   };
-
+  useEffect(() => {
+    if (bringToTop) {
+      console.log("top circle", shapeRef.current.moveUp());
+      shapeRef.current.moveUp();
+    }
+  }, [bringToTop, ToplayerCount]);
   return (
     <>
       <Circle
+        name="circle"
         onClick={onSelect}
         onTap={onSelect}
         ref={shapeRef}

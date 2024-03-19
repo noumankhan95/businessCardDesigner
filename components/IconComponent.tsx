@@ -19,6 +19,8 @@ function IconComponent({
   handleIconChange,
   canvasPadding,
   id,
+  ToplayerCount,
+  bringToTop,
 }: {
   iconName: string;
   color: string;
@@ -35,6 +37,8 @@ function IconComponent({
   handleIconChange: (id: number, type: string, value: string | number) => void;
   canvasPadding: number;
   id: number;
+  bringToTop: boolean;
+  ToplayerCount: number;
 }) {
   const [iconPath, setIconPath] = useState<any>(null);
   const shapeRef = useRef<any>();
@@ -118,9 +122,15 @@ function IconComponent({
     // This example assumes that the path data is stored in the 'd' attribute of the first <path> element
     return svg.props.children[0].props.d;
   };
+  useEffect(() => {
+    if (bringToTop) {
+      console.log("top con", shapeRef.current.moveUp());
+      shapeRef.current.moveUp();
+    }
+  }, [bringToTop, ToplayerCount]);
   console.log(isSelected, "selected");
   return iconPath ? (
-    <Group ref={groupRef}>
+    <>
       <Path
         draggable
         x={x}
@@ -155,7 +165,7 @@ function IconComponent({
         }}
       />
       {isSelected && <Transformer ref={transformerRef} rotateEnabled={true} />}
-    </Group>
+    </>
   ) : null;
 }
 

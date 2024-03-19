@@ -9,6 +9,8 @@ function TextImageItem({
   isSelected,
   onSelect,
   handleCardPosition,
+  ToplayerCount,
+  bringToTop,
 }: {
   textbox: any;
   canvasPadding: number;
@@ -23,6 +25,8 @@ function TextImageItem({
   ) => void;
 
   onSelect: () => void;
+  bringToTop: boolean;
+  ToplayerCount: number;
 }) {
   const shapeRef = React.useRef<any>();
 
@@ -36,6 +40,12 @@ function TextImageItem({
       transformerRef?.getLayer()?.batchDraw();
     }
   }, [isSelected, transformerRef]);
+  useEffect(() => {
+    if (bringToTop) {
+      console.log("top text", shapeRef.current.moveUp());
+      shapeRef.current.moveUp();
+    }
+  }, [bringToTop, ToplayerCount]);
   return (
     <>
       <Text

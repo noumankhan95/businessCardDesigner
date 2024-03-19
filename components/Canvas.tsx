@@ -1,6 +1,6 @@
 import { KonvaEventObject } from "konva/lib/Node";
 import { ImageConfig } from "konva/lib/shapes/Image";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import {
   Stage,
   Layer,
@@ -16,7 +16,6 @@ import {
   Ellipse,
   Ring,
   Star,
-  RegularPolygon,
 } from "react-konva";
 import {
   Box,
@@ -49,6 +48,7 @@ import PolygonShapeComponent from "./PolygonShapeComponent";
 import ListIcons from "./ListIconsComponent";
 import IconComponent from "./IconComponent";
 import { IoIosAdd } from "react-icons/io";
+import { RegularPolygon } from "konva/lib/shapes/RegularPolygon";
 const padding = 6; // Padding value
 const borderPadding = 10;
 const Canvas: React.FC<canvasProps> = ({
@@ -86,7 +86,7 @@ const Canvas: React.FC<canvasProps> = ({
   const cardImageRef = useRef<HTMLInputElement | null>(null);
   const [editType, seteditType] = useState<string>("");
   const imageRefs = useRef<(HTMLImageElement | null)[]>([]);
-
+  const [shapeIdSelected, setshapeIdSelected] = useState<boolean>();
   const [selectedId, selectShape] = React.useState<{
     square: number;
     circle: number;
@@ -134,8 +134,44 @@ const Canvas: React.FC<canvasProps> = ({
   };
   const [selectedTexts, setselectedTexts] = useState<TextBox[]>(() =>
     selectedId.textbox
-      ? textboxes.filter((i) => i.id === selectedId.textbox)
+      ? textboxes?.filter((i) => i.id === selectedId.textbox)
       : textboxes
+  );
+  const [selectedImages, setselectedImages] = useState<CardImage[]>(() =>
+    selectedId.image
+      ? cardImages?.filter((i) => i.id === selectedId.image)
+      : cardImages
+  );
+  const [selectedcircles, setselectedcircles] = useState<CircleItem[]>(() =>
+    selectedId.circle
+      ? circles?.filter((i) => i.id === selectedId.circle)
+      : circles
+  );
+  const [selectedstars, setselectedstars] = useState<StarItem[]>(() =>
+    selectedId.star ? stars?.filter((i) => i.id === selectedId.star) : stars
+  );
+  const [selectedarrow, setselectedarrow] = useState<ArrowItem[]>(() =>
+    selectedId.arrow ? arrow?.filter((i) => i.id === selectedId.arrow) : arrow
+  );
+  const [selectedsquare, setselectedsquare] = useState<SquareItem[]>(() =>
+    selectedId.square
+      ? square?.filter((i) => i.id === selectedId.square)
+      : square
+  );
+  const [selectedtriangle, setselectedtriangle] = useState<TriangleItem[]>(() =>
+    selectedId.triangle
+      ? triangle?.filter((i) => i.id === selectedId.triangle)
+      : triangle
+  );
+  const [selectedpolygon, setselectedpolygon] = useState<PolygonItem[]>(() =>
+    selectedId.polygon
+      ? polygon?.filter((i) => i.id === selectedId.polygon)
+      : polygon
+  );
+  const [selectedcardIcons, setselectedcardIcons] = useState<IconItem[]>(() =>
+    selectedId.icon
+      ? cardIcons?.filter((i) => i.id === selectedId.icon)
+      : cardIcons
   );
   useEffect(() => {
     setselectedTexts(
@@ -144,14 +180,74 @@ const Canvas: React.FC<canvasProps> = ({
         : textboxes
     );
   }, [selectedId.textbox, textboxes]);
-  const handleShapeAddition = (name: string) => {
+  useEffect(() => {
+    setselectedImages(
+      selectedId.image
+        ? cardImages?.filter((i) => i.id === selectedId.image)
+        : cardImages
+    );
+  }, [selectedId.image, cardImages]);
+
+  useEffect(() => {
+    setselectedcircles(
+      selectedId.circle
+        ? circles?.filter((i) => i.id === selectedId.circle)
+        : circles
+    );
+  }, [selectedId.circle, circles]);
+
+  useEffect(() => {
+    setselectedstars(
+      selectedId.star ? stars?.filter((i) => i.id === selectedId.star) : stars
+    );
+  }, [selectedId.star, stars]);
+
+  useEffect(() => {
+    setselectedarrow(
+      selectedId.arrow ? arrow?.filter((i) => i.id === selectedId.arrow) : arrow
+    );
+  }, [selectedId.arrow, arrow]);
+
+  useEffect(() => {
+    setselectedsquare(
+      selectedId.square
+        ? square?.filter((i) => i.id === selectedId.square)
+        : square
+    );
+  }, [selectedId.square, square]);
+
+  useEffect(() => {
+    setselectedtriangle(
+      selectedId.triangle
+        ? triangle?.filter((i) => i.id === selectedId.triangle)
+        : triangle
+    );
+  }, [selectedId.triangle, triangle]);
+
+  useEffect(() => {
+    setselectedpolygon(
+      selectedId.polygon
+        ? polygon?.filter((i) => i.id === selectedId.polygon)
+        : polygon
+    );
+  }, [selectedId.polygon, polygon]);
+
+  useEffect(() => {
+    setselectedcardIcons(
+      selectedId.icon
+        ? cardIcons?.filter((i) => i.id === selectedId.icon)
+        : cardIcons
+    );
+  }, [selectedId.icon, cardIcons]);
+
+  const handleShapeAddition = useCallback((name: string) => {
     if (name === "Circle") {
       setcircles((p: CircleItem[]) => [
         ...p,
         {
           height: "20",
           width: "20",
-          id: (circles.length ?? 0) + 1,
+          id: (p.length ?? 0) + 1,
           fill: "black",
           stroke: "black",
           x: width / 2,
@@ -167,7 +263,7 @@ const Canvas: React.FC<canvasProps> = ({
         {
           height: "20",
           width: "20",
-          id: (arrow.length ?? 0) + 1,
+          id: (p.length ?? 0) + 1,
           fill: "black",
           stroke: "black",
           x: width / 2,
@@ -183,7 +279,7 @@ const Canvas: React.FC<canvasProps> = ({
         {
           height: "20",
           width: "20",
-          id: (stars.length ?? 0) + 1,
+          id: (p.length ?? 0) + 1,
           fill: "black",
           stroke: "black",
           x: width / 2,
@@ -199,7 +295,7 @@ const Canvas: React.FC<canvasProps> = ({
         {
           height: "20",
           width: "20",
-          id: (square.length ?? 0) + 1,
+          id: (p.length ?? 0) + 1,
           fill: "black",
           stroke: "black",
           x: width / 2,
@@ -215,7 +311,7 @@ const Canvas: React.FC<canvasProps> = ({
         {
           height: "20",
           width: "20",
-          id: (triangle.length ?? 0) + 1,
+          id: (p.length ?? 0) + 1,
           fill: "black",
           stroke: "black",
           x: width / 2,
@@ -231,7 +327,7 @@ const Canvas: React.FC<canvasProps> = ({
         {
           height: "20",
           width: "20",
-          id: (polygon.length ?? 0) + 1,
+          id: (p.length ?? 0) + 1,
           fill: "black",
           stroke: "black",
           x: width / 2,
@@ -242,44 +338,43 @@ const Canvas: React.FC<canvasProps> = ({
         },
       ]);
     }
-  };
-  const handleBackgroundImageChange = (url: string) => {
+  }, []);
+  const handleBackgroundImageChange = useCallback((url: string) => {
     const img = new window.Image();
     img.src = url;
     img.onload = () => {
       setBackgroundImage(img);
     };
-  };
+  }, []);
 
-  const handleTextChange = (id: number, newText: string) => {
+  const handleTextChange = useCallback((id: number, newText: string) => {
     setTextboxes((prevState: any) =>
       prevState.map((textbox: any) =>
         textbox.id === id ? { ...textbox, text: newText } : textbox
       )
     );
-  };
+  }, []);
 
-  const handleTextAlignmentChange = (
-    id: number,
-    alignment: "left" | "center" | "right"
-  ) => {
-    setTextboxes((prevState: any) =>
-      prevState.map((textbox: any) =>
-        textbox.id === id ? { ...textbox, textAlign: alignment } : textbox
-      )
-    );
-  };
-  const handleCardPositionChange = (
-    id: number,
-    property: string,
-    value: string | number
-  ) => {
-    setTextboxes((prevState: any) =>
-      prevState.map((textbox: any) =>
-        textbox.id === id ? { ...textbox, [property]: value } : textbox
-      )
-    );
-  };
+  const handleTextAlignmentChange = useCallback(
+    (id: number, alignment: "left" | "center" | "right") => {
+      setTextboxes((prevState: any) =>
+        prevState.map((textbox: any) =>
+          textbox.id === id ? { ...textbox, textAlign: alignment } : textbox
+        )
+      );
+    },
+    []
+  );
+  const handleCardPositionChange = useCallback(
+    (id: number, property: string, value: string | number) => {
+      setTextboxes((prevState: any) =>
+        prevState.map((textbox: any) =>
+          textbox.id === id ? { ...textbox, [property]: value } : textbox
+        )
+      );
+    },
+    []
+  );
   const handleDownload = () => {
     setisdownloading((p: any) => true);
 
@@ -326,59 +421,57 @@ const Canvas: React.FC<canvasProps> = ({
       )
     );
   }
-  const handleCardChange = (
-    id: number,
-    type: string,
-    value: string | number
-  ) => {
-    setcardImages((p: any) =>
-      p.map((c: any) => (c.id === id ? { ...c, [type]: value } : c))
-    );
-  };
-  const handleIconChange = (
-    id: number,
-    type: string,
-    value: string | number
-  ) => {
-    setcardIcons((p: any) =>
-      p.map((c: any) => (c.id === id ? { ...c, [type]: value } : c))
-    );
-  };
+  const handleCardChange = useCallback(
+    (id: number, type: string, value: string | number) => {
+      setcardImages((p: any) =>
+        p.map((c: any) => (c.id === id ? { ...c, [type]: value } : c))
+      );
+    },
 
-  const handleShapeItemChange = (
-    name: string,
-    attr: string,
-    id: number,
-    value: string | number
-  ) => {
-    if (name === "circle") {
-      setcircles((p: any) =>
-        p.map((c: any) => (c.id === id ? { ...c, [attr]: value } : c))
+    []
+  );
+  const handleIconChange = useCallback(
+    (id: number, type: string, value: string | number) => {
+      setcardIcons((p: any) =>
+        p.map((c: any) => (c.id === id ? { ...c, [type]: value } : c))
       );
-    } else if (name === "star") {
-      setstars((p: any) =>
-        p.map((c: any) => (c.id === id ? { ...c, [attr]: value } : c))
-      );
-    } else if (name == "square") {
-      setsquare((p: any) =>
-        p.map((c: any) => (c.id === id ? { ...c, [attr]: value } : c))
-      );
-    } else if (name == "polygon") {
-      setpolygon((p: any) =>
-        p.map((c: any) => (c.id === id ? { ...c, [attr]: value } : c))
-      );
-    } else if (name == "arrow") {
-      setarrow((p: any) =>
-        p.map((c: any) => (c.id === id ? { ...c, [attr]: value } : c))
-      );
-    } else if (name == "triangle") {
-      settriangle((p: TriangleItem[]) =>
-        p.map((c: TriangleItem) => (c.id === id ? { ...c, [attr]: value } : c))
-      );
-    }
-  };
+    },
+    []
+  );
 
-  console.log("Selected Id", cardIcons);
+  const handleShapeItemChange = useCallback(
+    (name: string, attr: string, id: number, value: string | number) => {
+      if (name === "circle") {
+        setcircles((p: any) =>
+          p.map((c: any) => (c.id === id ? { ...c, [attr]: value } : c))
+        );
+      } else if (name === "star") {
+        setstars((p: any) =>
+          p.map((c: any) => (c.id === id ? { ...c, [attr]: value } : c))
+        );
+      } else if (name == "square") {
+        setsquare((p: any) =>
+          p.map((c: any) => (c.id === id ? { ...c, [attr]: value } : c))
+        );
+      } else if (name == "polygon") {
+        setpolygon((p: any) =>
+          p.map((c: any) => (c.id === id ? { ...c, [attr]: value } : c))
+        );
+      } else if (name == "arrow") {
+        setarrow((p: any) =>
+          p.map((c: any) => (c.id === id ? { ...c, [attr]: value } : c))
+        );
+      } else if (name == "triangle") {
+        settriangle((p: TriangleItem[]) =>
+          p.map((c: TriangleItem) =>
+            c.id === id ? { ...c, [attr]: value } : c
+          )
+        );
+      }
+    },
+    []
+  );
+
   const CheckDeselect = (
     e: KonvaEventObject<MouseEvent> | KonvaEventObject<TouchEvent>
   ) => {
@@ -388,7 +481,6 @@ const Canvas: React.FC<canvasProps> = ({
     //   e.target.attrs.name === "backgroundImage" ||
     //   e.target == e.target.getStage();
     const item = Object.entries(selectedId).find(([shape, id]) => !!id)?.[0];
-    console.log("name", e.target.name());
     const clickedOnEmpty =
       !e.target.name().includes("anchor") && item !== e.target.name();
     if (clickedOnEmpty) {
@@ -403,29 +495,32 @@ const Canvas: React.FC<canvasProps> = ({
         textbox: 0,
         icon: 0,
       });
+      setshapeIdSelected(false);
     }
   };
-  const handleIconAddition = (name: string) => {
+  const handleIconAddition = useCallback((name: string) => {
     setcardIcons((p: IconItem[]) => [
       ...p,
       {
         name,
         color: "black",
-        id: (cardIcons.length ?? 0) + 1,
         stroke: "black",
         x: width / 2,
         y: height / 2,
         scaleX: 0.2,
         scaleY: 0.1,
         rotation: 0,
+        id: (p.length ?? 0) + 1,
       },
     ]);
-  };
-
-  console.log("background Image", backgroundImage);
+  }, []);
+  console.log(
+    "|item",
+    Object.entries(selectedId).find(([i, a]) => a != 0)?.[0]
+  );
   return (
-    <section className="space-y-4">
-      <div className="flex flex-row justify-start items-start">
+    <section className="space-y-4 w-full">
+      <div className="flex flex-row justify-center items-start">
         <Stage
           width={width}
           height={height}
@@ -516,6 +611,8 @@ const Canvas: React.FC<canvasProps> = ({
                       handleShapeItemChange={handleShapeItemChange}
                       onSelect={() => {
                         selectShape((p) => ({ ...p, star: c.id }));
+
+                        setshapeIdSelected(true);
                       }}
                       isSelected={selectedId.star == c.id}
                       bringToTop={c.id === bringToTop.star.id}
@@ -534,6 +631,8 @@ const Canvas: React.FC<canvasProps> = ({
                       handleShapeItemChange={handleShapeItemChange}
                       onSelect={() => {
                         selectShape((p) => ({ ...p, arrow: c.id }));
+
+                        setshapeIdSelected(true);
                       }}
                       isSelected={selectedId.arrow == c.id}
                       bringToTop={c.id === bringToTop.arrow.id}
@@ -552,6 +651,8 @@ const Canvas: React.FC<canvasProps> = ({
                       handleShapeItemChange={handleShapeItemChange}
                       onSelect={() => {
                         selectShape((p) => ({ ...p, square: c.id }));
+
+                        setshapeIdSelected(true);
                       }}
                       isSelected={selectedId.square == c.id}
                       bringToTop={c.id === bringToTop.square.id}
@@ -570,6 +671,7 @@ const Canvas: React.FC<canvasProps> = ({
                       handleShapeItemChange={handleShapeItemChange}
                       onSelect={() => {
                         selectShape((p) => ({ ...p, triangle: c.id }));
+                        setshapeIdSelected(true);
                       }}
                       isSelected={selectedId.triangle == c.id}
                       bringToTop={c.id === bringToTop.triangle.id}
@@ -588,6 +690,7 @@ const Canvas: React.FC<canvasProps> = ({
                       handleShapeItemChange={handleShapeItemChange}
                       onSelect={() => {
                         selectShape((p) => ({ ...p, polygon: c.id }));
+                        setshapeIdSelected(true);
                       }}
                       isSelected={selectedId.polygon == c.id}
                       bringToTop={c.id === bringToTop.polygon.id}
@@ -792,8 +895,6 @@ const Canvas: React.FC<canvasProps> = ({
           const img = new window.Image();
           img.src = URL.createObjectURL(e.target?.files?.[0]!);
           img.onload = () => {
-            console.log("loaded");
-
             setcardImages((prevImages: any) => [
               ...prevImages,
               {
@@ -943,6 +1044,7 @@ const Canvas: React.FC<canvasProps> = ({
                     setTextboxes((p: any) =>
                       p.filter((i: any) => i.id !== textbox.id)
                     );
+                    selectShape((p) => ({ ...p, textbox: 0 }));
                   }}
                   variant="outlined"
                   startIcon={<IoTrashBinOutline />}
@@ -982,7 +1084,7 @@ const Canvas: React.FC<canvasProps> = ({
       )}
       {editType === "image" && (
         <>
-          {cardImages?.map((cardimage) => (
+          {selectedImages?.map((cardimage) => (
             <div
               className="flex flex-row justify-around items-end"
               key={cardimage.id}
@@ -1044,6 +1146,7 @@ const Canvas: React.FC<canvasProps> = ({
                     setcardImages((p: any) =>
                       p.filter((i: any) => i.id !== cardimage.id)
                     );
+                    selectShape((p) => ({ ...p, image: 0 }));
                   }}
                   startIcon={<IoTrashBinOutline />}
                   color="error"
@@ -1069,429 +1172,453 @@ const Canvas: React.FC<canvasProps> = ({
       )}
       {editType === "shape" && (
         <>
-          {stars?.map((star) => (
-            <div
-              className="flex flex-row justify-around items-center"
-              key={star.id}
-            >
-              <div>
-                <h1>Change Color</h1>
-                <TextField
-                  type="color"
-                  className="w-24"
-                  placeholder="Change Color Size"
-                  defaultValue={star.fill}
-                  onChange={(e) => {
-                    handleShapeItemChange(
-                      "star",
-                      "fill",
-                      star.id,
-                      e.target.value
-                    );
-                  }}
-                />
-              </div>
-              <div>
-                <h1>Change Stroke Color</h1>
-                <TextField
-                  type="color"
-                  className="w-24"
-                  placeholder="Change Stroke Color Size"
-                  defaultValue={star.fill}
-                  onChange={(e) => {
-                    handleShapeItemChange(
-                      "star",
-                      "stroke",
-                      star.id,
-                      e.target.value
-                    );
-                  }}
-                />
-              </div>
-              <Button
-                className="p-4 bg-blue-600 text-white rounded-md"
-                onClick={(e) => {
-                  setbringToTop((p) => ({
-                    ...p,
-                    star: { count: p.star.count + 1, id: star.id },
-                  }));
-                }}
-                variant="contained"
-                color="secondary"
-                startIcon={<MdLayers />}
+          {(!shapeIdSelected ||
+            Object.entries(selectedId).find(([i, a]) => a != 0)?.[0] ==
+              "star") &&
+            selectedstars?.map((star) => (
+              <div
+                className="flex flex-row justify-around items-center"
+                key={star.id}
               >
-                Bring To Top
-              </Button>
-              <div>
+                <div>
+                  <h1>Change Color</h1>
+                  <TextField
+                    type="color"
+                    className="w-24"
+                    placeholder="Change Color Size"
+                    defaultValue={star.fill}
+                    onChange={(e) => {
+                      handleShapeItemChange(
+                        "star",
+                        "fill",
+                        star.id,
+                        e.target.value
+                      );
+                    }}
+                  />
+                </div>
+                <div>
+                  <h1>Change Stroke Color</h1>
+                  <TextField
+                    type="color"
+                    className="w-24"
+                    placeholder="Change Stroke Color Size"
+                    defaultValue={star.fill}
+                    onChange={(e) => {
+                      handleShapeItemChange(
+                        "star",
+                        "stroke",
+                        star.id,
+                        e.target.value
+                      );
+                    }}
+                  />
+                </div>
                 <Button
-                  className="text-red-700 cursor-pointer"
+                  className="p-4 bg-blue-600 text-white rounded-md"
                   onClick={(e) => {
-                    setstars((p: any) =>
-                      p.filter((i: any) => i.id !== star.id)
-                    );
+                    setbringToTop((p) => ({
+                      ...p,
+                      star: { count: p.star.count + 1, id: star.id },
+                    }));
                   }}
-                  variant="outlined"
-                  color="error"
-                  startIcon={<IoTrashBinOutline />}
+                  variant="contained"
+                  color="secondary"
+                  startIcon={<MdLayers />}
                 >
-                  Delete
+                  Bring To Top
                 </Button>
+                <div>
+                  <Button
+                    className="text-red-700 cursor-pointer"
+                    onClick={(e) => {
+                      setstars((p: any) =>
+                        p.filter((i: any) => i.id !== star.id)
+                      );
+                      setshapeIdSelected(false);
+                    }}
+                    variant="outlined"
+                    color="error"
+                    startIcon={<IoTrashBinOutline />}
+                  >
+                    Delete
+                  </Button>
+                </div>
               </div>
-            </div>
-          ))}
-          {square?.map((square) => (
-            <div
-              className="flex flex-row justify-around items-center"
-              key={square.id}
-            >
-              <div>
-                <h1>Change Stroke Color</h1>
-                <TextField
-                  type="color"
-                  className="w-24"
-                  placeholder="Change Color Size"
-                  defaultValue={square.stroke}
-                  onChange={(e) => {
-                    handleShapeItemChange(
-                      "square",
-                      "fill",
-                      square.id,
-                      e.target.value
-                    );
-                  }}
-                />
-              </div>
-              <div>
-                <h1>Change Color</h1>
-                <TextField
-                  type="color"
-                  className="w-24"
-                  placeholder="Change Color Size"
-                  defaultValue={square.fill}
-                  onChange={(e) => {
-                    handleShapeItemChange(
-                      "square",
-                      "fill",
-                      square.id,
-                      e.target.value
-                    );
-                  }}
-                />
-              </div>
-              <Button
-                className="p-4 bg-blue-600 text-white rounded-md"
-                onClick={(e) => {
-                  setbringToTop((p) => ({
-                    ...p,
-                    square: { count: p.square.count + 1, id: square.id },
-                  }));
-                }}
-                variant="contained"
-                color="secondary"
-                startIcon={<MdLayers />}
+            ))}
+          {(!shapeIdSelected ||
+            Object.entries(selectedId).find(([i, a]) => a != 0)?.[0] ==
+              "square") &&
+            selectedsquare?.map((square) => (
+              <div
+                className="flex flex-row justify-around items-center"
+                key={square.id}
               >
-                Bring To Top
-              </Button>
-              <div>
+                <div>
+                  <h1>Change Color</h1>
+                  <TextField
+                    type="color"
+                    className="w-24"
+                    placeholder="Change Color Size"
+                    defaultValue={square.fill}
+                    onChange={(e) => {
+                      handleShapeItemChange(
+                        "square",
+                        "fill",
+                        square.id,
+                        e.target.value
+                      );
+                    }}
+                  />
+                </div>
+                <div>
+                  <h1>Change Stroke Color</h1>
+                  <TextField
+                    type="color"
+                    className="w-24"
+                    placeholder="Change Color Size"
+                    defaultValue={square.stroke}
+                    onChange={(e) => {
+                      handleShapeItemChange(
+                        "square",
+                        "fill",
+                        square.id,
+                        e.target.value
+                      );
+                    }}
+                  />
+                </div>
                 <Button
-                  variant="outlined"
-                  color="error"
-                  startIcon={<IoTrashBinOutline />}
-                  className="text-red-700 cursor-pointer"
+                  className="p-4 bg-blue-600 text-white rounded-md"
                   onClick={(e) => {
-                    setsquare((p: any) =>
-                      p.filter((i: any) => i.id !== square.id)
-                    );
+                    setbringToTop((p) => ({
+                      ...p,
+                      square: { count: p.square.count + 1, id: square.id },
+                    }));
                   }}
+                  variant="contained"
+                  color="secondary"
+                  startIcon={<MdLayers />}
                 >
-                  Delete
+                  Bring To Top
                 </Button>
+                <div>
+                  <Button
+                    variant="outlined"
+                    color="error"
+                    startIcon={<IoTrashBinOutline />}
+                    className="text-red-700 cursor-pointer"
+                    onClick={(e) => {
+                      setsquare((p: any) =>
+                        p.filter((i: any) => i.id !== square.id)
+                      );
+                      setshapeIdSelected(false);
+                    }}
+                  >
+                    Delete
+                  </Button>
+                </div>
               </div>
-            </div>
-          ))}
-          {triangle?.map((triangle) => (
-            <div
-              className="flex flex-row justify-around items-center"
-              key={triangle.id}
-            >
-              <div>
-                <h1>Change Stroke</h1>
-                <TextField
-                  type="color"
-                  className="w-24"
-                  placeholder="Change Stroke"
-                  defaultValue={triangle.stroke}
-                  onChange={(e) => {
-                    handleShapeItemChange(
-                      "triangle",
-                      "stroke",
-                      triangle.id,
-                      e.target.value
-                    );
-                  }}
-                />
-              </div>
-              <div>
-                <h1>Change Color</h1>
-                <TextField
-                  type="color"
-                  className="w-24"
-                  placeholder="Change Color"
-                  defaultValue={triangle.fill}
-                  onChange={(e) => {
-                    handleShapeItemChange(
-                      "triangle",
-                      "fill",
-                      triangle.id,
-                      e.target.value
-                    );
-                  }}
-                />
-              </div>
-              <Button
-                className="p-4 bg-blue-600 text-white rounded-md"
-                onClick={(e) => {
-                  setbringToTop((p) => ({
-                    ...p,
-                    triangle: {
-                      count: p.triangle.count + 1,
-                      id: triangle.id,
-                    },
-                  }));
-                }}
-                variant="contained"
-                color="secondary"
-                startIcon={<MdLayers />}
+            ))}
+          {(!shapeIdSelected ||
+            Object.entries(selectedId).find(([i, a]) => a != 0)?.[0] ==
+              "triangle") &&
+            selectedtriangle?.map((triangle) => (
+              <div
+                className="flex flex-row justify-around items-center"
+                key={triangle.id}
               >
-                Bring To Top
-              </Button>
-              <div>
+                <div>
+                  <h1>Change Color</h1>
+                  <TextField
+                    type="color"
+                    className="w-24"
+                    placeholder="Change Color"
+                    defaultValue={triangle.fill}
+                    onChange={(e) => {
+                      handleShapeItemChange(
+                        "triangle",
+                        "fill",
+                        triangle.id,
+                        e.target.value
+                      );
+                    }}
+                  />
+                </div>
+                <div>
+                  <h1>Change Stroke Color</h1>
+                  <TextField
+                    type="color"
+                    className="w-24"
+                    placeholder="Change Stroke"
+                    defaultValue={triangle.stroke}
+                    onChange={(e) => {
+                      handleShapeItemChange(
+                        "triangle",
+                        "stroke",
+                        triangle.id,
+                        e.target.value
+                      );
+                    }}
+                  />
+                </div>
                 <Button
-                  className="text-red-700 cursor-pointer"
+                  className="p-4 bg-blue-600 text-white rounded-md"
                   onClick={(e) => {
-                    settriangle((p: any) =>
-                      p.filter((i: any) => i.id !== triangle.id)
-                    );
+                    setbringToTop((p) => ({
+                      ...p,
+                      triangle: {
+                        count: p.triangle.count + 1,
+                        id: triangle.id,
+                      },
+                    }));
                   }}
-                  variant="outlined"
-                  color="error"
-                  startIcon={<IoTrashBinOutline />}
+                  variant="contained"
+                  color="secondary"
+                  startIcon={<MdLayers />}
                 >
-                  Delete
+                  Bring To Top
                 </Button>
+                <div>
+                  <Button
+                    className="text-red-700 cursor-pointer"
+                    onClick={(e) => {
+                      settriangle((p: any) =>
+                        p.filter((i: any) => i.id !== triangle.id)
+                      );
+                      setshapeIdSelected(false);
+                    }}
+                    variant="outlined"
+                    color="error"
+                    startIcon={<IoTrashBinOutline />}
+                  >
+                    Delete
+                  </Button>
+                </div>
               </div>
-            </div>
-          ))}
-          {circles?.map((circle) => (
-            <div
-              className="flex flex-row justify-around items-center"
-              key={circle.id}
-            >
-              <div>
-                <h1>Change Stroke Color</h1>
-                <TextField
-                  type="color"
-                  className="w-24"
-                  placeholder="Change Stroke Color"
-                  defaultValue={circle.stroke}
-                  onChange={(e) => {
-                    handleShapeItemChange(
-                      "circle",
-                      "stroke",
-                      circle.id,
-                      e.target.value
-                    );
-                  }}
-                />
-              </div>
-              <div>
-                <h1>Change Color</h1>
-                <TextField
-                  type="color"
-                  className="w-24"
-                  placeholder="Change Color"
-                  defaultValue={circle.fill}
-                  onChange={(e) => {
-                    handleShapeItemChange(
-                      "circle",
-                      "fill",
-                      circle.id,
-                      e.target.value
-                    );
-                  }}
-                />
-              </div>
-              <Button
-                className="p-4 bg-blue-600 text-white rounded-md"
-                onClick={(e) => {
-                  setbringToTop((p) => ({
-                    ...p,
-                    circle: { count: p.circle.count + 1, id: circle.id },
-                  }));
-                }}
-                variant="contained"
-                color="secondary"
-                startIcon={<MdLayers />}
+            ))}
+          {(!shapeIdSelected ||
+            Object.entries(selectedId).find(([i, a]) => a != 0)?.[0] ==
+              "circle") &&
+            selectedcircles?.map((circle) => (
+              <div
+                className="flex flex-row justify-around items-center"
+                key={circle.id}
               >
-                Bring To Top
-              </Button>
-              <div>
+                <div>
+                  <h1>Change Color</h1>
+                  <TextField
+                    type="color"
+                    className="w-24"
+                    placeholder="Change Color"
+                    defaultValue={circle.fill}
+                    onChange={(e) => {
+                      handleShapeItemChange(
+                        "circle",
+                        "fill",
+                        circle.id,
+                        e.target.value
+                      );
+                    }}
+                  />
+                </div>
+                <div>
+                  <h1>Change Stroke Color</h1>
+                  <TextField
+                    type="color"
+                    className="w-24"
+                    placeholder="Change Stroke Color"
+                    defaultValue={circle.stroke}
+                    onChange={(e) => {
+                      handleShapeItemChange(
+                        "circle",
+                        "stroke",
+                        circle.id,
+                        e.target.value
+                      );
+                    }}
+                  />
+                </div>
                 <Button
-                  className="text-red-700 cursor-pointer"
+                  className="p-4 bg-blue-600 text-white rounded-md"
                   onClick={(e) => {
-                    setcircles((p: any) =>
-                      p.filter((i: any) => i.id !== circle.id)
-                    );
+                    setbringToTop((p) => ({
+                      ...p,
+                      circle: { count: p.circle.count + 1, id: circle.id },
+                    }));
                   }}
-                  variant="outlined"
-                  color="error"
-                  startIcon={<IoTrashBinOutline />}
+                  variant="contained"
+                  color="secondary"
+                  startIcon={<MdLayers />}
                 >
-                  Delete
+                  Bring To Top
                 </Button>
+                <div>
+                  <Button
+                    className="text-red-700 cursor-pointer"
+                    onClick={(e) => {
+                      setcircles((p: any) =>
+                        p.filter((i: any) => i.id !== circle.id)
+                      );
+                      setshapeIdSelected(false);
+                    }}
+                    variant="outlined"
+                    color="error"
+                    startIcon={<IoTrashBinOutline />}
+                  >
+                    Delete
+                  </Button>
+                </div>
               </div>
-            </div>
-          ))}
-          {arrow?.map((arrow) => (
-            <div
-              className="flex flex-row justify-around items-center"
-              key={arrow.id}
-            >
-              <div>
-                <h1>Change Stroke Color</h1>
-                <TextField
-                  type="color"
-                  className="w-24"
-                  placeholder="Change Stroke Color"
-                  defaultValue={arrow.stroke}
-                  onChange={(e) => {
-                    handleShapeItemChange(
-                      "arrow",
-                      "stroke",
-                      arrow.id,
-                      e.target.value
-                    );
-                  }}
-                />
-              </div>
-              <div>
-                <h1>Change Color</h1>
-                <TextField
-                  type="color"
-                  className="w-24"
-                  placeholder="Change Color"
-                  defaultValue={arrow.fill}
-                  onChange={(e) => {
-                    handleShapeItemChange(
-                      "arrow",
-                      "fill",
-                      arrow.id,
-                      e.target.value
-                    );
-                  }}
-                />
-              </div>
-              <Button
-                className="p-4 bg-blue-600 text-white rounded-md"
-                onClick={(e) => {
-                  setbringToTop((p) => ({
-                    ...p,
-                    arrow: { count: p.arrow.count + 1, id: arrow.id },
-                  }));
-                }}
-                variant="contained"
-                color="secondary"
-                startIcon={<MdLayers />}
+            ))}
+          {(!shapeIdSelected ||
+            Object.entries(selectedId).find(([i, a]) => a != 0)?.[0] ==
+              "arrow") &&
+            selectedarrow?.map((arrow) => (
+              <div
+                className="flex flex-row justify-around items-center"
+                key={arrow.id}
               >
-                Bring To Top
-              </Button>
-              <div>
+                <div>
+                  <h1>Change Color</h1>
+                  <TextField
+                    type="color"
+                    className="w-24"
+                    placeholder="Change Color"
+                    defaultValue={arrow.fill}
+                    onChange={(e) => {
+                      handleShapeItemChange(
+                        "arrow",
+                        "fill",
+                        arrow.id,
+                        e.target.value
+                      );
+                    }}
+                  />
+                </div>
+                <div>
+                  <h1>Change Stroke Color</h1>
+                  <TextField
+                    type="color"
+                    className="w-24"
+                    placeholder="Change Stroke Color"
+                    defaultValue={arrow.stroke}
+                    onChange={(e) => {
+                      handleShapeItemChange(
+                        "arrow",
+                        "stroke",
+                        arrow.id,
+                        e.target.value
+                      );
+                    }}
+                  />
+                </div>
                 <Button
-                  className="text-red-700 cursor-pointer"
+                  className="p-4 bg-blue-600 text-white rounded-md"
                   onClick={(e) => {
-                    setarrow((p: any) =>
-                      p.filter((i: any) => i.id !== arrow.id)
-                    );
+                    setbringToTop((p) => ({
+                      ...p,
+                      arrow: { count: p.arrow.count + 1, id: arrow.id },
+                    }));
                   }}
-                  variant="outlined"
-                  color="error"
-                  startIcon={<IoTrashBinOutline />}
+                  variant="contained"
+                  color="secondary"
+                  startIcon={<MdLayers />}
                 >
-                  Delete
+                  Bring To Top
                 </Button>
+                <div>
+                  <Button
+                    className="text-red-700 cursor-pointer"
+                    onClick={(e) => {
+                      setarrow((p: any) =>
+                        p.filter((i: any) => i.id !== arrow.id)
+                      );
+                      setshapeIdSelected(false);
+                    }}
+                    variant="outlined"
+                    color="error"
+                    startIcon={<IoTrashBinOutline />}
+                  >
+                    Delete
+                  </Button>
+                </div>
               </div>
-            </div>
-          ))}
-          {polygon?.map((polygon) => (
-            <div
-              className="flex flex-row justify-around items-center"
-              key={polygon.id}
-            >
-              <div>
-                <h1>Change Stroke Color</h1>
-                <TextField
-                  type="color"
-                  className="w-24"
-                  placeholder="Change Stroke"
-                  defaultValue={polygon.stroke}
-                  onChange={(e) => {
-                    handleShapeItemChange(
-                      "polygon",
-                      "stroke",
-                      polygon.id,
-                      e.target.value
-                    );
-                  }}
-                />
-              </div>
-              <Button
-                className="p-4 bg-blue-600 text-white rounded-md"
-                onClick={(e) => {
-                  setbringToTop((p) => ({
-                    ...p,
-                    polygon: { count: p.polygon.count + 1, id: polygon.id },
-                  }));
-                }}
-                variant="contained"
-                color="secondary"
-                startIcon={<MdLayers />}
+            ))}
+          {(!shapeIdSelected ||
+            Object.entries(selectedId).find(([i, a]) => a != 0)?.[0] ==
+              "polygon") &&
+            selectedpolygon?.map((polygon) => (
+              <div
+                className="flex flex-row justify-around items-center"
+                key={polygon.id}
               >
-                Bring To Top
-              </Button>
-              <div>
-                <h1>Change Color</h1>
-                <TextField
-                  type="color"
-                  className="w-24"
-                  placeholder="Change Color Size"
-                  defaultValue={polygon.fill}
-                  onChange={(e) => {
-                    handleShapeItemChange(
-                      "polygon",
-                      "fill",
-                      polygon.id,
-                      e.target.value
-                    );
-                  }}
-                />
-              </div>
-              <div>
+                <div>
+                  <h1>Change Color</h1>
+                  <TextField
+                    type="color"
+                    className="w-24"
+                    placeholder="Change Color Size"
+                    defaultValue={polygon.fill}
+                    onChange={(e) => {
+                      handleShapeItemChange(
+                        "polygon",
+                        "fill",
+                        polygon.id,
+                        e.target.value
+                      );
+                    }}
+                  />
+                </div>
+                <div>
+                  <h1>Change Stroke Color</h1>
+                  <TextField
+                    type="color"
+                    className="w-24"
+                    placeholder="Change Stroke"
+                    defaultValue={polygon.stroke}
+                    onChange={(e) => {
+                      handleShapeItemChange(
+                        "polygon",
+                        "stroke",
+                        polygon.id,
+                        e.target.value
+                      );
+                    }}
+                  />
+                </div>
                 <Button
-                  className="text-red-700 cursor-pointer"
+                  className="p-4 bg-blue-600 text-white rounded-md"
                   onClick={(e) => {
-                    setpolygon((p: any) =>
-                      p.filter((i: any) => i.id !== polygon.id)
-                    );
+                    setbringToTop((p) => ({
+                      ...p,
+                      polygon: { count: p.polygon.count + 1, id: polygon.id },
+                    }));
                   }}
-                  variant="outlined"
-                  color="error"
-                  startIcon={<IoTrashBinOutline />}
+                  variant="contained"
+                  color="secondary"
+                  startIcon={<MdLayers />}
                 >
-                  Delete
+                  Bring To Top
                 </Button>
+                <div>
+                  <Button
+                    className="text-red-700 cursor-pointer"
+                    onClick={(e) => {
+                      setpolygon((p: any) =>
+                        p.filter((i: any) => i.id !== polygon.id)
+                      );
+                      setshapeIdSelected(false);
+                    }}
+                    variant="outlined"
+                    color="error"
+                    startIcon={<IoTrashBinOutline />}
+                  >
+                    Delete
+                  </Button>
+                </div>
               </div>
-            </div>
-          ))}
+            ))}
           <Button
             className="p-4 bg-blue-600 text-white rounded-md"
             onClick={(e) => {
@@ -1507,7 +1634,7 @@ const Canvas: React.FC<canvasProps> = ({
       )}
       {editType === "icon" && (
         <>
-          {cardIcons?.map((c) => (
+          {selectedcardIcons?.map((c) => (
             <div
               className="flex flex-row justify-around items-center"
               key={c.id}
@@ -1557,6 +1684,7 @@ const Canvas: React.FC<canvasProps> = ({
                     setcardIcons((p: any) =>
                       p.filter((i: any) => i.id !== c.id)
                     );
+                    selectShape((p) => ({ ...p, icon: 0 }));
                   }}
                   variant="outlined"
                   color="error"

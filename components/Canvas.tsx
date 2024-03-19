@@ -357,9 +357,16 @@ const Canvas: React.FC<canvasProps> = ({
 
   const handleTextAlignmentChange = useCallback(
     (id: number, alignment: "left" | "center" | "right") => {
-      setTextboxes((prevState: any) =>
-        prevState.map((textbox: any) =>
-          textbox.id === id ? { ...textbox, textAlign: alignment } : textbox
+      console.log("alignment", alignment);
+      let x =
+        alignment === "left"
+          ? canvasPadding
+          : alignment === "center"
+          ? width / 2
+          : width - canvasPadding * 10;
+      setTextboxes((prevState: TextBox[]) =>
+        prevState.map((textbox: TextBox) =>
+          textbox.id === id ? { ...textbox, x,textAlign:alignment } : textbox
         )
       );
     },
@@ -987,6 +994,8 @@ const Canvas: React.FC<canvasProps> = ({
               >
                 <FaAlignJustify />
                 <Select
+                  placeholder="Set Alignment"
+                  label="Align"
                   value={textbox.textAlign}
                   onChange={(e) =>
                     handleTextAlignmentChange(
@@ -1677,6 +1686,7 @@ const Canvas: React.FC<canvasProps> = ({
                 <h1>Change Stroke Color</h1>
                 <TextField
                   type="color"
+                  className="w-24"
                   placeholder="Change Stroke"
                   defaultValue={c.color}
                   onChange={(e) => {

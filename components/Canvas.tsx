@@ -366,7 +366,7 @@ const Canvas: React.FC<canvasProps> = ({
           : width - canvasPadding * 10;
       setTextboxes((prevState: TextBox[]) =>
         prevState.map((textbox: TextBox) =>
-          textbox.id === id ? { ...textbox, x,textAlign:alignment } : textbox
+          textbox.id === id ? { ...textbox, x, textAlign: alignment } : textbox
         )
       );
     },

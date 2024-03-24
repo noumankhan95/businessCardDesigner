@@ -10,7 +10,7 @@ function ListIcons({
   const [filteredIcons, setFilteredIcons] = useState<any[]>([]);
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [currentPage, setCurrentPage] = useState<number>(1);
-  const [iconsPerPage] = useState<number>(100);
+  const [iconsPerPage] = useState<number>(20);
 
   useEffect(() => {
     // Dynamically import all icons from react-icons/fa
@@ -43,9 +43,9 @@ function ListIcons({
 
   const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
   return (
-    <section className="flex h-auto w-full bg-gray-100 p-5">
-      <div className="flex flex-col items-center">
-        <div className="w-full mb-4 flex items-center">
+    <section className="flex h-auto w-5/5 bg-gray-100 p-5">
+      <div className="flex flex-col items-start w-full">
+        <div className="w-full mb-4 flex flex-wrap items-center">
           <FaSearch className="mr-2" />
           <input
             type="text"
@@ -70,7 +70,7 @@ function ListIcons({
             </div>
           ))}
         </div>
-        <div className="flex justify-center items-center mt-4">
+        <div className="flex flex-wrap gap-2 justify-center items-center mt-4">
           {Array.from({
             length: Math.ceil(filteredIcons.length / iconsPerPage),
           }).map((_, index) => (

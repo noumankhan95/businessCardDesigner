@@ -36,7 +36,7 @@ const BusinessCard: React.FC<BusinessCardProps> = ({
   const [BacksidebackgroundImage, setBacksidebackgroundImage] = useState<any>();
 
   return (
-    <div className="space-y-5">
+    <div className="space-y-5 w-full h-screen">
       <div className="flex flex-row justify-start items-center">
         <Button
           onClick={() => {

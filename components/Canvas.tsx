@@ -534,7 +534,7 @@ const Canvas: React.FC<canvasProps> = ({
           {textboxes[selectedId.textbox - 1] && (
             <Box
               className={`flex flex-row justify-around items-end space-x-2
-                  absolute top-6 bg-white w-3/5 rounded-lg border-2 right-0 left-0 border-black p-4 mx-auto
+                  absolute top-6 bg-white w-full rounded-lg border-2 right-0 left-0 border-slate-50 p-4 mx-auto
               `}
             >
               <Box className="space-x-2">

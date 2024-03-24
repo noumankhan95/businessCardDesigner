@@ -18,7 +18,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={inter.className} style={{ backgroundColor: "#b0e8e2" }}>
+      <body className={inter.className} style={{ backgroundColor: "#f0f0f0" }}>
         <ThemeRegistry options={{ key: "mui-theme" }}>
           <ToastContainer position="top-right" />
           {children}

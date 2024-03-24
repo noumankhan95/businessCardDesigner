@@ -1343,7 +1343,7 @@ const Canvas: React.FC<canvasProps> = ({
           <Typography variant="h4">Customize</Typography>
           {editType === "text" && (
             <>
-              {selectedTexts?.map((textbox) => (
+              {textboxes?.map((textbox) => (
                 <Box
                   className={`flex flex-row justify-around items-end space-x-2 `}
                   key={textbox.id}

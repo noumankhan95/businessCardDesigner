@@ -107,8 +107,8 @@ function CardImageItem({
       <Image
         onClick={onSelect}
         onTap={onSelect}
-        width={width}
-        height={height}
+        width={width / 4}
+        height={height / 4}
         image={source}
         key={id}
         ref={shapeRef}

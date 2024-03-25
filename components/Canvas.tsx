@@ -651,11 +651,9 @@ const Canvas: React.FC<canvasProps> = ({
         <>
           {selectedImages?.map((cardimage) => (
             <div
-              className={`flex flex-row justify-around items-end space-x-2 ${
-                selectedId.image === cardimage.id
-                  ? "absolute top-6 bg-white w-3/5 rounded-lg border-2 border-black p-4 mx-auto"
-                  : "hidden"
-              }`}
+              className={`flex flex-row justify-around items-end space-x-2
+            absolute top-6 bg-white w-full rounded-lg border-2 right-0 left-0 border-slate-50 p-4 mx-auto
+        `}
               key={cardimage.id}
             >
               <div>
@@ -737,7 +735,7 @@ const Canvas: React.FC<canvasProps> = ({
               <div
                 className={`flex flex-row justify-around items-end space-x-2 ${
                   selectedId.star === star.id
-                    ? "absolute top-6 bg-white w-3/5 rounded-lg border-2 border-black p-4 mx-auto"
+                    ? " absolute top-6 bg-white w-full rounded-lg border-2 right-0 left-0 border-slate-50 p-4 mx-auto"
                     : "hidden"
                 }`}
                 key={star.id}
@@ -815,7 +813,7 @@ const Canvas: React.FC<canvasProps> = ({
               <div
                 className={`flex flex-row justify-around items-end space-x-2 ${
                   selectedId.square === square.id
-                    ? "absolute top-6 bg-white w-3/5 rounded-lg border-2 border-black p-4 mx-auto"
+                    ? " absolute top-6 bg-white w-full rounded-lg border-2 right-0 left-0 border-slate-50 p-4 mx-auto"
                     : "hidden"
                 }`}
                 key={square.id}
@@ -893,7 +891,7 @@ const Canvas: React.FC<canvasProps> = ({
               <div
                 className={`flex flex-row justify-around items-end space-x-2 ${
                   selectedId.triangle === triangle.id
-                    ? "absolute top-6 bg-white w-3/5 rounded-lg border-2 border-black p-4 mx-auto"
+                    ? " absolute top-6 bg-white w-full rounded-lg border-2 right-0 left-0 border-slate-50 p-4 mx-auto"
                     : "hidden"
                 }`}
                 key={triangle.id}
@@ -974,7 +972,7 @@ const Canvas: React.FC<canvasProps> = ({
               <div
                 className={`flex flex-row justify-around items-end space-x-2 ${
                   selectedId.circle === circle.id
-                    ? "absolute top-6 bg-white w-3/5 rounded-lg border-2 border-black p-4 mx-auto"
+                    ? " absolute top-6 bg-white w-full rounded-lg border-2 right-0 left-0 border-slate-50 p-4 mx-auto"
                     : "hidden"
                 }`}
                 key={circle.id}
@@ -1052,7 +1050,7 @@ const Canvas: React.FC<canvasProps> = ({
               <div
                 className={`flex flex-row justify-around items-end space-x-2 ${
                   selectedId.arrow === arrow.id
-                    ? "absolute top-6 bg-white w-3/5 rounded-lg border-2 border-black p-4 mx-auto"
+                    ? " absolute top-6 bg-white w-full rounded-lg border-2 right-0 left-0 border-slate-50 p-4 mx-auto"
                     : "hidden"
                 }`}
                 key={arrow.id}
@@ -1130,7 +1128,7 @@ const Canvas: React.FC<canvasProps> = ({
               <div
                 className={`flex flex-row justify-around items-end space-x-2 ${
                   selectedId.polygon === polygon.id
-                    ? "absolute top-6 bg-white w-3/5 rounded-lg border-2 border-black p-4 mx-auto"
+                    ? " absolute top-6 bg-white w-full rounded-lg border-2 right-0 left-0 border-slate-50 p-4 mx-auto"
                     : "hidden"
                 }`}
                 key={polygon.id}
@@ -1212,7 +1210,7 @@ const Canvas: React.FC<canvasProps> = ({
             <div
               className={`flex flex-row justify-around items-end space-x-2 ${
                 selectedId.icon === c.id
-                  ? "absolute top-6 bg-white w-3/5 rounded-lg border-2 border-black p-4 mx-auto"
+                  ? " absolute top-6 bg-white w-full rounded-lg border-2 right-0 left-0 border-slate-50 p-4 mx-auto"
                   : "hidden"
               }`}
               key={c.id}

@@ -61,6 +61,7 @@ function TextImageItem({
           textbox.x // Align right
         }
         y={textbox.y}
+        
         scaleX={textbox.scaleX}
         scaleY={textbox.scaleY}
         rotation={textbox.rotation}

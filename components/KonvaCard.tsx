@@ -10,7 +10,9 @@ const BusinessCard: React.FC<BusinessCardProps> = ({
   canvasPadding,
 }) => {
   const [showFront, setshowFront] = useState<boolean>(false);
-  const [textboxes, setTextboxes] = useState<TextBox[]>([]);
+  const [textboxes, setTextboxes] = useState<Map<number, TextBox>>(
+    new Map<number, TextBox>()
+  );
   const [cardImages, setcardImages] = useState<CardImage[]>([]);
   const [circles, setcircles] = useState<CircleItem[]>([]);
   const [stars, setstars] = useState<StarItem[]>([]);
@@ -20,7 +22,9 @@ const BusinessCard: React.FC<BusinessCardProps> = ({
   const [polygon, setpolygon] = useState<PolygonItem[]>([]);
   const [cardIcons, setcardIcons] = useState<IconItem[]>([]);
   // const [backShowFront, setbackShowFront] = useState<boolean>(false);
-  const [backTextboxes, setbackTextboxes] = useState<TextBox[]>([]);
+  const [backTextboxes, setbackTextboxes] = useState<Map<number, TextBox>>(
+    new Map<number, TextBox>()
+  );
   const [backCardImages, setbackCardImages] = useState<CardImage[]>([]);
   const [backCircles, setbackCircles] = useState<CircleItem[]>([]);
   const [backStars, setbackStars] = useState<StarItem[]>([]);
@@ -36,7 +40,7 @@ const BusinessCard: React.FC<BusinessCardProps> = ({
   const [BacksidebackgroundImage, setBacksidebackgroundImage] = useState<any>();
 
   return (
-    <div className="space-y-5 w-full h-screen">
+    <div className="space-y-5 w-full h-screen ">
       {showFront && (
         <Canvas
           canvasPadding={canvasPadding}
@@ -95,17 +99,17 @@ const BusinessCard: React.FC<BusinessCardProps> = ({
           setBackgroundImage={setBacksidebackgroundImage}
         />
       )}
-        <div className="flex flex-row justify-start items-center fixed right-6 top-32 ">
-          <Button
-            onClick={() => {
-              setshowFront((p) => !p);
-            }}
-            variant="contained"
-            color="secondary"
-          >
-            Show {showFront ? "Front" : "Back"}
-          </Button>
-        </div>
+      <div className="flex flex-row justify-start items-center fixed right-6 top-32 ">
+        <Button
+          onClick={() => {
+            setshowFront((p) => !p);
+          }}
+          variant="contained"
+          color="secondary"
+        >
+          Show {showFront ? "Front" : "Back"}
+        </Button>
+      </div>
     </div>
   );
 };

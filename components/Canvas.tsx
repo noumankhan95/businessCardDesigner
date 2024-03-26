@@ -133,47 +133,47 @@ const Canvas: React.FC<canvasProps> = ({
   const handleBackgroundColorChange = (color: string) => {
     setBackgroundColor(color);
   };
-  const [selectedTexts, setselectedTexts] = useState<TextBox[]>(() =>
-    selectedId.textbox
-      ? textboxes?.filter((i) => i.id === selectedId.textbox)
-      : textboxes
-  );
-  const [selectedImages, setselectedImages] = useState<CardImage[]>(() =>
-    selectedId.image
-      ? cardImages?.filter((i) => i.id === selectedId.image)
-      : cardImages
-  );
-  const [selectedcircles, setselectedcircles] = useState<CircleItem[]>(() =>
-    selectedId.circle
-      ? circles?.filter((i) => i.id === selectedId.circle)
-      : circles
-  );
-  const [selectedstars, setselectedstars] = useState<StarItem[]>(() =>
-    selectedId.star ? stars?.filter((i) => i.id === selectedId.star) : stars
-  );
-  const [selectedarrow, setselectedarrow] = useState<ArrowItem[]>(() =>
-    selectedId.arrow ? arrow?.filter((i) => i.id === selectedId.arrow) : arrow
-  );
-  const [selectedsquare, setselectedsquare] = useState<SquareItem[]>(() =>
-    selectedId.square
-      ? square?.filter((i) => i.id === selectedId.square)
-      : square
-  );
-  const [selectedtriangle, setselectedtriangle] = useState<TriangleItem[]>(() =>
-    selectedId.triangle
-      ? triangle?.filter((i) => i.id === selectedId.triangle)
-      : triangle
-  );
-  const [selectedpolygon, setselectedpolygon] = useState<PolygonItem[]>(() =>
-    selectedId.polygon
-      ? polygon?.filter((i) => i.id === selectedId.polygon)
-      : polygon
-  );
-  const [selectedcardIcons, setselectedcardIcons] = useState<IconItem[]>(() =>
-    selectedId.icon
-      ? cardIcons?.filter((i) => i.id === selectedId.icon)
-      : cardIcons
-  );
+  // const [selectedTexts, setselectedTexts] = useState<TextBox[]>(() =>
+  //   selectedId.textbox
+  //     ? textboxes?.filter((i) => i.id === selectedId.textbox)
+  //     : textboxes
+  // );
+  // const [selectedImages, setselectedImages] = useState<CardImage[]>(() =>
+  //   selectedId.image
+  //     ? cardImages?.filter((i) => i.id === selectedId.image)
+  //     : cardImages
+  // );
+  // const [selectedcircles, setselectedcircles] = useState<CircleItem[]>(() =>
+  //   selectedId.circle
+  //     ? circles?.filter((i) => i.id === selectedId.circle)
+  //     : circles
+  // );
+  // const [selectedstars, setselectedstars] = useState<StarItem[]>(() =>
+  //   selectedId.star ? stars?.filter((i) => i.id === selectedId.star) : stars
+  // );
+  // const [selectedarrow, setselectedarrow] = useState<ArrowItem[]>(() =>
+  //   selectedId.arrow ? arrow?.filter((i) => i.id === selectedId.arrow) : arrow
+  // );
+  // const [selectedsquare, setselectedsquare] = useState<SquareItem[]>(() =>
+  //   selectedId.square
+  //     ? square?.filter((i) => i.id === selectedId.square)
+  //     : square
+  // );
+  // const [selectedtriangle, setselectedtriangle] = useState<TriangleItem[]>(() =>
+  //   selectedId.triangle
+  //     ? triangle?.filter((i) => i.id === selectedId.triangle)
+  //     : triangle
+  // );
+  // const [selectedpolygon, setselectedpolygon] = useState<PolygonItem[]>(() =>
+  //   selectedId.polygon
+  //     ? polygon?.filter((i) => i.id === selectedId.polygon)
+  //     : polygon
+  // );
+  // const [selectedcardIcons, setselectedcardIcons] = useState<IconItem[]>(() =>
+  //   selectedId.icon
+  //     ? cardIcons?.filter((i) => i.id === selectedId.icon)
+  //     : cardIcons
+  // );
   // useEffect(() => {
   //   setselectedTexts(
   //     selectedId.textbox
@@ -182,21 +182,21 @@ const Canvas: React.FC<canvasProps> = ({
   //   );
   // }, [selectedId.textbox, textboxes]);
 
-  useEffect(() => {
-    setselectedpolygon(
-      selectedId.polygon
-        ? polygon?.filter((i) => i.id === selectedId.polygon)
-        : polygon
-    );
-  }, [selectedId.polygon, polygon]);
+  // useEffect(() => {
+  //   setselectedpolygon(
+  //     selectedId.polygon
+  //       ? polygon?.filter((i) => i.id === selectedId.polygon)
+  //       : polygon
+  //   );
+  // }, [selectedId.polygon, polygon]);
 
-  useEffect(() => {
-    setselectedcardIcons(
-      selectedId.icon
-        ? cardIcons?.filter((i) => i.id === selectedId.icon)
-        : cardIcons
-    );
-  }, [selectedId.icon, cardIcons]);
+  // useEffect(() => {
+  //   setselectedcardIcons(
+  //     selectedId.icon
+  //       ? cardIcons?.filter((i) => i.id === selectedId.icon)
+  //       : cardIcons
+  //   );
+  // }, [selectedId.icon, cardIcons]);
 
   const handleShapeAddition = useCallback((name: string) => {
     if (name === "Circle") {
@@ -312,11 +312,16 @@ const Canvas: React.FC<canvasProps> = ({
   }, []);
 
   const handleTextChange = useCallback((id: number, newText: string) => {
-    setTextboxes((prevState: any) =>
-      prevState.map((textbox: any) =>
-        textbox.id === id ? { ...textbox, text: newText } : textbox
-      )
-    );
+    setTextboxes((prevState: any) => {
+      const newState = new Map<number, TextBox>(prevState);
+      const updatedTextBox: TextBox = newState.get(id)!;
+      if (updatedTextBox) {
+        // Update the fontFamily property of the TextBox with the specified ID
+        updatedTextBox.text = newText;
+        newState.set(id, updatedTextBox);
+      }
+      return newState;
+    });
   }, []);
 
   const handleTextAlignmentChange = useCallback(
@@ -328,21 +333,32 @@ const Canvas: React.FC<canvasProps> = ({
           : alignment === "center"
           ? width / 2
           : width - canvasPadding * 10;
-      setTextboxes((prevState: TextBox[]) =>
-        prevState.map((textbox: TextBox) =>
-          textbox.id === id ? { ...textbox, x, textAlign: alignment } : textbox
-        )
-      );
+      setTextboxes((prevState: any) => {
+        const newState = new Map<number, TextBox>(prevState);
+        const updatedTextBox: TextBox = newState.get(id)!;
+        if (updatedTextBox) {
+          // Update the fontFamily property of the TextBox with the specified ID
+          updatedTextBox.textAlign = alignment;
+          updatedTextBox.x = x;
+          newState.set(id, updatedTextBox);
+        }
+        return newState;
+      });
     },
     []
   );
   const handleCardPositionChange = useCallback(
-    (id: number, property: string, value: string | number) => {
-      setTextboxes((prevState: any) =>
-        prevState.map((textbox: any) =>
-          textbox.id === id ? { ...textbox, [property]: value } : textbox
-        )
-      );
+    (id: number, property: any, value: string | number) => {
+      setTextboxes((prevState: Map<number, TextBox>) => {
+        const newState = new Map(prevState);
+        const updatedTextBox = newState.get(id);
+        if (updatedTextBox) {
+          // Use type assertion to tell TypeScript that property is a valid property name
+          (updatedTextBox as any)[property] = value;
+          newState.set(id, updatedTextBox);
+        }
+        return newState;
+      });
     },
     []
   );
@@ -379,25 +395,40 @@ const Canvas: React.FC<canvasProps> = ({
     }
   };
   function handleFontChange(id: number, value: number) {
-    setTextboxes((prevState: any) =>
-      prevState.map((textbox: any) =>
-        textbox.id === id ? { ...textbox, fontSize: value } : textbox
-      )
-    );
+    setTextboxes((prevState: any) => {
+      const newState = new Map<number, TextBox>(prevState);
+      const updatedTextBox: TextBox = newState.get(id)!;
+      if (updatedTextBox) {
+        // Update the fontFamily property of the TextBox with the specified ID
+        updatedTextBox.fontSize = value;
+        newState.set(id, updatedTextBox);
+      }
+      return newState;
+    });
   }
   function handleFontFamily(id: number, value: string) {
-    setTextboxes((prevState: any) =>
-      prevState.map((textbox: any) =>
-        textbox.id === id ? { ...textbox, fontFamily: value } : textbox
-      )
-    );
+    setTextboxes((prevState: any) => {
+      const newState = new Map<number, TextBox>(prevState);
+      const updatedTextBox: TextBox = newState.get(id)!;
+      if (updatedTextBox) {
+        // Update the fontFamily property of the TextBox with the specified ID
+        updatedTextBox.fontFamily = value;
+        newState.set(id, updatedTextBox);
+      }
+      return newState;
+    });
   }
   function handleColorChange(id: number, value: string) {
-    setTextboxes((prevState: any) =>
-      prevState.map((textbox: any) =>
-        textbox.id === id ? { ...textbox, fill: value } : textbox
-      )
-    );
+    setTextboxes((prevState: any) => {
+      const newState = new Map<number, TextBox>(prevState);
+      const updatedTextBox: TextBox = newState.get(id)!;
+      if (updatedTextBox) {
+        // Update the fontFamily property of the TextBox with the specified ID
+        updatedTextBox.fill = value;
+        newState.set(id, updatedTextBox);
+      }
+      return newState;
+    });
   }
   const handleCardChange = useCallback(
     (id: number, type: string, value: string | number) => {
@@ -496,13 +527,11 @@ const Canvas: React.FC<canvasProps> = ({
   console.log(textboxes, "textbox");
   console.log(selectedId.textbox - 1, "SUM");
 
-  console.log(textboxes[selectedId.textbox - 1], "selected Text");
-
   return (
-    <section className="space-y-4 w-full h-auto flex flex-col items-center md:flex-row md:justify-start gap-5 py-20 lg:px-0 px-10  ">
+    <section className="space-y-4 w-full h-auto flex flex-col items-center md:flex-row md:justify-start gap-5 py-20 lg:px-0 px-10 my-10 ">
       {editType === "text" && (
         <>
-          {textboxes[selectedId.textbox - 1] && (
+          {textboxes.has(selectedId.textbox) && (
             <Box
               className={`flex flex-row justify-around items-end space-x-2
                   absolute top-6 bg-white w-full rounded-lg border-2 right-0 left-0 border-slate-50 p-4 mx-auto
@@ -519,7 +548,7 @@ const Canvas: React.FC<canvasProps> = ({
                 <Select
                   placeholder="Font Family"
                   label="Change FontFamily"
-                  value={textboxes[selectedId.textbox - 1].fontFamily}
+                  value={textboxes.get(selectedId.textbox).fontFamily}
                   onChange={(e) =>
                     handleFontFamily(selectedId.textbox, e.target.value)
                   }
@@ -531,7 +560,7 @@ const Canvas: React.FC<canvasProps> = ({
               <Box className="space-x-2">
                 <TextField
                   type="text"
-                  value={textboxes[selectedId.textbox - 1].text}
+                  value={textboxes.get(selectedId.textbox).text}
                   onChange={(e) =>
                     handleTextChange(selectedId.textbox, e.target.value)
                   }
@@ -555,7 +584,7 @@ const Canvas: React.FC<canvasProps> = ({
                 <Select
                   placeholder="Set Alignment"
                   label="Align"
-                  value={textboxes[selectedId.textbox - 1].textAlign}
+                  value={textboxes.get(selectedId.textbox).textAlign}
                   onChange={(e) =>
                     handleTextAlignmentChange(
                       selectedId.textbox,
@@ -573,7 +602,7 @@ const Canvas: React.FC<canvasProps> = ({
                 <TextField
                   type="number"
                   placeholder="Change Text Size"
-                  defaultValue={textboxes[selectedId.textbox - 1].fontSize}
+                  defaultValue={textboxes.get(selectedId.textbox).fontSize}
                   onChange={(e) => {
                     handleFontChange(
                       selectedId.textbox,
@@ -595,7 +624,7 @@ const Canvas: React.FC<canvasProps> = ({
                   type="color"
                   className="w-24"
                   placeholder="Change Text Color"
-                  defaultValue={textboxes[selectedId.textbox - 1].fill}
+                  defaultValue={textboxes.get(selectedId.textbox).fill}
                   onChange={(e) => {
                     handleColorChange(selectedId.textbox, e.target.value);
                   }}
@@ -1354,7 +1383,7 @@ const Canvas: React.FC<canvasProps> = ({
             <>
               <p>Edit Your Text Here</p>
 
-              {textboxes?.map((textbox) => (
+              {Array.from(textboxes.values()).map((textbox) => (
                 <Box
                   className={`flex flex-row justify-around items-end space-x-2 `}
                   key={textbox.id}
@@ -1380,22 +1409,24 @@ const Canvas: React.FC<canvasProps> = ({
               <Button
                 className="p-4 bg-blue-600 text-white rounded-md"
                 onClick={(e) => {
-                  setTextboxes((p: any) => [
-                    ...(p || []),
-                    {
-                      id: (textboxes?.length ?? 0) + 1,
-                      fill: "black",
-                      fontSize: 16,
-                      text: "Enter Text",
-                      textAlign: "center",
-                      scaleX: 1,
-                      scaleY: 1,
-                      rotation: 0,
-                      x: width / 2,
-                      y: height / 2,
-                      fontFamily: "sunflower",
-                    },
-                  ]);
+                  setTextboxes(
+                    (prevTextboxes: any) =>
+                      new Map(
+                        prevTextboxes.set((textboxes?.size ?? 0) + 1, {
+                          id: (textboxes?.size ?? 0) + 1,
+                          fill: "black",
+                          fontSize: 16,
+                          text: "Enter Text",
+                          textAlign: "center",
+                          scaleX: 1,
+                          scaleY: 1,
+                          rotation: 0,
+                          x: width / 2,
+                          y: height / 2,
+                          fontFamily: "sunflower",
+                        })
+                      )
+                  );
                 }}
                 variant="contained"
                 color="secondary"
@@ -1569,7 +1600,7 @@ const Canvas: React.FC<canvasProps> = ({
                       name="backgroundImage"
                     />
                   )}
-                  {textboxes?.map((textbox) => {
+                  {Array.from(textboxes.values())?.map((textbox) => {
                     return (
                       <TextImageItem
                         textbox={textbox}

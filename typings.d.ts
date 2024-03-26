@@ -30,8 +30,8 @@ interface BusinessCardProps {
 }
 
 interface canvasProps extends BusinessCardProps {
-  textboxes: TextBox[];
-  setTextboxes: Dispatch<SetStateAction<TextBox[]>>;
+  textboxes: Map<int, Textbox>;
+  setTextboxes: Dispatch<SetStateAction<TextBox>>;
   cardImages: CardImage[];
   setcardImages: Dispatch<SetStateAction<CardImage[]>>;
   circles: CircleItem[];

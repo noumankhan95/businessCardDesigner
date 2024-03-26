@@ -100,7 +100,7 @@ function CardImageItem({
   }, [bringToTop, ToplayerCount]);
   console.log("transform ref", transformerRef);
   console.log("shape ref", shapeRef);
-  console.log("seklelcted image id", isSelected);
+  console.log("seklelcted image id", id);
 
   return (
     <>

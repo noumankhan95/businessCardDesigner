@@ -13,26 +13,58 @@ const BusinessCard: React.FC<BusinessCardProps> = ({
   const [textboxes, setTextboxes] = useState<Map<number, TextBox>>(
     new Map<number, TextBox>()
   );
-  const [cardImages, setcardImages] = useState<CardImage[]>([]);
-  const [circles, setcircles] = useState<CircleItem[]>([]);
-  const [stars, setstars] = useState<StarItem[]>([]);
-  const [arrow, setarrow] = useState<ArrowItem[]>([]);
-  const [square, setsquare] = useState<SquareItem[]>([]);
-  const [triangle, settriangle] = useState<TriangleItem[]>([]);
-  const [polygon, setpolygon] = useState<PolygonItem[]>([]);
-  const [cardIcons, setcardIcons] = useState<IconItem[]>([]);
+  const [cardImages, setcardImages] = useState<Map<number, CardImage>>(
+    new Map<number, CardImage>()
+  );
+  const [circles, setcircles] = useState<Map<number, CircleItem>>(
+    new Map<number, CircleItem>()
+  );
+  const [stars, setstars] = useState<Map<number, StarItem>>(
+    new Map<number, StarItem>()
+  );
+  const [arrow, setarrow] = useState<Map<number, ArrowItem>>(
+    new Map<number, ArrowItem>()
+  );
+  const [square, setsquare] = useState<Map<number, SquareItem>>(
+    new Map<number, SquareItem>()
+  );
+  const [triangle, settriangle] = useState<Map<number, TriangleItem>>(
+    new Map<number, TriangleItem>()
+  );
+  const [polygon, setpolygon] = useState<Map<number, PolygonItem>>(
+    new Map<number, PolygonItem>()
+  );
+  const [cardIcons, setcardIcons] = useState<Map<number, IconItem>>(
+    new Map<number, IconItem>()
+  );
   // const [backShowFront, setbackShowFront] = useState<boolean>(false);
   const [backTextboxes, setbackTextboxes] = useState<Map<number, TextBox>>(
     new Map<number, TextBox>()
   );
-  const [backCardImages, setbackCardImages] = useState<CardImage[]>([]);
-  const [backCircles, setbackCircles] = useState<CircleItem[]>([]);
-  const [backStars, setbackStars] = useState<StarItem[]>([]);
-  const [backArrow, setbackArrow] = useState<ArrowItem[]>([]);
-  const [backSquare, setbackSquare] = useState<SquareItem[]>([]);
-  const [backTriangle, setbackTriangle] = useState<TriangleItem[]>([]);
-  const [backPolygon, setbackPolygon] = useState<PolygonItem[]>([]);
-  const [backCardIcons, setbackCardIcons] = useState<IconItem[]>([]);
+  const [backCardImages, setbackCardImages] = useState<Map<number, CardImage>>(
+    new Map<number, CardImage>()
+  );
+  const [backCircles, setbackCircles] = useState<Map<number, CircleItem>>(
+    new Map<number, CircleItem>()
+  );
+  const [backStars, setbackStars] = useState<Map<number, StarItem>>(
+    new Map<number, StarItem>()
+  );
+  const [backArrow, setbackArrow] = useState<Map<number, ArrowItem>>(
+    new Map<number, ArrowItem>()
+  );
+  const [backSquare, setbackSquare] = useState<Map<number, SquareItem>>(
+    new Map<number, SquareItem>()
+  );
+  const [backTriangle, setbackTriangle] = useState<Map<number, TriangleItem>>(
+    new Map<number, TriangleItem>()
+  );
+  const [backPolygon, setbackPolygon] = useState<Map<number, PolygonItem>>(
+    new Map<number, PolygonItem>()
+  );
+  const [backCardIcons, setbackCardIcons] = useState<Map<number, IconItem>>(
+    new Map<number, IconItem>()
+  );
   const [backgroundColor, setBackgroundColor] = useState<string>("#ffffff");
   const [BackSidebackgroundColor, setBackSideBackgroundColor] =
     useState<string>("#ffffff");

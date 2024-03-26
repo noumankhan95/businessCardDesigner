@@ -200,101 +200,113 @@ const Canvas: React.FC<canvasProps> = ({
 
   const handleShapeAddition = useCallback((name: string) => {
     if (name === "Circle") {
-      setcircles((p: CircleItem[]) => [
-        ...p,
-        {
-          height: "20",
-          width: "20",
-          id: (p.length ?? 0) + 1,
-          fill: "black",
-          stroke: "black",
-          x: width / 2,
-          y: height / 2,
-          scaleX: 1,
-          scaleY: 1,
-          rotation: 0,
-        },
-      ]);
+      setcircles(
+        (p: any) =>
+          new Map(
+            p.set((p.size ?? 0) + 1, {
+              height: "20",
+              width: "20",
+              id: (p.size ?? 0) + 1,
+              fill: "black",
+              stroke: "black",
+              x: width / 2,
+              y: height / 2,
+              scaleX: 1,
+              scaleY: 1,
+              rotation: 0,
+            })
+          )
+      );
     } else if (name === "Arrow") {
-      setarrow((p: ArrowItem[]) => [
-        ...p,
-        {
-          height: "20",
-          width: "20",
-          id: (p.length ?? 0) + 1,
-          fill: "black",
-          stroke: "black",
-          x: width / 2,
-          y: height / 2,
-          scaleX: 1,
-          scaleY: 1,
-          rotation: 0,
-        },
-      ]);
+      setarrow(
+        (p: any) =>
+          new Map(
+            p.set((p.size ?? 0) + 1, {
+              height: "20",
+              width: "20",
+              id: (p.size ?? 0) + 1,
+              fill: "black",
+              stroke: "black",
+              x: width / 2,
+              y: height / 2,
+              scaleX: 1,
+              scaleY: 1,
+              rotation: 0,
+            })
+          )
+      );
     } else if (name === "Star") {
-      setstars((p: StarItem[]) => [
-        ...p,
-        {
-          height: "20",
-          width: "20",
-          id: (p.length ?? 0) + 1,
-          fill: "black",
-          stroke: "black",
-          x: width / 2,
-          y: height / 2,
-          scaleX: 1,
-          scaleY: 1,
-          rotation: 0,
-        },
-      ]);
+      setstars(
+        (p: any) =>
+          new Map(
+            p.set((p.size ?? 0) + 1, {
+              height: "20",
+              width: "20",
+              id: (p.size ?? 0) + 1,
+              fill: "black",
+              stroke: "black",
+              x: width / 2,
+              y: height / 2,
+              scaleX: 1,
+              scaleY: 1,
+              rotation: 0,
+            })
+          )
+      );
     } else if (name == "Square") {
-      setsquare((p: SquareItem[]) => [
-        ...p,
-        {
-          height: "20",
-          width: "20",
-          id: (p.length ?? 0) + 1,
-          fill: "black",
-          stroke: "black",
-          x: width / 2,
-          y: height / 2,
-          scaleX: 1,
-          scaleY: 1,
-          rotation: 0,
-        },
-      ]);
+      setsquare(
+        (p: any) =>
+          new Map(
+            p.set(p.size ?? 0 + 1, {
+              height: "20",
+              width: "20",
+              id: (p.size ?? 0) + 1,
+              fill: "black",
+              stroke: "black",
+              x: width / 2,
+              y: height / 2,
+              scaleX: 1,
+              scaleY: 1,
+              rotation: 0,
+            })
+          )
+      );
     } else if (name === "Triangle") {
-      settriangle((p: TriangleItem[]) => [
-        ...p,
-        {
-          height: "20",
-          width: "20",
-          id: (p.length ?? 0) + 1,
-          fill: "black",
-          stroke: "black",
-          x: width / 2,
-          y: height / 2,
-          scaleX: 1,
-          scaleY: 1,
-          rotation: 0,
-        },
-      ]);
+      settriangle(
+        (p: any) =>
+          new Map(
+            p.set((p.size ?? 0) + 1, {
+              height: "20",
+              width: "20",
+              id: (p.size ?? 0) + 1,
+              fill: "black",
+              stroke: "black",
+              x: width / 2,
+              y: height / 2,
+              scaleX: 1,
+              scaleY: 1,
+              rotation: 0,
+            })
+          )
+      );
     } else if (name === "Polygon") {
-      setpolygon((p: PolygonItem[]) => [
-        ...p,
-        {
-          height: "20",
-          width: "20",
-          id: (p.length ?? 0) + 1,
-          fill: "black",
-          stroke: "black",
-          x: width / 2,
-          y: height / 2,
-          scaleX: 1,
-          scaleY: 1,
-          rotation: 0,
-        },
-      ]);
+      setpolygon(
+        (p: any) =>
+          new Map(
+            p.set((p.size ?? 0) + 1, {
+              height: "20",
+              width: "20",
+              id: (p.size ?? 0) + 1,
+              fill: "black",
+              stroke: "black",
+              x: width / 2,
+              y: height / 2,
+              scaleX: 1,
+              scaleY: 1,
+              rotation: 0,
+            })
+          )
+      );
     }
   }, []);
   const handleBackgroundImageChange = useCallback((url: string) => {
@@ -451,31 +463,65 @@ const Canvas: React.FC<canvasProps> = ({
   const handleShapeItemChange = useCallback(
     (name: string, attr: string, id: number, value: string | number) => {
       if (name === "circle") {
-        setcircles((p: any) =>
-          p.map((c: any) => (c.id === id ? { ...c, [attr]: value } : c))
-        );
+        setcircles((p: any) => {
+          const newCircles = new Map(p);
+          const starToUpdate = newCircles.get(id);
+          if (starToUpdate) {
+            // Update the specified attribute of the star
+            starToUpdate[attr] = value;
+            newCircles.set(id, starToUpdate); // Update the star in the map
+          }
+        });
       } else if (name === "star") {
-        setstars((p: any) =>
-          p.map((c: any) => (c.id === id ? { ...c, [attr]: value } : c))
-        );
+        setstars((p: any) => {
+          const newStars = new Map(p);
+          const starToUpdate = newStars.get(id);
+          if (starToUpdate) {
+            // Update the specified attribute of the star
+            starToUpdate[attr] = value;
+            newStars.set(id, starToUpdate); // Update the star in the map
+          }
+        });
       } else if (name == "square") {
-        setsquare((p: any) =>
-          p.map((c: any) => (c.id === id ? { ...c, [attr]: value } : c))
-        );
+        setsquare((p: any) => {
+          const newSquares = new Map(p);
+          const starToUpdate = newSquares.get(id);
+          if (starToUpdate) {
+            // Update the specified attribute of the star
+            starToUpdate[attr] = value;
+            newSquares.set(id, starToUpdate); // Update the star in the map
+          }
+        });
       } else if (name == "polygon") {
-        setpolygon((p: any) =>
-          p.map((c: any) => (c.id === id ? { ...c, [attr]: value } : c))
-        );
+        setpolygon((p: any) => {
+          const newPolygons = new Map(p);
+          const starToUpdate = newPolygons.get(id);
+          if (starToUpdate) {
+            // Update the specified attribute of the star
+            starToUpdate[attr] = value;
+            newPolygons.set(id, starToUpdate); // Update the star in the map
+          }
+        });
       } else if (name == "arrow") {
-        setarrow((p: any) =>
-          p.map((c: any) => (c.id === id ? { ...c, [attr]: value } : c))
-        );
+        setarrow((p: any) => {
+          const newArrows = new Map(p);
+          const starToUpdate = newArrows.get(id);
+          if (starToUpdate) {
+            // Update the specified attribute of the star
+            starToUpdate[attr] = value;
+            newArrows.set(id, starToUpdate); // Update the star in the map
+          }
+        });
       } else if (name == "triangle") {
-        settriangle((p: TriangleItem[]) =>
-          p.map((c: TriangleItem) =>
-            c.id === id ? { ...c, [attr]: value } : c
-          )
-        );
+        settriangle((p: TriangleItem[]) => {
+          const newTriangles = new Map(p);
+          const starToUpdate = newTriangles.get(id);
+          if (starToUpdate) {
+            // Update the specified attribute of the star
+            starToUpdate[attr] = value;
+            newTriangles.set(id, starToUpdate); // Update the star in the map
+          }
+        });
       }
     },
     []
@@ -669,7 +715,7 @@ const Canvas: React.FC<canvasProps> = ({
       )}
       {editType === "image" && (
         <>
-          {cardImages[selectedId.image - 1] && (
+          {cardImages.has(selectedId.image) && (
             <div
               className={`flex flex-row justify-around items-end space-x-2
             absolute top-6 bg-white w-full rounded-lg border-2 right-0 left-0 border-slate-50 p-4 mx-auto
@@ -680,7 +726,7 @@ const Canvas: React.FC<canvasProps> = ({
                 <TextField
                   type="number"
                   placeholder="Change Text Size"
-                  defaultValue={cardImages[selectedId.image - 1].width}
+                  defaultValue={cardImages.get(selectedId.image)?.width}
                   onChange={(e) => {
                     handleCardChange(selectedId.image, "width", e.target.value);
                   }}
@@ -698,7 +744,7 @@ const Canvas: React.FC<canvasProps> = ({
                 <TextField
                   type="number"
                   placeholder="Change Text Size"
-                  defaultValue={cardImages[selectedId.image - 1].height}
+                  defaultValue={cardImages.get(selectedId.image)?.height}
                   onChange={(e) => {
                     handleCardChange(
                       selectedId.image,
@@ -754,7 +800,7 @@ const Canvas: React.FC<canvasProps> = ({
           {(!shapeIdSelected ||
             Object.entries(selectedId).find(([i, a]) => a != 0)?.[0] ==
               "star") &&
-            stars[selectedId.star - 1] && (
+            stars.has(selectedId.star) && (
               <div
                 className={`flex flex-row justify-around items-end space-x-2  absolute top-6 bg-white w-full rounded-lg border-2 right-0 left-0 border-slate-50 p-4 mx-auto
                   
@@ -766,12 +812,12 @@ const Canvas: React.FC<canvasProps> = ({
                     type="color"
                     className="w-24"
                     placeholder="Change Color Size"
-                    defaultValue={stars[selectedId.star - 1].fill}
+                    defaultValue={stars.get(selectedId.star)?.fill}
                     onChange={(e) => {
                       handleShapeItemChange(
                         "star",
                         "fill",
-                        stars[selectedId.star - 1].id,
+                        stars.get(selectedId.star)?.id!,
                         e.target.value
                       );
                     }}
@@ -783,12 +829,12 @@ const Canvas: React.FC<canvasProps> = ({
                     type="color"
                     className="w-24"
                     placeholder="Change Stroke Color Size"
-                    defaultValue={stars[selectedId.star - 1].stroke}
+                    defaultValue={stars.get(selectedId.star)?.stroke}
                     onChange={(e) => {
                       handleShapeItemChange(
                         "star",
                         "stroke",
-                        stars[selectedId.star - 1].id,
+                        stars.get(selectedId.star)?.id!,
                         e.target.value
                       );
                     }}
@@ -801,7 +847,7 @@ const Canvas: React.FC<canvasProps> = ({
                       ...p,
                       star: {
                         count: p.star.count + 1,
-                        id: stars[selectedId.star - 1].id,
+                        id: selectedId.star,
                       },
                     }));
                   }}
@@ -817,7 +863,7 @@ const Canvas: React.FC<canvasProps> = ({
                     onClick={(e) => {
                       setstars((p: any) =>
                         p.filter(
-                          (i: any) => i.id !== stars[selectedId.star - 1].id
+                          (i: any) => i.id !== stars.get(selectedId.star)?.id
                         )
                       );
                       setshapeIdSelected(false);
@@ -834,7 +880,7 @@ const Canvas: React.FC<canvasProps> = ({
           {(!shapeIdSelected ||
             Object.entries(selectedId).find(([i, a]) => a != 0)?.[0] ==
               "square") &&
-            square[selectedId.square - 1] && (
+            square.has(selectedId.square) && (
               <div
                 className={`flex flex-row justify-around items-end space-x-2 absolute top-6 bg-white w-full rounded-lg border-2 right-0 left-0 border-slate-50 p-4 mx-auto
                  
@@ -846,12 +892,12 @@ const Canvas: React.FC<canvasProps> = ({
                     type="color"
                     className="w-24"
                     placeholder="Change Color Size"
-                    defaultValue={square[selectedId.square - 1].fill}
+                    defaultValue={square.get(selectedId.square)?.fill}
                     onChange={(e) => {
                       handleShapeItemChange(
                         "square",
                         "fill",
-                        square[selectedId.square - 1].id,
+                        square.get(selectedId.square)?.id!,
                         e.target.value
                       );
                     }}
@@ -863,12 +909,12 @@ const Canvas: React.FC<canvasProps> = ({
                     type="color"
                     className="w-24"
                     placeholder="Change Color Size"
-                    defaultValue={square[selectedId.square - 1].stroke}
+                    defaultValue={square.get(selectedId.square)?.stroke}
                     onChange={(e) => {
                       handleShapeItemChange(
                         "square",
                         "fill",
-                        square[selectedId.square - 1].id,
+                        square.get(selectedId.square)?.id!,
                         e.target.value
                       );
                     }}
@@ -881,7 +927,7 @@ const Canvas: React.FC<canvasProps> = ({
                       ...p,
                       square: {
                         count: p.square.count + 1,
-                        id: square[selectedId.square - 1].id,
+                        id: selectedId.square,
                       },
                     }));
                   }}
@@ -900,7 +946,7 @@ const Canvas: React.FC<canvasProps> = ({
                     onClick={(e) => {
                       setsquare((p: any) =>
                         p.filter(
-                          (i: any) => i.id !== square[selectedId.square - 1].id
+                          (i: any) => i.id !== square.get(selectedId.square)?.id
                         )
                       );
                       setshapeIdSelected(false);
@@ -914,7 +960,7 @@ const Canvas: React.FC<canvasProps> = ({
           {(!shapeIdSelected ||
             Object.entries(selectedId).find(([i, a]) => a != 0)?.[0] ==
               "triangle") &&
-            triangle[selectedId.triangle - 1] && (
+            triangle.has(selectedId.triangle - 1) && (
               <div
                 className={`flex flex-row justify-around items-end space-x-2 absolute top-6 bg-white w-full rounded-lg border-2 right-0 left-0 border-slate-50 p-4 mx-auto
                 `}
@@ -925,12 +971,12 @@ const Canvas: React.FC<canvasProps> = ({
                     type="color"
                     className="w-24"
                     placeholder="Change Color"
-                    defaultValue={triangle[selectedId.triangle - 1].fill}
+                    defaultValue={triangle.get(selectedId.triangle)?.fill}
                     onChange={(e) => {
                       handleShapeItemChange(
                         "triangle",
                         "fill",
-                        triangle[selectedId.triangle - 1].id,
+                        triangle.get(selectedId.triangle)?.id!,
                         e.target.value
                       );
                     }}
@@ -942,12 +988,12 @@ const Canvas: React.FC<canvasProps> = ({
                     type="color"
                     className="w-24"
                     placeholder="Change Stroke"
-                    defaultValue={triangle[selectedId.triangle - 1].stroke}
+                    defaultValue={triangle.get(selectedId.triangle)?.stroke}
                     onChange={(e) => {
                       handleShapeItemChange(
                         "triangle",
                         "stroke",
-                        triangle[selectedId.triangle - 1].id,
+                        triangle.get(selectedId.triangle)?.id!,
                         e.target.value
                       );
                     }}
@@ -960,7 +1006,7 @@ const Canvas: React.FC<canvasProps> = ({
                       ...p,
                       triangle: {
                         count: p.triangle.count + 1,
-                        id: triangle[selectedId.triangle - 1].id,
+                        id: selectedId.triangle,
                       },
                     }));
                   }}
@@ -977,7 +1023,7 @@ const Canvas: React.FC<canvasProps> = ({
                       settriangle((p: any) =>
                         p.filter(
                           (i: any) =>
-                            i.id !== triangle[selectedId.triangle - 1].id
+                            i.id !== triangle.get(selectedId.triangle)?.id
                         )
                       );
                       setshapeIdSelected(false);
@@ -994,7 +1040,7 @@ const Canvas: React.FC<canvasProps> = ({
           {(!shapeIdSelected ||
             Object.entries(selectedId).find(([i, a]) => a != 0)?.[0] ==
               "circle") &&
-            circles[selectedId.circle - 1] && (
+            circles.has(selectedId.circle) && (
               <div
                 className={`flex flex-row justify-around items-end space-x-2  absolute top-6 bg-white w-full rounded-lg border-2 right-0 left-0 border-slate-50 p-4 mx-auto
            `}
@@ -1005,12 +1051,12 @@ const Canvas: React.FC<canvasProps> = ({
                     type="color"
                     className="w-24"
                     placeholder="Change Color"
-                    defaultValue={circles[selectedId.circle - 1].fill}
+                    defaultValue={circles.get(selectedId.circle)?.fill}
                     onChange={(e) => {
                       handleShapeItemChange(
                         "circle",
                         "fill",
-                        circles[selectedId.circle - 1].id,
+                        circles.get(selectedId.circle)?.id!,
                         e.target.value
                       );
                     }}
@@ -1022,12 +1068,12 @@ const Canvas: React.FC<canvasProps> = ({
                     type="color"
                     className="w-24"
                     placeholder="Change Stroke Color"
-                    defaultValue={circles[selectedId.circle - 1].stroke}
+                    defaultValue={circles.get(selectedId.circle)?.stroke}
                     onChange={(e) => {
                       handleShapeItemChange(
                         "circle",
                         "stroke",
-                        circles[selectedId.circle - 1].id,
+                        circles.get(selectedId.circle)?.id!,
                         e.target.value
                       );
                     }}
@@ -1040,7 +1086,7 @@ const Canvas: React.FC<canvasProps> = ({
                       ...p,
                       circle: {
                         count: p.circle.count + 1,
-                        id: circles[selectedId.circle - 1].id,
+                        id: selectedId.circle,
                       },
                     }));
                   }}
@@ -1056,7 +1102,8 @@ const Canvas: React.FC<canvasProps> = ({
                     onClick={(e) => {
                       setcircles((p: any) =>
                         p.filter(
-                          (i: any) => i.id !== circles[selectedId.circle - 1].id
+                          (i: any) =>
+                            i.id !== circles.get(selectedId.circle)?.id
                         )
                       );
                       setshapeIdSelected(false);
@@ -1073,7 +1120,7 @@ const Canvas: React.FC<canvasProps> = ({
           {(!shapeIdSelected ||
             Object.entries(selectedId).find(([i, a]) => a != 0)?.[0] ==
               "arrow") &&
-            arrow[selectedId.arrow - 1] && (
+            arrow.has(selectedId.arrow) && (
               <div
                 className={`flex flex-row justify-around items-end space-x-2 absolute top-6 bg-white w-full rounded-lg border-2 right-0 left-0 border-slate-50 p-4 mx-auto
                     
@@ -1085,12 +1132,12 @@ const Canvas: React.FC<canvasProps> = ({
                     type="color"
                     className="w-24"
                     placeholder="Change Color"
-                    defaultValue={arrow[selectedId.arrow - 1].fill}
+                    defaultValue={arrow.get(selectedId.arrow)?.fill}
                     onChange={(e) => {
                       handleShapeItemChange(
                         "arrow",
                         "fill",
-                        arrow[selectedId.arrow - 1].id,
+                        arrow.get(selectedId.arrow)?.id!,
                         e.target.value
                       );
                     }}
@@ -1102,12 +1149,12 @@ const Canvas: React.FC<canvasProps> = ({
                     type="color"
                     className="w-24"
                     placeholder="Change Stroke Color"
-                    defaultValue={arrow[selectedId.arrow - 1].stroke}
+                    defaultValue={arrow.get(selectedId.arrow)?.stroke}
                     onChange={(e) => {
                       handleShapeItemChange(
                         "arrow",
                         "stroke",
-                        arrow[selectedId.arrow - 1].id,
+                        arrow.get(selectedId.arrow)?.id!,
                         e.target.value
                       );
                     }}
@@ -1120,7 +1167,7 @@ const Canvas: React.FC<canvasProps> = ({
                       ...p,
                       arrow: {
                         count: p.arrow.count + 1,
-                        id: arrow[selectedId.arrow - 1].id,
+                        id: selectedId.arrow,
                       },
                     }));
                   }}
@@ -1136,7 +1183,7 @@ const Canvas: React.FC<canvasProps> = ({
                     onClick={(e) => {
                       setarrow((p: any) =>
                         p.filter(
-                          (i: any) => i.id !== arrow[selectedId.arrow - 1].id
+                          (i: any) => i.id !== arrow.get(selectedId.arrow)?.id
                         )
                       );
                       setshapeIdSelected(false);
@@ -1153,7 +1200,7 @@ const Canvas: React.FC<canvasProps> = ({
           {(!shapeIdSelected ||
             Object.entries(selectedId).find(([i, a]) => a != 0)?.[0] ==
               "polygon") &&
-            polygon[selectedId.polygon - 1] && (
+            polygon.has(selectedId.polygon) && (
               <div
                 className={`flex flex-row justify-around items-end space-x-2  absolute top-6 bg-white w-full rounded-lg border-2 right-0 left-0 border-slate-50 p-4 mx-auto
                  `}
@@ -1164,12 +1211,12 @@ const Canvas: React.FC<canvasProps> = ({
                     type="color"
                     className="w-24"
                     placeholder="Change Color Size"
-                    defaultValue={polygon[selectedId.polygon - 1].fill}
+                    defaultValue={polygon.get(selectedId.polygon)?.fill}
                     onChange={(e) => {
                       handleShapeItemChange(
                         "polygon",
                         "fill",
-                        polygon[selectedId.polygon - 1].id,
+                        polygon.get(selectedId.polygon)?.id!,
                         e.target.value
                       );
                     }}
@@ -1181,12 +1228,12 @@ const Canvas: React.FC<canvasProps> = ({
                     type="color"
                     className="w-24"
                     placeholder="Change Stroke"
-                    defaultValue={polygon[selectedId.polygon - 1].stroke}
+                    defaultValue={polygon.get(selectedId.polygon)?.stroke}
                     onChange={(e) => {
                       handleShapeItemChange(
                         "polygon",
                         "stroke",
-                        polygon[selectedId.polygon - 1].id,
+                        polygon.get(selectedId.polygon)?.id!,
                         e.target.value
                       );
                     }}
@@ -1199,7 +1246,7 @@ const Canvas: React.FC<canvasProps> = ({
                       ...p,
                       polygon: {
                         count: p.polygon.count + 1,
-                        id: polygon[selectedId.polygon - 1].id,
+                        id: selectedId.polygon,
                       },
                     }));
                   }}
@@ -1216,7 +1263,7 @@ const Canvas: React.FC<canvasProps> = ({
                       setpolygon((p: any) =>
                         p.filter(
                           (i: any) =>
-                            i.id !== polygon[selectedId.polygon - 1].id
+                            i.id !== polygon.get(selectedId.polygon)?.id
                         )
                       );
                       setshapeIdSelected(false);
@@ -1234,7 +1281,7 @@ const Canvas: React.FC<canvasProps> = ({
       )}
       {editType === "icon" && (
         <>
-          {cardIcons[selectedId.icon - 1] && (
+          {cardIcons.has(selectedId.icon) && (
             <div
               className={`flex flex-row justify-around items-end space-x-2  absolute top-6 bg-white w-full rounded-lg border-2 right-0 left-0 border-slate-50 p-4 mx-auto
              `}
@@ -1245,10 +1292,10 @@ const Canvas: React.FC<canvasProps> = ({
                   type="color"
                   className="w-24"
                   placeholder="Change Color Size"
-                  defaultValue={cardIcons[selectedId.icon - 1].color}
+                  defaultValue={cardIcons.get(selectedId.icon)?.color}
                   onChange={(e) => {
                     handleIconChange(
-                      cardIcons[selectedId.icon - 1].id,
+                      cardIcons.get(selectedId.icon)?.id!,
                       "color",
                       e.target.value
                     );
@@ -1263,7 +1310,7 @@ const Canvas: React.FC<canvasProps> = ({
 
                     icon: {
                       count: p.icon.count + 1,
-                      id: cardIcons[selectedId.icon - 1].id,
+                      id: selectedId.icon,
                     },
                   }));
                 }}
@@ -1279,10 +1326,10 @@ const Canvas: React.FC<canvasProps> = ({
                   type="color"
                   className="w-24"
                   placeholder="Change Stroke"
-                  defaultValue={cardIcons[selectedId.icon - 1].color}
+                  defaultValue={cardIcons.get(selectedId.icon)?.color}
                   onChange={(e) => {
                     handleIconChange(
-                      cardIcons[selectedId.icon - 1].id,
+                      cardIcons.get(selectedId.icon)?.id!,
                       "stroke",
                       e.target.value
                     );
@@ -1295,7 +1342,7 @@ const Canvas: React.FC<canvasProps> = ({
                   onClick={(e) => {
                     setcardIcons((p: any) =>
                       p.filter(
-                        (i: any) => i.id !== cardIcons[selectedId.icon - 1].id
+                        (i: any) => i.id !== cardIcons.get(selectedId.icon)?.id
                       )
                     );
                     selectShape((p) => ({ ...p, icon: 0 }));
@@ -1412,8 +1459,8 @@ const Canvas: React.FC<canvasProps> = ({
                   setTextboxes(
                     (prevTextboxes: any) =>
                       new Map(
-                        prevTextboxes.set((textboxes?.size ?? 0) + 1, {
-                          id: (textboxes?.size ?? 0) + 1,
+                        prevTextboxes.set((prevTextboxes?.size ?? 0) + 1, {
+                          id: (prevTextboxes?.size ?? 0) + 1,
                           fill: "black",
                           fontSize: 16,
                           text: "Enter Text",
@@ -1622,7 +1669,7 @@ const Canvas: React.FC<canvasProps> = ({
                     );
                   })}
                   {cardImages &&
-                    cardImages.map((i) => (
+                    Array.from(cardImages.values())?.map((i) => (
                       <React.Fragment key={i.id}>
                         <CardImageItem
                           Theight={height}
@@ -1642,7 +1689,7 @@ const Canvas: React.FC<canvasProps> = ({
                       </React.Fragment>
                     ))}
                   {circles &&
-                    circles.map((c) => (
+                    Array.from(circles.values())?.map((c) => (
                       <React.Fragment key={c.id}>
                         <CircleComponent
                           {...c}
@@ -1662,7 +1709,7 @@ const Canvas: React.FC<canvasProps> = ({
                       </React.Fragment>
                     ))}
                   {stars &&
-                    stars.map((c) => (
+                    Array.from(stars.values())?.map((c) => (
                       <React.Fragment key={c.id}>
                         <StarComponent
                           {...c}
@@ -1683,7 +1730,7 @@ const Canvas: React.FC<canvasProps> = ({
                       </React.Fragment>
                     ))}
                   {arrow &&
-                    arrow.map((c) => (
+                    Array.from(arrow.values())?.map((c) => (
                       <React.Fragment key={c.id}>
                         <ArrowComponent
                           {...c}
@@ -1704,7 +1751,7 @@ const Canvas: React.FC<canvasProps> = ({
                       </React.Fragment>
                     ))}
                   {square &&
-                    square.map((c) => (
+                    Array.from(square.values())?.map((c) => (
                       <React.Fragment key={c.id}>
                         <SquareComponent
                           {...c}
@@ -1725,7 +1772,7 @@ const Canvas: React.FC<canvasProps> = ({
                       </React.Fragment>
                     ))}
                   {triangle &&
-                    triangle.map((c) => (
+                    Array.from(triangle.values())?.map((c) => (
                       <React.Fragment key={c.id}>
                         <TriangleComponent
                           {...c}
@@ -1745,7 +1792,7 @@ const Canvas: React.FC<canvasProps> = ({
                       </React.Fragment>
                     ))}
                   {polygon &&
-                    polygon.map((c) => (
+                    Array.from(polygon.values())?.map((c) => (
                       <React.Fragment key={c.id}>
                         <PolygonShapeComponent
                           {...c}
@@ -1765,7 +1812,7 @@ const Canvas: React.FC<canvasProps> = ({
                       </React.Fragment>
                     ))}
                   {cardIcons &&
-                    cardIcons.map((c) => (
+                    Array.from(cardIcons.values())?.map((c) => (
                       <IconComponent
                         iconName={c.name}
                         key={c.id}
@@ -1815,20 +1862,22 @@ const Canvas: React.FC<canvasProps> = ({
               const img = new window.Image();
               img.src = URL.createObjectURL(e.target?.files?.[0]!);
               img.onload = () => {
-                setcardImages((prevImages: any) => [
-                  ...prevImages,
-                  {
-                    width: 130,
-                    height: 190,
-                    source: img,
-                    id: (cardImages.length ?? 0) + 1,
-                    scaleX: 1,
-                    scaleY: 1,
-                    rotation: 0,
-                    x: width / 2,
-                    y: height / 2,
-                  },
-                ]);
+                setcardImages(
+                  (prevImages: any) =>
+                    new Map(
+                      prevImages.set((prevImages.size ?? 0) + 1, {
+                        width: 130,
+                        height: 190,
+                        source: img,
+                        id: (prevImages.size ?? 0) + 1,
+                        scaleX: 1,
+                        scaleY: 1,
+                        rotation: 0,
+                        x: width / 2,
+                        y: height / 2,
+                      })
+                    )
+                );
               };
             }}
           />

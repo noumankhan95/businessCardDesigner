@@ -30,24 +30,24 @@ interface BusinessCardProps {
 }
 
 interface canvasProps extends BusinessCardProps {
-  textboxes: Map<int, Textbox>;
+  textboxes: Map<number, Textbox>;
   setTextboxes: Dispatch<SetStateAction<TextBox>>;
-  cardImages: CardImage[];
-  setcardImages: Dispatch<SetStateAction<CardImage[]>>;
-  circles: CircleItem[];
-  setcircles: Dispatch<SetStateAction<CircleItem[]>>;
-  stars: StarItem[];
-  setstars: Dispatch<SetStateAction<StarItem[]>>;
-  arrow: ArrowItem[];
-  setarrow: Dispatch<SetStateAction<ArrowItem[]>>;
-  square: SquareItem[];
-  setsquare: Dispatch<SetStateAction<SquareItem[]>>;
-  triangle: TriangleItem[];
-  settriangle: Dispatch<SetStateAction<TriangleItem[]>>;
-  polygon: PolygonItem[];
-  setpolygon: Dispatch<SetStateAction<PolygonItem[]>>;
-  cardIcons: IconItem[];
-  setcardIcons: Dispatch<SetStateAction<IconItem[]>>;
+  cardImages: Map<number, CardImage>;
+  setcardImages: Dispatch<SetStateAction<CardImage>>;
+  circles: Map<number, CircleItem>;
+  setcircles: Dispatch<SetStateAction<CircleItem>>;
+  stars: Map<number, StarItem>;
+  setstars: Dispatch<SetStateAction<StarItem>>;
+  arrow: Map<number, ArrowItem>;
+  setarrow: Dispatch<SetStateAction<ArrowItem>>;
+  square: Map<number, SquareItem>;
+  setsquare: Dispatch<SetStateAction<SquareItem>>;
+  triangle: Map<number, TriangleItem>;
+  settriangle: Dispatch<SetStateAction<TriangleItem>>;
+  polygon: Map<number, PolygonItem>;
+  setpolygon: Dispatch<SetStateAction<PolygonItem>>;
+  cardIcons: Map<number, IconItem>;
+  setcardIcons: Dispatch<SetStateAction<IconItem>>;
   canvasPadding: number;
   backgroundColor: string;
   setBackgroundColor: Dispatch<SetStateAction<string>>;

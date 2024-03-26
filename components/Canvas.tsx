@@ -34,7 +34,6 @@ import { CgShapeHexagon } from "react-icons/cg";
 import { FaRegImage } from "react-icons/fa";
 import { RiFontSize2 } from "react-icons/ri";
 import { IoTrashBinOutline } from "react-icons/io5";
-import { FaAlignJustify } from "react-icons/fa6";
 import { MdLayers } from "react-icons/md";
 import CardImageItem from "./CardImageItem";
 import TextImageItem from "./TextImageItem";
@@ -50,6 +49,15 @@ import IconComponent from "./IconComponent";
 import { IoIosAdd } from "react-icons/io";
 import { RegularPolygon } from "konva/lib/shapes/RegularPolygon";
 import "@/app/globals.css";
+import EditText from "./EditItems/EditText";
+import EditImage from "./EditItems/EditImage";
+import EditStar from "./EditItems/EditStar";
+import EditSquare from "./EditItems/EditSquare";
+import EditTriangleItem from "./EditItems/TriangleItem";
+import EditCircleItem from "./EditItems/EditCircleItem";
+import EditArrowIten from "./EditItems/EditArrowIten";
+import EditPolygonItem from "./EditItems/EditPolygonItem";
+import EditIcon from "./EditItems/EditIcon";
 const padding = 6; // Padding value
 const borderPadding = 10;
 const Canvas: React.FC<canvasProps> = ({
@@ -147,8 +155,7 @@ const Canvas: React.FC<canvasProps> = ({
               stroke: "black",
               x: width / 2,
               y: height / 2,
-              scaleX: 1,
-              scaleY: 1,
+           
               rotation: 0,
             })
           )
@@ -165,8 +172,7 @@ const Canvas: React.FC<canvasProps> = ({
               stroke: "black",
               x: width / 2,
               y: height / 2,
-              scaleX: 1,
-              scaleY: 1,
+            
               rotation: 0,
             })
           )
@@ -183,8 +189,7 @@ const Canvas: React.FC<canvasProps> = ({
               stroke: "black",
               x: width / 2,
               y: height / 2,
-              scaleX: 1,
-              scaleY: 1,
+            
               rotation: 0,
             })
           )
@@ -193,7 +198,7 @@ const Canvas: React.FC<canvasProps> = ({
       setsquare(
         (p: any) =>
           new Map(
-            p.set(p.size ?? 0 + 1, {
+            p.set((p.size ?? 0) + 1, {
               height: "20",
               width: "20",
               id: (p.size ?? 0) + 1,
@@ -201,8 +206,7 @@ const Canvas: React.FC<canvasProps> = ({
               stroke: "black",
               x: width / 2,
               y: height / 2,
-              scaleX: 1,
-              scaleY: 1,
+            
               rotation: 0,
             })
           )
@@ -219,8 +223,7 @@ const Canvas: React.FC<canvasProps> = ({
               stroke: "black",
               x: width / 2,
               y: height / 2,
-              scaleX: 1,
-              scaleY: 1,
+            
               rotation: 0,
             })
           )
@@ -237,8 +240,7 @@ const Canvas: React.FC<canvasProps> = ({
               stroke: "black",
               x: width / 2,
               y: height / 2,
-              scaleX: 1,
-              scaleY: 1,
+            
               rotation: 0,
             })
           )
@@ -342,42 +344,7 @@ const Canvas: React.FC<canvasProps> = ({
       }, 1000);
     }
   };
-  function handleFontChange(id: number, value: number) {
-    setTextboxes((prevState: any) => {
-      const newState = new Map<number, TextBox>(prevState);
-      const updatedTextBox: TextBox = newState.get(id)!;
-      if (updatedTextBox) {
-        // Update the fontFamily property of the TextBox with the specified ID
-        updatedTextBox.fontSize = value;
-        newState.set(id, updatedTextBox);
-      }
-      return newState;
-    });
-  }
-  function handleFontFamily(id: number, value: string) {
-    setTextboxes((prevState: any) => {
-      const newState = new Map<number, TextBox>(prevState);
-      const updatedTextBox: TextBox = newState.get(id)!;
-      if (updatedTextBox) {
-        // Update the fontFamily property of the TextBox with the specified ID
-        updatedTextBox.fontFamily = value;
-        newState.set(id, updatedTextBox);
-      }
-      return newState;
-    });
-  }
-  function handleColorChange(id: number, value: string) {
-    setTextboxes((prevState: any) => {
-      const newState = new Map<number, TextBox>(prevState);
-      const updatedTextBox: TextBox = newState.get(id)!;
-      if (updatedTextBox) {
-        // Update the fontFamily property of the TextBox with the specified ID
-        updatedTextBox.fill = value;
-        newState.set(id, updatedTextBox);
-      }
-      return newState;
-    });
-  }
+
   const handleCardChange = useCallback(
     (id: number, type: string, value: string | number) => {
       setcardImages((p: any) => {
@@ -522,230 +489,36 @@ const Canvas: React.FC<canvasProps> = ({
         )
     );
   }, []);
+  console.log(square, "square");
+  console.log(selectedId, "selectedId");
 
   return (
     <section className="space-y-4 w-full h-auto flex flex-col items-start md:flex-row md:justify-start gap-5 py-20 lg:px-0 px-10 my-10 ">
       {editType === "text" && (
         <>
           {textboxes.has(selectedId.textbox) && (
-            <Box
-              className={`flex flex-row justify-around items-end space-x-2
-                  absolute top-6 bg-white w-full rounded-lg border-2 right-0 left-0 border-slate-50 p-4 mx-auto
-              `}
-            >
-              <Box
-                display={"flex"}
-                flexDirection={"row"}
-                alignItems="center"
-                className="space-x-3"
-              >
-                <FaAlignJustify />
-                <p>Font Family</p>
-                <Select
-                  placeholder="Font Family"
-                  label="Change FontFamily"
-                  value={textboxes.get(selectedId.textbox).fontFamily}
-                  onChange={(e) =>
-                    handleFontFamily(selectedId.textbox, e.target.value)
-                  }
-                >
-                  <MenuItem value="playfair_display">Playfair Display</MenuItem>
-                  <MenuItem value="sunflower">Sunflower</MenuItem>
-                </Select>
-              </Box>
-              <Box className="space-x-2">
-                <TextField
-                  type="text"
-                  value={textboxes.get(selectedId.textbox).text}
-                  onChange={(e) =>
-                    handleTextChange(selectedId.textbox, e.target.value)
-                  }
-                  InputProps={{
-                    startAdornment: (
-                      <InputAdornment position="start">
-                        <BsFonts />
-                      </InputAdornment>
-                    ),
-                  }}
-                />
-              </Box>
-
-              <Box
-                display={"flex"}
-                flexDirection={"row"}
-                alignItems="center"
-                className="space-x-3"
-              >
-                <FaAlignJustify />
-                <Select
-                  placeholder="Set Alignment"
-                  label="Align"
-                  value={textboxes.get(selectedId.textbox).textAlign}
-                  onChange={(e) =>
-                    handleTextAlignmentChange(
-                      selectedId.textbox,
-                      e.target.value as "left" | "center" | "right"
-                    )
-                  }
-                >
-                  <MenuItem value="left">Left</MenuItem>
-                  <MenuItem value="center">Center</MenuItem>
-                  <MenuItem value="right">Right</MenuItem>
-                </Select>
-              </Box>
-              <Box>
-                <h1>Change Font Size</h1>
-                <TextField
-                  type="number"
-                  placeholder="Change Text Size"
-                  defaultValue={textboxes.get(selectedId.textbox).fontSize}
-                  onChange={(e) => {
-                    handleFontChange(
-                      selectedId.textbox,
-                      parseInt(e.target.value)
-                    );
-                  }}
-                  InputProps={{
-                    startAdornment: (
-                      <InputAdornment position="start">
-                        <RiFontSize2 />
-                      </InputAdornment>
-                    ),
-                  }}
-                />
-              </Box>
-              <Box>
-                <h1>Change Font Color</h1>
-                <TextField
-                  type="color"
-                  className="w-24"
-                  placeholder="Change Text Color"
-                  defaultValue={textboxes.get(selectedId.textbox).fill}
-                  onChange={(e) => {
-                    handleColorChange(selectedId.textbox, e.target.value);
-                  }}
-                />
-              </Box>
-              <Button
-                className="p-4 bg-blue-600 text-white  rounded-md"
-                onClick={(e) => {
-                  setbringToTop((p) => ({
-                    ...p,
-                    textbox: {
-                      count: p.textbox.count + 1,
-                      id: selectedId.textbox,
-                    },
-                  }));
-                }}
-                variant="contained"
-                color="secondary"
-                startIcon={<MdLayers />}
-              >
-                Bring To Top
-              </Button>
-              <Box>
-                <Button
-                  className="text-red-700 cursor-pointer"
-                  onClick={(e) => {
-                    setTextboxes((p: any) => {
-                      const newTextBoxes = new Map(p);
-                      newTextBoxes.delete(selectedId.textbox);
-                      return newTextBoxes;
-                    });
-                    selectShape((p) => ({ ...p, textbox: 0 }));
-                  }}
-                  variant="outlined"
-                  startIcon={<IoTrashBinOutline />}
-                  color="error"
-                >
-                  Delete
-                </Button>
-              </Box>
-            </Box>
+            <EditText
+              textboxes={textboxes}
+              setTextboxes={setTextboxes}
+              canvasPadding={canvasPadding}
+              width={width}
+              selectShape={selectShape}
+              selectedId={selectedId}
+              setbringToTop={setbringToTop}
+            />
           )}
         </>
       )}
       {editType === "image" && (
         <>
           {cardImages.has(selectedId.image) && (
-            <div
-              className={`flex flex-row justify-around items-end space-x-2
-            absolute top-6 bg-white w-full rounded-lg border-2 right-0 left-0 border-slate-50 p-4 mx-auto
-        `}
-            >
-              <div>
-                <h1>Change Width </h1>
-                <TextField
-                  type="number"
-                  placeholder="Change Text Size"
-                  defaultValue={cardImages.get(selectedId.image)?.width}
-                  onChange={(e) => {
-                    handleCardChange(selectedId.image, "width", e.target.value);
-                  }}
-                  InputProps={{
-                    startAdornment: (
-                      <InputAdornment position="start">
-                        <RiFontSize2 />
-                      </InputAdornment>
-                    ),
-                  }}
-                />
-              </div>
-              <div>
-                <h1>Change Height</h1>
-                <TextField
-                  type="number"
-                  placeholder="Change Text Size"
-                  defaultValue={cardImages.get(selectedId.image)?.height}
-                  onChange={(e) => {
-                    handleCardChange(
-                      selectedId.image,
-                      "height",
-                      e.target.value
-                    );
-                  }}
-                  InputProps={{
-                    startAdornment: (
-                      <InputAdornment position="start">
-                        <RiFontSize2 />
-                      </InputAdornment>
-                    ),
-                  }}
-                />
-              </div>
-              <Button
-                className="p-4 bg-blue-600 text-white rounded-md"
-                onClick={(e) => {
-                  setbringToTop((p) => ({
-                    ...p,
-                    image: { id: selectedId.image, count: p.image.count + 1 },
-                  }));
-                }}
-                variant="contained"
-                color="secondary"
-                startIcon={<MdLayers />}
-              >
-                Bring To Top
-              </Button>
-              <div>
-                <Button
-                  className="text-red-700 cursor-pointer"
-                  onClick={(e) => {
-                    setcardImages((p: any) => {
-                      const newImages = new Map(p);
-                      newImages.delete(selectedId.image);
-                      return newImages;
-                    });
-                    selectShape((p) => ({ ...p, image: 0 }));
-                  }}
-                  startIcon={<IoTrashBinOutline />}
-                  color="error"
-                  variant="outlined"
-                >
-                  Delete
-                </Button>
-              </div>
-            </div>
+            <EditImage
+              cardImages={cardImages}
+              selectShape={selectShape}
+              selectedId={selectedId}
+              setbringToTop={setbringToTop}
+              setcardImages={setcardImages}
+            />
           )}
         </>
       )}
@@ -755,557 +528,100 @@ const Canvas: React.FC<canvasProps> = ({
             Object.entries(selectedId).find(([i, a]) => a != 0)?.[0] ==
               "star") &&
             stars.has(selectedId.star) && (
-              <div
-                className={`flex flex-row justify-around items-end space-x-2  absolute top-6 bg-white w-full rounded-lg border-2 right-0 left-0 border-slate-50 p-4 mx-auto
-                  
-                }`}
-              >
-                <div>
-                  <h1>Change Color</h1>
-                  <TextField
-                    type="color"
-                    className="w-24"
-                    placeholder="Change Color Size"
-                    defaultValue={stars.get(selectedId.star)?.fill}
-                    onChange={(e) => {
-                      handleShapeItemChange(
-                        "star",
-                        "fill",
-                        stars.get(selectedId.star)?.id!,
-                        e.target.value
-                      );
-                    }}
-                  />
-                </div>
-                <div>
-                  <h1>Change Stroke Color</h1>
-                  <TextField
-                    type="color"
-                    className="w-24"
-                    placeholder="Change Stroke Color Size"
-                    defaultValue={stars.get(selectedId.star)?.stroke}
-                    onChange={(e) => {
-                      handleShapeItemChange(
-                        "star",
-                        "stroke",
-                        stars.get(selectedId.star)?.id!,
-                        e.target.value
-                      );
-                    }}
-                  />
-                </div>
-                <Button
-                  className="p-4 bg-blue-600 text-white rounded-md"
-                  onClick={(e) => {
-                    setbringToTop((p) => ({
-                      ...p,
-                      star: {
-                        count: p.star.count + 1,
-                        id: selectedId.star,
-                      },
-                    }));
-                  }}
-                  variant="contained"
-                  color="secondary"
-                  startIcon={<MdLayers />}
-                >
-                  Bring To Top
-                </Button>
-                <div>
-                  <Button
-                    className="text-red-700 cursor-pointer"
-                    onClick={(e) => {
-                      setstars((p: any) => {
-                        const newStars = new Map(p);
-                        newStars.delete(selectedId.star);
-                        return newStars;
-                      });
-                      setshapeIdSelected(false);
-                    }}
-                    variant="outlined"
-                    color="error"
-                    startIcon={<IoTrashBinOutline />}
-                  >
-                    Delete
-                  </Button>
-                </div>
-              </div>
+              <EditStar
+                handleShapeItemChange={handleShapeItemChange}
+                selectShape={selectShape}
+                selectedId={selectedId}
+                setbringToTop={setbringToTop}
+                setshapeIdSelected={setshapeIdSelected}
+                setstars={setstars}
+                stars={stars}
+              />
             )}
           {(!shapeIdSelected ||
             Object.entries(selectedId).find(([i, a]) => a != 0)?.[0] ==
               "square") &&
             square.has(selectedId.square) && (
-              <div
-                className={`flex flex-row justify-around items-end space-x-2 absolute top-6 bg-white w-full rounded-lg border-2 right-0 left-0 border-slate-50 p-4 mx-auto
-                 
-                `}
-              >
-                <div>
-                  <h1>Change Color</h1>
-                  <TextField
-                    type="color"
-                    className="w-24"
-                    placeholder="Change Color Size"
-                    defaultValue={square.get(selectedId.square)?.fill}
-                    onChange={(e) => {
-                      handleShapeItemChange(
-                        "square",
-                        "fill",
-                        square.get(selectedId.square)?.id!,
-                        e.target.value
-                      );
-                    }}
-                  />
-                </div>
-                <div>
-                  <h1>Change Stroke Color</h1>
-                  <TextField
-                    type="color"
-                    className="w-24"
-                    placeholder="Change Color Size"
-                    defaultValue={square.get(selectedId.square)?.stroke}
-                    onChange={(e) => {
-                      handleShapeItemChange(
-                        "square",
-                        "fill",
-                        square.get(selectedId.square)?.id!,
-                        e.target.value
-                      );
-                    }}
-                  />
-                </div>
-                <Button
-                  className="p-4 bg-blue-600 text-white rounded-md"
-                  onClick={(e) => {
-                    setbringToTop((p) => ({
-                      ...p,
-                      square: {
-                        count: p.square.count + 1,
-                        id: selectedId.square,
-                      },
-                    }));
-                  }}
-                  variant="contained"
-                  color="secondary"
-                  startIcon={<MdLayers />}
-                >
-                  Bring To Top
-                </Button>
-                <div>
-                  <Button
-                    variant="outlined"
-                    color="error"
-                    startIcon={<IoTrashBinOutline />}
-                    className="text-red-700 cursor-pointer"
-                    onClick={(e) => {
-                      setsquare((p: any) => {
-                        const newSquares = new Map(p);
-                        newSquares.delete(selectedId.square);
-                        return newSquares;
-                      });
-                      setshapeIdSelected(false);
-                    }}
-                  >
-                    Delete
-                  </Button>
-                </div>
-              </div>
+              <EditSquare
+                handleShapeItemChange={handleShapeItemChange}
+                selectShape={selectShape}
+                selectedId={selectedId}
+                setbringToTop={setbringToTop}
+                setshapeIdSelected={setshapeIdSelected}
+                setsquare={setsquare}
+                square={square}
+              />
             )}
           {(!shapeIdSelected ||
             Object.entries(selectedId).find(([i, a]) => a != 0)?.[0] ==
               "triangle") &&
             triangle.has(selectedId.triangle) && (
-              <div
-                className={`flex flex-row justify-around items-end space-x-2 absolute top-6 bg-white w-full rounded-lg border-2 right-0 left-0 border-slate-50 p-4 mx-auto
-                `}
-              >
-                <div>
-                  <h1>Change Color</h1>
-                  <TextField
-                    type="color"
-                    className="w-24"
-                    placeholder="Change Color"
-                    defaultValue={triangle.get(selectedId.triangle)?.fill}
-                    onChange={(e) => {
-                      handleShapeItemChange(
-                        "triangle",
-                        "fill",
-                        triangle.get(selectedId.triangle)?.id!,
-                        e.target.value
-                      );
-                    }}
-                  />
-                </div>
-                <div>
-                  <h1>Change Stroke Color</h1>
-                  <TextField
-                    type="color"
-                    className="w-24"
-                    placeholder="Change Stroke"
-                    defaultValue={triangle.get(selectedId.triangle)?.stroke}
-                    onChange={(e) => {
-                      handleShapeItemChange(
-                        "triangle",
-                        "stroke",
-                        triangle.get(selectedId.triangle)?.id!,
-                        e.target.value
-                      );
-                    }}
-                  />
-                </div>
-                <Button
-                  className="p-4 bg-blue-600 text-white rounded-md"
-                  onClick={(e) => {
-                    setbringToTop((p) => ({
-                      ...p,
-                      triangle: {
-                        count: p.triangle.count + 1,
-                        id: selectedId.triangle,
-                      },
-                    }));
-                  }}
-                  variant="contained"
-                  color="secondary"
-                  startIcon={<MdLayers />}
-                >
-                  Bring To Top
-                </Button>
-                <div>
-                  <Button
-                    className="text-red-700 cursor-pointer"
-                    onClick={(e) => {
-                      settriangle((p: any) => {
-                        const newTriangles = new Map(p);
-                        newTriangles.delete(selectedId.triangle);
-                        return newTriangles;
-                      });
-                      setshapeIdSelected(false);
-                    }}
-                    variant="outlined"
-                    color="error"
-                    startIcon={<IoTrashBinOutline />}
-                  >
-                    Delete
-                  </Button>
-                </div>
-              </div>
+              <EditTriangleItem
+                handleShapeItemChange={handleShapeItemChange}
+                selectShape={selectShape}
+                selectedId={selectedId}
+                setbringToTop={setbringToTop}
+                setshapeIdSelected={setshapeIdSelected}
+                settriangle={settriangle}
+                triangle={triangle}
+              />
             )}
           {(!shapeIdSelected ||
             Object.entries(selectedId).find(([i, a]) => a != 0)?.[0] ==
               "circle") &&
             circles.has(selectedId.circle) && (
-              <div
-                className={`flex flex-row justify-around items-end space-x-2  absolute top-6 bg-white w-full rounded-lg border-2 right-0 left-0 border-slate-50 p-4 mx-auto
-           `}
-              >
-                <div>
-                  <h1>Change Color</h1>
-                  <TextField
-                    type="color"
-                    className="w-24"
-                    placeholder="Change Color"
-                    defaultValue={circles.get(selectedId.circle)?.fill}
-                    onChange={(e) => {
-                      handleShapeItemChange(
-                        "circle",
-                        "fill",
-                        circles.get(selectedId.circle)?.id!,
-                        e.target.value
-                      );
-                    }}
-                  />
-                </div>
-                <div>
-                  <h1>Change Stroke Color</h1>
-                  <TextField
-                    type="color"
-                    className="w-24"
-                    placeholder="Change Stroke Color"
-                    defaultValue={circles.get(selectedId.circle)?.stroke}
-                    onChange={(e) => {
-                      handleShapeItemChange(
-                        "circle",
-                        "stroke",
-                        circles.get(selectedId.circle)?.id!,
-                        e.target.value
-                      );
-                    }}
-                  />
-                </div>
-                <Button
-                  className="p-4 bg-blue-600 text-white rounded-md"
-                  onClick={(e) => {
-                    setbringToTop((p) => ({
-                      ...p,
-                      circle: {
-                        count: p.circle.count + 1,
-                        id: selectedId.circle,
-                      },
-                    }));
-                  }}
-                  variant="contained"
-                  color="secondary"
-                  startIcon={<MdLayers />}
-                >
-                  Bring To Top
-                </Button>
-                <div>
-                  <Button
-                    className="text-red-700 cursor-pointer"
-                    onClick={(e) => {
-                      setcircles((p: any) => {
-                        const newCircles = new Map(p);
-                        newCircles.delete(selectedId.circle);
-                        return newCircles;
-                      });
-                      setshapeIdSelected(false);
-                    }}
-                    variant="outlined"
-                    color="error"
-                    startIcon={<IoTrashBinOutline />}
-                  >
-                    Delete
-                  </Button>
-                </div>
-              </div>
+              <EditCircleItem
+                circles={circles}
+                setcircles={setcircles}
+                handleShapeItemChange={handleShapeItemChange}
+                selectShape={selectShape}
+                selectedId={selectedId}
+                setbringToTop={setbringToTop}
+                setshapeIdSelected={setshapeIdSelected}
+              />
             )}
           {(!shapeIdSelected ||
             Object.entries(selectedId).find(([i, a]) => a != 0)?.[0] ==
               "arrow") &&
             arrow.has(selectedId.arrow) && (
-              <div
-                className={`flex flex-row justify-around items-end space-x-2 absolute top-6 bg-white w-full rounded-lg border-2 right-0 left-0 border-slate-50 p-4 mx-auto
-                    
-                `}
-              >
-                <div>
-                  <h1>Change Color</h1>
-                  <TextField
-                    type="color"
-                    className="w-24"
-                    placeholder="Change Color"
-                    defaultValue={arrow.get(selectedId.arrow)?.fill}
-                    onChange={(e) => {
-                      handleShapeItemChange(
-                        "arrow",
-                        "fill",
-                        arrow.get(selectedId.arrow)?.id!,
-                        e.target.value
-                      );
-                    }}
-                  />
-                </div>
-                <div>
-                  <h1>Change Stroke Color</h1>
-                  <TextField
-                    type="color"
-                    className="w-24"
-                    placeholder="Change Stroke Color"
-                    defaultValue={arrow.get(selectedId.arrow)?.stroke}
-                    onChange={(e) => {
-                      handleShapeItemChange(
-                        "arrow",
-                        "stroke",
-                        arrow.get(selectedId.arrow)?.id!,
-                        e.target.value
-                      );
-                    }}
-                  />
-                </div>
-                <Button
-                  className="p-4 bg-blue-600 text-white rounded-md"
-                  onClick={(e) => {
-                    setbringToTop((p) => ({
-                      ...p,
-                      arrow: {
-                        count: p.arrow.count + 1,
-                        id: selectedId.arrow,
-                      },
-                    }));
-                  }}
-                  variant="contained"
-                  color="secondary"
-                  startIcon={<MdLayers />}
-                >
-                  Bring To Top
-                </Button>
-                <div>
-                  <Button
-                    className="text-red-700 cursor-pointer"
-                    onClick={(e) => {
-                      setarrow((p: any) => {
-                        const newArrow = new Map(p);
-                        newArrow.delete(selectedId.arrow);
-                        return newArrow;
-                      });
-                      setshapeIdSelected(false);
-                    }}
-                    variant="outlined"
-                    color="error"
-                    startIcon={<IoTrashBinOutline />}
-                  >
-                    Delete
-                  </Button>
-                </div>
-              </div>
+              <EditArrowIten
+                arrow={arrow}
+                setarrow={setarrow}
+                handleShapeItemChange={handleShapeItemChange}
+                selectShape={selectShape}
+                selectedId={selectedId}
+                setbringToTop={setbringToTop}
+                setshapeIdSelected={setshapeIdSelected}
+              />
             )}
           {(!shapeIdSelected ||
             Object.entries(selectedId).find(([i, a]) => a != 0)?.[0] ==
               "polygon") &&
             polygon.has(selectedId.polygon) && (
-              <div
-                className={`flex flex-row justify-around items-end space-x-2  absolute top-6 bg-white w-full rounded-lg border-2 right-0 left-0 border-slate-50 p-4 mx-auto
-                 `}
-              >
-                <div>
-                  <h1>Change Color</h1>
-                  <TextField
-                    type="color"
-                    className="w-24"
-                    placeholder="Change Color Size"
-                    defaultValue={polygon.get(selectedId.polygon)?.fill}
-                    onChange={(e) => {
-                      handleShapeItemChange(
-                        "polygon",
-                        "fill",
-                        polygon.get(selectedId.polygon)?.id!,
-                        e.target.value
-                      );
-                    }}
-                  />
-                </div>
-                <div>
-                  <h1>Change Stroke Color</h1>
-                  <TextField
-                    type="color"
-                    className="w-24"
-                    placeholder="Change Stroke"
-                    defaultValue={polygon.get(selectedId.polygon)?.stroke}
-                    onChange={(e) => {
-                      handleShapeItemChange(
-                        "polygon",
-                        "stroke",
-                        polygon.get(selectedId.polygon)?.id!,
-                        e.target.value
-                      );
-                    }}
-                  />
-                </div>
-                <Button
-                  className="p-4 bg-blue-600 text-white rounded-md"
-                  onClick={(e) => {
-                    setbringToTop((p) => ({
-                      ...p,
-                      polygon: {
-                        count: p.polygon.count + 1,
-                        id: selectedId.polygon,
-                      },
-                    }));
-                  }}
-                  variant="contained"
-                  color="secondary"
-                  startIcon={<MdLayers />}
-                >
-                  Bring To Top
-                </Button>
-                <div>
-                  <Button
-                    className="text-red-700 cursor-pointer"
-                    onClick={(e) => {
-                      setpolygon((p: any) => {
-                        const newPolygon = new Map(p);
-                        newPolygon.delete(selectedId.polygon);
-                        return newPolygon;
-                      });
-                      setshapeIdSelected(false);
-                    }}
-                    variant="outlined"
-                    color="error"
-                    startIcon={<IoTrashBinOutline />}
-                  >
-                    Delete
-                  </Button>
-                </div>
-              </div>
+              <EditPolygonItem
+                polygon={polygon}
+                setpolygon={setpolygon}
+                handleShapeItemChange={handleShapeItemChange}
+                selectShape={selectShape}
+                selectedId={selectedId}
+                setbringToTop={setbringToTop}
+                setshapeIdSelected={setshapeIdSelected}
+              />
             )}
         </>
       )}
       {editType === "icon" && (
         <>
           {cardIcons.has(selectedId.icon) && (
-            <div
-              className={`flex flex-row justify-around items-end space-x-2  absolute top-6 bg-white w-full rounded-lg border-2 right-0 left-0 border-slate-50 p-4 mx-auto
-             `}
-            >
-              <div>
-                <h1>Change Color</h1>
-                <TextField
-                  type="color"
-                  className="w-24"
-                  placeholder="Change Color Size"
-                  defaultValue={cardIcons.get(selectedId.icon)?.color}
-                  onChange={(e) => {
-                    handleIconChange(
-                      cardIcons.get(selectedId.icon)?.id!,
-                      "color",
-                      e.target.value
-                    );
-                  }}
-                />
-              </div>
-              <Button
-                className="p-4 bg-blue-600 text-white rounded-md"
-                onClick={(e) => {
-                  setbringToTop((p) => ({
-                    ...p,
-
-                    icon: {
-                      count: p.icon.count + 1,
-                      id: selectedId.icon,
-                    },
-                  }));
-                }}
-                variant="contained"
-                color="secondary"
-                startIcon={<MdLayers />}
-              >
-                Bring To Top
-              </Button>
-              <div>
-                <h1>Change Stroke Color</h1>
-                <TextField
-                  type="color"
-                  className="w-24"
-                  placeholder="Change Stroke"
-                  defaultValue={cardIcons.get(selectedId.icon)?.color}
-                  onChange={(e) => {
-                    handleIconChange(
-                      cardIcons.get(selectedId.icon)?.id!,
-                      "stroke",
-                      e.target.value
-                    );
-                  }}
-                />
-              </div>
-              <div>
-                <Button
-                  className="text-red-700 cursor-pointer"
-                  onClick={(e) => {
-                    setcardIcons((p: any) => {
-                      const newCardIcons = new Map(p);
-                      newCardIcons.delete(selectedId.icon);
-                      return newCardIcons;
-                    });
-                    selectShape((p) => ({ ...p, icon: 0 }));
-                  }}
-                  variant="outlined"
-                  color="error"
-                  startIcon={<IoTrashBinOutline />}
-                >
-                  Delete
-                </Button>
-              </div>
-            </div>
+            <EditIcon
+              cardIcons={cardIcons}
+              setcardIcons={setcardIcons}
+              handleIconChange={handleIconChange}
+              selectShape={selectShape}
+              selectedId={selectedId}
+              setbringToTop={setbringToTop}
+              setshapeIdSelected={setshapeIdSelected}
+            />
           )}
         </>
       )}
@@ -1416,8 +732,7 @@ const Canvas: React.FC<canvasProps> = ({
                           fontSize: 16,
                           text: "Enter Text",
                           textAlign: "center",
-                          scaleX: 1,
-                          scaleY: 1,
+                    
                           rotation: 0,
                           x: width / 2,
                           y: height / 2,
@@ -1436,83 +751,6 @@ const Canvas: React.FC<canvasProps> = ({
           )}
           {editType === "image" && (
             <>
-              {/* {selectedImages?.map((cardimage) => (
-                <div
-                  className="flex flex-row justify-around items-end"
-                  key={cardimage.id}
-                >
-                  <div>
-                    <h1>Change Width </h1>
-                    <TextField
-                      type="number"
-                      placeholder="Change Text Size"
-                      defaultValue={cardimage.width}
-                      onChange={(e) => {
-                        handleCardChange(cardimage.id, "width", e.target.value);
-                      }}
-                      InputProps={{
-                        startAdornment: (
-                          <InputAdornment position="start">
-                            <RiFontSize2 />
-                          </InputAdornment>
-                        ),
-                      }}
-                    />
-                  </div>
-                  <div>
-                    <h1>Change Height</h1>
-                    <TextField
-                      type="number"
-                      placeholder="Change Text Size"
-                      defaultValue={cardimage.height}
-                      onChange={(e) => {
-                        handleCardChange(
-                          cardimage.id,
-                          "height",
-                          e.target.value
-                        );
-                      }}
-                      InputProps={{
-                        startAdornment: (
-                          <InputAdornment position="start">
-                            <RiFontSize2 />
-                          </InputAdornment>
-                        ),
-                      }}
-                    />
-                  </div>
-                  <Button
-                    className="p-4 bg-blue-600 text-white rounded-md"
-                    onClick={(e) => {
-                      setbringToTop((p) => ({
-                        ...p,
-                        image: { id: cardimage.id, count: p.image.count + 1 },
-                      }));
-                    }}
-                    variant="contained"
-                    color="secondary"
-                    startIcon={<MdLayers />}
-                  >
-                    Bring To Top
-                  </Button>
-                  <div>
-                    <Button
-                      className="text-red-700 cursor-pointer"
-                      onClick={(e) => {
-                        setcardImages((p: any) =>
-                          p.filter((i: any) => i.id !== cardimage.id)
-                        );
-                        selectShape((p) => ({ ...p, image: 0 }));
-                      }}
-                      startIcon={<IoTrashBinOutline />}
-                      color="error"
-                      variant="outlined"
-                    >
-                      Delete
-                    </Button>
-                  </div>
-                </div>
-              ))} */}
               <p>
                 Accepted formats .jpg, .jpeg, .jfif, .bmp, .png, .gif, .heic,
                 .svg, .pdf, .psd, .ai, .eps, .ait, .ppt, .pptx, .tif, .tiff
@@ -1570,241 +808,285 @@ const Canvas: React.FC<canvasProps> = ({
       </section>
       <div className="w-full md:w-2/5 relative top-10 flex flex-row">
         <div>
-          <div className="flex flex-row justify-center items-start">
-            <Stage
-              style={{ height: "100%", width: "100%" }}
-              width={660} // Set a default width
-              height={350}
-              ref={canvasRef}
-              onMouseDown={CheckDeselect}
-              onTouchStart={CheckDeselect}
+          <div
+            style={{
+              position: "relative",
+              display: "flex",
+              alignItems: "flex-start",
+            }}
+          >
+            <div
+              style={{
+                position: "absolute",
+                backgroundColor: "black",
+                width: "100%", // Span the width
+                height: "1px", // Adjust thickness as needed
+                bottom: -12,
+                zIndex: 1, // Ensure the line is above the canvas content
+                textAlign: "center",
+                display: "flex",
+                alignItems: "flex-start",
+                justifyContent: "center",
+              }}
+              id="verticalLine"
             >
-              <Layer>
-                <Group
-                  width={660} // Set a default width
-                  height={350}
-                >
-                  <Rect
-                    fill={backgroundColor}
+              <span>9.4 cm</span>
+            </div>
+            {/* Horizontal line */}
+            <div
+              style={{
+                position: "absolute",
+                backgroundColor: "black",
+                height: "100%", // Span the height
+                width: "1px", // Adjust thickness as needed
+                left: "calc(660px + 10px)", // Adjust position as needed
+                zIndex: 1, // Ensure the line is above the canvas content
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "flex-start",
+                whiteSpace: "nowrap", // Prevent text from wrapping
+              }}
+              id="horizontalLine"
+            >
+              <span style={{ marginLeft: 2 }}>5.4 cm</span>
+            </div>
+            <div className="flex flex-row justify-center items-start">
+              <Stage
+                style={{ height: "100%", width: "100%" }}
+                width={660} // Set a default width
+                height={350}
+                ref={canvasRef}
+                onMouseDown={CheckDeselect}
+                onTouchStart={CheckDeselect}
+              >
+                <Layer>
+                  <Group
                     width={660} // Set a default width
                     height={350}
-                    name="background"
-                  />
-                  {backgroundImage && (
-                    <Image
-                      width={660}
+                  >
+                    <Rect
+                      fill={backgroundColor}
+                      width={660} // Set a default width
                       height={350}
-                      image={backgroundImage!}
-                      name="backgroundImage"
+                      name="background"
                     />
-                  )}
-                  {Array.from(textboxes.values())?.map((textbox) => {
-                    return (
-                      <TextImageItem
-                        textbox={textbox}
-                        canvasPadding={canvasPadding}
-                        handleTextAlignmentChange={handleTextAlignmentChange}
-                        height={height}
-                        width={width}
-                        key={textbox.id}
-                        onSelect={() => {
-                          selectShape((p) => ({ ...p, textbox: textbox.id }));
-                          seteditType("text");
-                        }}
-                        isSelected={selectedId.textbox == textbox.id}
-                        handleCardPosition={handleCardPositionChange}
-                        bringToTop={textbox.id === bringToTop.textbox.id}
-                        ToplayerCount={bringToTop.textbox.count}
-                        fontFamily={textbox.fontFamily}
+                    {backgroundImage && (
+                      <Image
+                        width={660}
+                        height={350}
+                        image={backgroundImage!}
+                        name="backgroundImage"
                       />
-                    );
-                  })}
-                  {cardImages &&
-                    Array.from(cardImages.values())?.map((i) => (
-                      <React.Fragment key={i.id}>
-                        <CardImageItem
-                          Theight={height}
-                          Twidth={width}
-                          handleCardChange={handleCardChange}
+                    )}
+                    {Array.from(textboxes.values())?.map((textbox) => {
+                      return (
+                        <TextImageItem
+                          textbox={textbox}
                           canvasPadding={canvasPadding}
-                          {...i}
-                          setcardImages={setcardImages}
+                          handleTextAlignmentChange={handleTextAlignmentChange}
+                          height={height}
+                          width={width}
+                          key={textbox.id}
                           onSelect={() => {
-                            selectShape((p) => ({ ...p, image: i.id }));
-                            seteditType("image");
+                            selectShape((p) => ({ ...p, textbox: textbox.id }));
+                            seteditType("text");
                           }}
-                          isSelected={selectedId.image == i.id}
-                          bringToTop={bringToTop.image.id === i.id}
-                          ToplayerCount={bringToTop.image.count}
+                          isSelected={selectedId.textbox == textbox.id}
+                          handleCardPosition={handleCardPositionChange}
+                          bringToTop={textbox.id === bringToTop.textbox.id}
+                          ToplayerCount={bringToTop.textbox.count}
+                          fontFamily={textbox.fontFamily}
                         />
-                      </React.Fragment>
-                    ))}
-                  {circles &&
-                    Array.from(circles.values())?.map((c) => (
-                      <React.Fragment key={c.id}>
-                        <CircleComponent
-                          {...c}
-                          canvasPadding={canvasPadding}
-                          Theight={height}
-                          Twidth={width}
-                          handleShapeItemChange={handleShapeItemChange}
-                          onSelect={() => {
-                            selectShape((p) => ({ ...p, circle: c.id }));
-                            setshapeIdSelected(true);
-                            seteditType("shape");
-                          }}
-                          isSelected={selectedId.circle == c.id}
-                          bringToTop={c.id === bringToTop.circle.id}
-                          ToplayerCount={bringToTop.circle.count}
-                        />
-                      </React.Fragment>
-                    ))}
-                  {stars &&
-                    Array.from(stars.values())?.map((c) => (
-                      <React.Fragment key={c.id}>
-                        <StarComponent
-                          {...c}
-                          canvasPadding={canvasPadding}
-                          Theight={height}
-                          Twidth={width}
-                          handleShapeItemChange={handleShapeItemChange}
-                          onSelect={() => {
-                            selectShape((p) => ({ ...p, star: c.id }));
+                      );
+                    })}
+                    {cardImages &&
+                      Array.from(cardImages.values())?.map((i) => (
+                        <React.Fragment key={i.id}>
+                          <CardImageItem
+                            Theight={height}
+                            Twidth={width}
+                            handleCardChange={handleCardChange}
+                            canvasPadding={canvasPadding}
+                            {...i}
+                            setcardImages={setcardImages}
+                            onSelect={() => {
+                              selectShape((p) => ({ ...p, image: i.id }));
+                              seteditType("image");
+                            }}
+                            isSelected={selectedId.image == i.id}
+                            bringToTop={bringToTop.image.id === i.id}
+                            ToplayerCount={bringToTop.image.count}
+                          />
+                        </React.Fragment>
+                      ))}
+                    {circles &&
+                      Array.from(circles.values())?.map((c) => (
+                        <React.Fragment key={c.id}>
+                          <CircleComponent
+                            {...c}
+                            canvasPadding={canvasPadding}
+                            Theight={height}
+                            Twidth={width}
+                            handleShapeItemChange={handleShapeItemChange}
+                            onSelect={() => {
+                              selectShape((p) => ({ ...p, circle: c.id }));
+                              setshapeIdSelected(true);
+                              seteditType("shape");
+                            }}
+                            isSelected={selectedId.circle == c.id}
+                            bringToTop={c.id === bringToTop.circle.id}
+                            ToplayerCount={bringToTop.circle.count}
+                          />
+                        </React.Fragment>
+                      ))}
+                    {stars &&
+                      Array.from(stars.values())?.map((c) => (
+                        <React.Fragment key={c.id}>
+                          <StarComponent
+                            {...c}
+                            canvasPadding={canvasPadding}
+                            Theight={height}
+                            Twidth={width}
+                            handleShapeItemChange={handleShapeItemChange}
+                            onSelect={() => {
+                              selectShape((p) => ({ ...p, star: c.id }));
 
-                            setshapeIdSelected(true);
-                            seteditType("shape");
-                          }}
-                          isSelected={selectedId.star == c.id}
-                          bringToTop={c.id === bringToTop.star.id}
-                          ToplayerCount={bringToTop.star.count}
-                        />
-                      </React.Fragment>
-                    ))}
-                  {arrow &&
-                    Array.from(arrow.values())?.map((c) => (
-                      <React.Fragment key={c.id}>
-                        <ArrowComponent
-                          {...c}
-                          canvasPadding={canvasPadding}
-                          Theight={height}
-                          Twidth={width}
-                          handleShapeItemChange={handleShapeItemChange}
-                          onSelect={() => {
-                            selectShape((p) => ({ ...p, arrow: c.id }));
+                              setshapeIdSelected(true);
+                              seteditType("shape");
+                            }}
+                            isSelected={selectedId.star == c.id}
+                            bringToTop={c.id === bringToTop.star.id}
+                            ToplayerCount={bringToTop.star.count}
+                          />
+                        </React.Fragment>
+                      ))}
+                    {arrow &&
+                      Array.from(arrow.values())?.map((c) => (
+                        <React.Fragment key={c.id}>
+                          <ArrowComponent
+                            {...c}
+                            canvasPadding={canvasPadding}
+                            Theight={height}
+                            Twidth={width}
+                            handleShapeItemChange={handleShapeItemChange}
+                            onSelect={() => {
+                              selectShape((p) => ({ ...p, arrow: c.id }));
 
-                            setshapeIdSelected(true);
-                            seteditType("shape");
-                          }}
-                          isSelected={selectedId.arrow == c.id}
-                          bringToTop={c.id === bringToTop.arrow.id}
-                          ToplayerCount={bringToTop.arrow.count}
-                        />
-                      </React.Fragment>
-                    ))}
-                  {square &&
-                    Array.from(square.values())?.map((c) => (
-                      <React.Fragment key={c.id}>
-                        <SquareComponent
-                          {...c}
-                          canvasPadding={canvasPadding}
-                          Theight={height}
-                          Twidth={width}
-                          handleShapeItemChange={handleShapeItemChange}
-                          onSelect={() => {
-                            selectShape((p) => ({ ...p, square: c.id }));
+                              setshapeIdSelected(true);
+                              seteditType("shape");
+                            }}
+                            isSelected={selectedId.arrow == c.id}
+                            bringToTop={c.id === bringToTop.arrow.id}
+                            ToplayerCount={bringToTop.arrow.count}
+                          />
+                        </React.Fragment>
+                      ))}
+                    {square &&
+                      Array.from(square.values())?.map((c) => (
+                        <React.Fragment key={c.id}>
+                          <SquareComponent
+                            {...c}
+                            canvasPadding={canvasPadding}
+                            Theight={height}
+                            Twidth={width}
+                            handleShapeItemChange={handleShapeItemChange}
+                            onSelect={() => {
+                              selectShape((p) => ({ ...p, square: c.id }));
 
-                            setshapeIdSelected(true);
-                            seteditType("shape");
-                          }}
-                          isSelected={selectedId.square == c.id}
-                          bringToTop={c.id === bringToTop.square.id}
-                          ToplayerCount={bringToTop.square.count}
-                        />
-                      </React.Fragment>
-                    ))}
-                  {triangle &&
-                    Array.from(triangle.values())?.map((c) => (
-                      <React.Fragment key={c.id}>
-                        <TriangleComponent
+                              setshapeIdSelected(true);
+                              seteditType("shape");
+                            }}
+                            isSelected={selectedId.square == c.id}
+                            bringToTop={c.id === bringToTop.square.id}
+                            ToplayerCount={bringToTop.square.count}
+                          />
+                        </React.Fragment>
+                      ))}
+                    {triangle &&
+                      Array.from(triangle.values())?.map((c) => (
+                        <React.Fragment key={c.id}>
+                          <TriangleComponent
+                            {...c}
+                            canvasPadding={canvasPadding}
+                            Theight={height}
+                            Twidth={width}
+                            handleShapeItemChange={handleShapeItemChange}
+                            onSelect={() => {
+                              selectShape((p) => ({ ...p, triangle: c.id }));
+                              setshapeIdSelected(true);
+                              seteditType("shape");
+                            }}
+                            isSelected={selectedId.triangle == c.id}
+                            bringToTop={c.id === bringToTop.triangle.id}
+                            ToplayerCount={bringToTop.triangle.count}
+                          />
+                        </React.Fragment>
+                      ))}
+                    {polygon &&
+                      Array.from(polygon.values())?.map((c) => (
+                        <React.Fragment key={c.id}>
+                          <PolygonShapeComponent
+                            {...c}
+                            canvasPadding={canvasPadding}
+                            Theight={height}
+                            Twidth={width}
+                            handleShapeItemChange={handleShapeItemChange}
+                            onSelect={() => {
+                              selectShape((p) => ({ ...p, polygon: c.id }));
+                              setshapeIdSelected(true);
+                              seteditType("shape");
+                            }}
+                            isSelected={selectedId.polygon == c.id}
+                            bringToTop={c.id === bringToTop.polygon.id}
+                            ToplayerCount={bringToTop.polygon.count}
+                          />
+                        </React.Fragment>
+                      ))}
+                    {cardIcons &&
+                      Array.from(cardIcons.values())?.map((c) => (
+                        <IconComponent
+                          iconName={c.name}
+                          key={c.id}
                           {...c}
-                          canvasPadding={canvasPadding}
+                          color={c.color}
                           Theight={height}
                           Twidth={width}
-                          handleShapeItemChange={handleShapeItemChange}
                           onSelect={() => {
-                            selectShape((p) => ({ ...p, triangle: c.id }));
-                            setshapeIdSelected(true);
-                            seteditType("shape");
+                            selectShape((p) => ({ ...p, icon: c.id }));
+                            seteditType("icon");
                           }}
-                          isSelected={selectedId.triangle == c.id}
-                          bringToTop={c.id === bringToTop.triangle.id}
-                          ToplayerCount={bringToTop.triangle.count}
-                        />
-                      </React.Fragment>
-                    ))}
-                  {polygon &&
-                    Array.from(polygon.values())?.map((c) => (
-                      <React.Fragment key={c.id}>
-                        <PolygonShapeComponent
-                          {...c}
+                          isSelected={selectedId.icon == c.id}
+                          stroke={c.stroke}
+                          handleIconChange={handleIconChange}
                           canvasPadding={canvasPadding}
-                          Theight={height}
-                          Twidth={width}
-                          handleShapeItemChange={handleShapeItemChange}
-                          onSelect={() => {
-                            selectShape((p) => ({ ...p, polygon: c.id }));
-                            setshapeIdSelected(true);
-                            seteditType("shape");
-                          }}
-                          isSelected={selectedId.polygon == c.id}
-                          bringToTop={c.id === bringToTop.polygon.id}
-                          ToplayerCount={bringToTop.polygon.count}
+                          bringToTop={c.id === bringToTop.icon.id}
+                          ToplayerCount={bringToTop.icon.count}
                         />
-                      </React.Fragment>
-                    ))}
-                  {cardIcons &&
-                    Array.from(cardIcons.values())?.map((c) => (
-                      <IconComponent
-                        iconName={c.name}
-                        key={c.id}
-                        {...c}
-                        color={c.color}
-                        Theight={height}
-                        Twidth={width}
-                        onSelect={() => {
-                          selectShape((p) => ({ ...p, icon: c.id }));
-                          seteditType("icon");
-                        }}
-                        isSelected={selectedId.icon == c.id}
-                        stroke={c.stroke}
-                        handleIconChange={handleIconChange}
-                        canvasPadding={canvasPadding}
-                        bringToTop={c.id === bringToTop.icon.id}
-                        ToplayerCount={bringToTop.icon.count}
+                      ))}
+                    {backgroundImage && !isdownloading && (
+                      <Line
+                        points={[
+                          padding + borderPadding, // Index 0: X-coordinate of the top-left corner
+                          padding + borderPadding, // Index 1: Y-coordinate of the top-left corner
+                          660 - padding - borderPadding, // Index 2: X-coordinate of the top-right corner
+                          padding + borderPadding, // Index 3: Y-coordinate of the top-right corner
+                          660 - padding - borderPadding, // Index 4: X-coordinate of the bottom-right corner
+                          350 - padding - borderPadding, // Index 5: Y-coordinate of the bottom-right corner
+                          padding + borderPadding, // Index 6: X-coordinate of the bottom-left corner
+                          350 - padding - borderPadding, // Index 7: Y-coordinate of the bottom-left corner
+                          padding + borderPadding, // Index 8: X-coordinate of the top-left corner (to close the shape)
+                          padding + borderPadding, // Index 9: Y-coordinate of the top-left corner (to close the shape)
+                        ]}
+                        stroke="black"
+                        dash={[8, 5]} // Adjust the dash array for the desired dotted effect
                       />
-                    ))}
-                  {backgroundImage && !isdownloading && (
-                    <Line
-                      points={[
-                        padding + borderPadding, // Index 0: X-coordinate of the top-left corner
-                        padding + borderPadding, // Index 1: Y-coordinate of the top-left corner
-                        660 - padding - borderPadding, // Index 2: X-coordinate of the top-right corner
-                        padding + borderPadding, // Index 3: Y-coordinate of the top-right corner
-                        660 - padding - borderPadding, // Index 4: X-coordinate of the bottom-right corner
-                        350 - padding - borderPadding, // Index 5: Y-coordinate of the bottom-right corner
-                        padding + borderPadding, // Index 6: X-coordinate of the bottom-left corner
-                        350 - padding - borderPadding, // Index 7: Y-coordinate of the bottom-left corner
-                        padding + borderPadding, // Index 8: X-coordinate of the top-left corner (to close the shape)
-                        padding + borderPadding, // Index 9: Y-coordinate of the top-left corner (to close the shape)
-                      ]}
-                      stroke="black"
-                      dash={[8, 5]} // Adjust the dash array for the desired dotted effect
-                    />
-                  )}
-                </Group>
-              </Layer>
-            </Stage>
+                    )}
+                  </Group>
+                </Layer>
+              </Stage>
+            </div>
           </div>
+
           <input
             type="file"
             hidden
@@ -1833,7 +1115,7 @@ const Canvas: React.FC<canvasProps> = ({
             }}
           />
 
-          <div className="w-full my-5 flex items-center gap-5 justify-start">
+          <div className="w-full my-5 flex items-center gap-5 justify-start mt-16">
             <TextField
               type="color"
               value={backgroundColor}

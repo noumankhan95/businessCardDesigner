@@ -37,27 +37,6 @@ const BusinessCard: React.FC<BusinessCardProps> = ({
 
   return (
     <div className="space-y-5 w-full h-screen">
-      <div className="flex flex-row justify-start items-center">
-        <Button
-          onClick={() => {
-            setshowFront((p) => !p);
-          }}
-          variant="contained"
-          color="secondary"
-        >
-          Show {showFront ? "Front" : "Back"}
-        </Button>
-        {/* <Button
-          onClick={() => {
-            setshowFront(false);
-          }}
-          variant="contained"
-          color="secondary"
-        >
-          Show Back
-        </Button> */}
-      </div>
-
       {showFront && (
         <Canvas
           canvasPadding={canvasPadding}
@@ -116,6 +95,17 @@ const BusinessCard: React.FC<BusinessCardProps> = ({
           setBackgroundImage={setBacksidebackgroundImage}
         />
       )}
+        <div className="flex flex-row justify-start items-center fixed right-6 top-32 ">
+          <Button
+            onClick={() => {
+              setshowFront((p) => !p);
+            }}
+            variant="contained"
+            color="secondary"
+          >
+            Show {showFront ? "Front" : "Back"}
+          </Button>
+        </div>
     </div>
   );
 };

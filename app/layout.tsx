@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Inter, Sunflower, Playfair_Display } from "next/font/google";
 import "./globals.css";
 import ThemeRegistry from "@/utils/ThemeRegistry";
 import { ToastContainer } from "react-toastify";
@@ -18,7 +18,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={inter.className} style={{ backgroundColor: "#f0f0f0" }}>
+      <body
+        className={`${inter.className} `}
+        style={{ backgroundColor: "#f0f0f0" }}
+      >
         <ThemeRegistry options={{ key: "mui-theme" }}>
           <ToastContainer position="top-right" />
           {children}

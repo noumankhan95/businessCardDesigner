@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Text, Transformer } from "react-konva";
+import fontFamilies from "@/app/fonts";
 function TextImageItem({
   textbox,
   canvasPadding,
@@ -11,6 +12,7 @@ function TextImageItem({
   handleCardPosition,
   ToplayerCount,
   bringToTop,
+  fontFamily,
 }: {
   textbox: any;
   canvasPadding: number;
@@ -27,6 +29,7 @@ function TextImageItem({
   onSelect: () => void;
   bringToTop: boolean;
   ToplayerCount: number;
+  fontFamily: string;
 }) {
   const shapeRef = React.useRef<any>();
 
@@ -46,12 +49,14 @@ function TextImageItem({
       shapeRef.current.moveUp();
     }
   }, [bringToTop, ToplayerCount]);
+  console.log(fontFamily, "fontfamily");
   return (
     <>
       <Text
         onClick={onSelect}
         onTap={onSelect}
         key={textbox.id}
+        fontFamily={fontFamilies[fontFamily].style.fontFamily}
         x={
           textbox.x // Align right
         }
@@ -138,4 +143,4 @@ function TextImageItem({
   );
 }
 
-export default TextImageItem;
+export default React.memo(TextImageItem);

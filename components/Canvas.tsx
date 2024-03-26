@@ -49,6 +49,7 @@ import ListIcons from "./ListIconsComponent";
 import IconComponent from "./IconComponent";
 import { IoIosAdd } from "react-icons/io";
 import { RegularPolygon } from "konva/lib/shapes/RegularPolygon";
+import "@/app/globals.css";
 const padding = 6; // Padding value
 const borderPadding = 10;
 const Canvas: React.FC<canvasProps> = ({
@@ -180,49 +181,6 @@ const Canvas: React.FC<canvasProps> = ({
   //       : textboxes
   //   );
   // }, [selectedId.textbox, textboxes]);
-  useEffect(() => {
-    setselectedImages(
-      selectedId.image
-        ? cardImages?.filter((i) => i.id === selectedId.image)
-        : cardImages
-    );
-  }, [selectedId.image, cardImages]);
-
-  useEffect(() => {
-    setselectedcircles(
-      selectedId.circle
-        ? circles?.filter((i) => i.id === selectedId.circle)
-        : circles
-    );
-  }, [selectedId.circle, circles]);
-
-  useEffect(() => {
-    setselectedstars(
-      selectedId.star ? stars?.filter((i) => i.id === selectedId.star) : stars
-    );
-  }, [selectedId.star, stars]);
-
-  useEffect(() => {
-    setselectedarrow(
-      selectedId.arrow ? arrow?.filter((i) => i.id === selectedId.arrow) : arrow
-    );
-  }, [selectedId.arrow, arrow]);
-
-  useEffect(() => {
-    setselectedsquare(
-      selectedId.square
-        ? square?.filter((i) => i.id === selectedId.square)
-        : square
-    );
-  }, [selectedId.square, square]);
-
-  useEffect(() => {
-    setselectedtriangle(
-      selectedId.triangle
-        ? triangle?.filter((i) => i.id === selectedId.triangle)
-        : triangle
-    );
-  }, [selectedId.triangle, triangle]);
 
   useEffect(() => {
     setselectedpolygon(
@@ -340,6 +298,12 @@ const Canvas: React.FC<canvasProps> = ({
     }
   }, []);
   const handleBackgroundImageChange = useCallback((url: string) => {
+    console.log("url", url);
+    if (!url) {
+      console.log("no background");
+      setBackgroundImage("");
+      canvasRef.current.return;
+    }
     const img = new window.Image();
     img.src = url;
     img.onload = () => {
@@ -418,6 +382,13 @@ const Canvas: React.FC<canvasProps> = ({
     setTextboxes((prevState: any) =>
       prevState.map((textbox: any) =>
         textbox.id === id ? { ...textbox, fontSize: value } : textbox
+      )
+    );
+  }
+  function handleFontFamily(id: number, value: string) {
+    setTextboxes((prevState: any) =>
+      prevState.map((textbox: any) =>
+        textbox.id === id ? { ...textbox, fontFamily: value } : textbox
       )
     );
   }
@@ -528,7 +499,7 @@ const Canvas: React.FC<canvasProps> = ({
   console.log(textboxes[selectedId.textbox - 1], "selected Text");
 
   return (
-    <section className="space-y-4 w-full h-auto flex flex-row justify-start gap-5 py-20 ">
+    <section className="space-y-4 w-full h-auto flex flex-col items-center md:flex-row md:justify-start gap-5 py-20 lg:px-0 px-10  ">
       {editType === "text" && (
         <>
           {textboxes[selectedId.textbox - 1] && (
@@ -537,6 +508,26 @@ const Canvas: React.FC<canvasProps> = ({
                   absolute top-6 bg-white w-full rounded-lg border-2 right-0 left-0 border-slate-50 p-4 mx-auto
               `}
             >
+              <Box
+                display={"flex"}
+                flexDirection={"row"}
+                alignItems="center"
+                className="space-x-3"
+              >
+                <FaAlignJustify />
+                <p>Font Family</p>
+                <Select
+                  placeholder="Font Family"
+                  label="Change FontFamily"
+                  value={textboxes[selectedId.textbox - 1].fontFamily}
+                  onChange={(e) =>
+                    handleFontFamily(selectedId.textbox, e.target.value)
+                  }
+                >
+                  <MenuItem value="playfair_display">Playfair Display</MenuItem>
+                  <MenuItem value="sunflower">Sunflower</MenuItem>
+                </Select>
+              </Box>
               <Box className="space-x-2">
                 <TextField
                   type="text"
@@ -649,21 +640,20 @@ const Canvas: React.FC<canvasProps> = ({
       )}
       {editType === "image" && (
         <>
-          {selectedImages?.map((cardimage) => (
+          {cardImages[selectedId.image - 1] && (
             <div
               className={`flex flex-row justify-around items-end space-x-2
             absolute top-6 bg-white w-full rounded-lg border-2 right-0 left-0 border-slate-50 p-4 mx-auto
         `}
-              key={cardimage.id}
             >
               <div>
                 <h1>Change Width </h1>
                 <TextField
                   type="number"
                   placeholder="Change Text Size"
-                  defaultValue={cardimage.width}
+                  defaultValue={cardImages[selectedId.image - 1].width}
                   onChange={(e) => {
-                    handleCardChange(cardimage.id, "width", e.target.value);
+                    handleCardChange(selectedId.image, "width", e.target.value);
                   }}
                   InputProps={{
                     startAdornment: (
@@ -679,9 +669,13 @@ const Canvas: React.FC<canvasProps> = ({
                 <TextField
                   type="number"
                   placeholder="Change Text Size"
-                  defaultValue={cardimage.height}
+                  defaultValue={cardImages[selectedId.image - 1].height}
                   onChange={(e) => {
-                    handleCardChange(cardimage.id, "height", e.target.value);
+                    handleCardChange(
+                      selectedId.image,
+                      "height",
+                      e.target.value
+                    );
                   }}
                   InputProps={{
                     startAdornment: (
@@ -697,7 +691,7 @@ const Canvas: React.FC<canvasProps> = ({
                 onClick={(e) => {
                   setbringToTop((p) => ({
                     ...p,
-                    image: { id: cardimage.id, count: p.image.count + 1 },
+                    image: { id: selectedId.image, count: p.image.count + 1 },
                   }));
                 }}
                 variant="contained"
@@ -711,7 +705,7 @@ const Canvas: React.FC<canvasProps> = ({
                   className="text-red-700 cursor-pointer"
                   onClick={(e) => {
                     setcardImages((p: any) =>
-                      p.filter((i: any) => i.id !== cardimage.id)
+                      p.filter((i: any) => i.id !== selectedId.image)
                     );
                     selectShape((p) => ({ ...p, image: 0 }));
                   }}
@@ -723,7 +717,7 @@ const Canvas: React.FC<canvasProps> = ({
                 </Button>
               </div>
             </div>
-          ))}
+          )}
         </>
       )}
       {editType === "shape" && (
@@ -731,14 +725,11 @@ const Canvas: React.FC<canvasProps> = ({
           {(!shapeIdSelected ||
             Object.entries(selectedId).find(([i, a]) => a != 0)?.[0] ==
               "star") &&
-            selectedstars?.map((star) => (
+            stars[selectedId.star - 1] && (
               <div
-                className={`flex flex-row justify-around items-end space-x-2 ${
-                  selectedId.star === star.id
-                    ? " absolute top-6 bg-white w-full rounded-lg border-2 right-0 left-0 border-slate-50 p-4 mx-auto"
-                    : "hidden"
+                className={`flex flex-row justify-around items-end space-x-2  absolute top-6 bg-white w-full rounded-lg border-2 right-0 left-0 border-slate-50 p-4 mx-auto
+                  
                 }`}
-                key={star.id}
               >
                 <div>
                   <h1>Change Color</h1>
@@ -746,12 +737,12 @@ const Canvas: React.FC<canvasProps> = ({
                     type="color"
                     className="w-24"
                     placeholder="Change Color Size"
-                    defaultValue={star.fill}
+                    defaultValue={stars[selectedId.star - 1].fill}
                     onChange={(e) => {
                       handleShapeItemChange(
                         "star",
                         "fill",
-                        star.id,
+                        stars[selectedId.star - 1].id,
                         e.target.value
                       );
                     }}
@@ -763,12 +754,12 @@ const Canvas: React.FC<canvasProps> = ({
                     type="color"
                     className="w-24"
                     placeholder="Change Stroke Color Size"
-                    defaultValue={star.fill}
+                    defaultValue={stars[selectedId.star - 1].stroke}
                     onChange={(e) => {
                       handleShapeItemChange(
                         "star",
                         "stroke",
-                        star.id,
+                        stars[selectedId.star - 1].id,
                         e.target.value
                       );
                     }}
@@ -779,7 +770,10 @@ const Canvas: React.FC<canvasProps> = ({
                   onClick={(e) => {
                     setbringToTop((p) => ({
                       ...p,
-                      star: { count: p.star.count + 1, id: star.id },
+                      star: {
+                        count: p.star.count + 1,
+                        id: stars[selectedId.star - 1].id,
+                      },
                     }));
                   }}
                   variant="contained"
@@ -793,7 +787,9 @@ const Canvas: React.FC<canvasProps> = ({
                     className="text-red-700 cursor-pointer"
                     onClick={(e) => {
                       setstars((p: any) =>
-                        p.filter((i: any) => i.id !== star.id)
+                        p.filter(
+                          (i: any) => i.id !== stars[selectedId.star - 1].id
+                        )
                       );
                       setshapeIdSelected(false);
                     }}
@@ -805,18 +801,15 @@ const Canvas: React.FC<canvasProps> = ({
                   </Button>
                 </div>
               </div>
-            ))}
+            )}
           {(!shapeIdSelected ||
             Object.entries(selectedId).find(([i, a]) => a != 0)?.[0] ==
               "square") &&
-            selectedsquare?.map((square) => (
+            square[selectedId.square - 1] && (
               <div
-                className={`flex flex-row justify-around items-end space-x-2 ${
-                  selectedId.square === square.id
-                    ? " absolute top-6 bg-white w-full rounded-lg border-2 right-0 left-0 border-slate-50 p-4 mx-auto"
-                    : "hidden"
-                }`}
-                key={square.id}
+                className={`flex flex-row justify-around items-end space-x-2 absolute top-6 bg-white w-full rounded-lg border-2 right-0 left-0 border-slate-50 p-4 mx-auto
+                 
+                `}
               >
                 <div>
                   <h1>Change Color</h1>
@@ -824,12 +817,12 @@ const Canvas: React.FC<canvasProps> = ({
                     type="color"
                     className="w-24"
                     placeholder="Change Color Size"
-                    defaultValue={square.fill}
+                    defaultValue={square[selectedId.square - 1].fill}
                     onChange={(e) => {
                       handleShapeItemChange(
                         "square",
                         "fill",
-                        square.id,
+                        square[selectedId.square - 1].id,
                         e.target.value
                       );
                     }}
@@ -841,12 +834,12 @@ const Canvas: React.FC<canvasProps> = ({
                     type="color"
                     className="w-24"
                     placeholder="Change Color Size"
-                    defaultValue={square.stroke}
+                    defaultValue={square[selectedId.square - 1].stroke}
                     onChange={(e) => {
                       handleShapeItemChange(
                         "square",
                         "fill",
-                        square.id,
+                        square[selectedId.square - 1].id,
                         e.target.value
                       );
                     }}
@@ -857,7 +850,10 @@ const Canvas: React.FC<canvasProps> = ({
                   onClick={(e) => {
                     setbringToTop((p) => ({
                       ...p,
-                      square: { count: p.square.count + 1, id: square.id },
+                      square: {
+                        count: p.square.count + 1,
+                        id: square[selectedId.square - 1].id,
+                      },
                     }));
                   }}
                   variant="contained"
@@ -874,7 +870,9 @@ const Canvas: React.FC<canvasProps> = ({
                     className="text-red-700 cursor-pointer"
                     onClick={(e) => {
                       setsquare((p: any) =>
-                        p.filter((i: any) => i.id !== square.id)
+                        p.filter(
+                          (i: any) => i.id !== square[selectedId.square - 1].id
+                        )
                       );
                       setshapeIdSelected(false);
                     }}
@@ -883,18 +881,14 @@ const Canvas: React.FC<canvasProps> = ({
                   </Button>
                 </div>
               </div>
-            ))}
+            )}
           {(!shapeIdSelected ||
             Object.entries(selectedId).find(([i, a]) => a != 0)?.[0] ==
               "triangle") &&
-            selectedtriangle?.map((triangle) => (
+            triangle[selectedId.triangle - 1] && (
               <div
-                className={`flex flex-row justify-around items-end space-x-2 ${
-                  selectedId.triangle === triangle.id
-                    ? " absolute top-6 bg-white w-full rounded-lg border-2 right-0 left-0 border-slate-50 p-4 mx-auto"
-                    : "hidden"
-                }`}
-                key={triangle.id}
+                className={`flex flex-row justify-around items-end space-x-2 absolute top-6 bg-white w-full rounded-lg border-2 right-0 left-0 border-slate-50 p-4 mx-auto
+                `}
               >
                 <div>
                   <h1>Change Color</h1>
@@ -902,12 +896,12 @@ const Canvas: React.FC<canvasProps> = ({
                     type="color"
                     className="w-24"
                     placeholder="Change Color"
-                    defaultValue={triangle.fill}
+                    defaultValue={triangle[selectedId.triangle - 1].fill}
                     onChange={(e) => {
                       handleShapeItemChange(
                         "triangle",
                         "fill",
-                        triangle.id,
+                        triangle[selectedId.triangle - 1].id,
                         e.target.value
                       );
                     }}
@@ -919,12 +913,12 @@ const Canvas: React.FC<canvasProps> = ({
                     type="color"
                     className="w-24"
                     placeholder="Change Stroke"
-                    defaultValue={triangle.stroke}
+                    defaultValue={triangle[selectedId.triangle - 1].stroke}
                     onChange={(e) => {
                       handleShapeItemChange(
                         "triangle",
                         "stroke",
-                        triangle.id,
+                        triangle[selectedId.triangle - 1].id,
                         e.target.value
                       );
                     }}
@@ -937,7 +931,7 @@ const Canvas: React.FC<canvasProps> = ({
                       ...p,
                       triangle: {
                         count: p.triangle.count + 1,
-                        id: triangle.id,
+                        id: triangle[selectedId.triangle - 1].id,
                       },
                     }));
                   }}
@@ -952,7 +946,10 @@ const Canvas: React.FC<canvasProps> = ({
                     className="text-red-700 cursor-pointer"
                     onClick={(e) => {
                       settriangle((p: any) =>
-                        p.filter((i: any) => i.id !== triangle.id)
+                        p.filter(
+                          (i: any) =>
+                            i.id !== triangle[selectedId.triangle - 1].id
+                        )
                       );
                       setshapeIdSelected(false);
                     }}
@@ -964,18 +961,14 @@ const Canvas: React.FC<canvasProps> = ({
                   </Button>
                 </div>
               </div>
-            ))}
+            )}
           {(!shapeIdSelected ||
             Object.entries(selectedId).find(([i, a]) => a != 0)?.[0] ==
               "circle") &&
-            selectedcircles?.map((circle) => (
+            circles[selectedId.circle - 1] && (
               <div
-                className={`flex flex-row justify-around items-end space-x-2 ${
-                  selectedId.circle === circle.id
-                    ? " absolute top-6 bg-white w-full rounded-lg border-2 right-0 left-0 border-slate-50 p-4 mx-auto"
-                    : "hidden"
-                }`}
-                key={circle.id}
+                className={`flex flex-row justify-around items-end space-x-2  absolute top-6 bg-white w-full rounded-lg border-2 right-0 left-0 border-slate-50 p-4 mx-auto
+           `}
               >
                 <div>
                   <h1>Change Color</h1>
@@ -983,12 +976,12 @@ const Canvas: React.FC<canvasProps> = ({
                     type="color"
                     className="w-24"
                     placeholder="Change Color"
-                    defaultValue={circle.fill}
+                    defaultValue={circles[selectedId.circle - 1].fill}
                     onChange={(e) => {
                       handleShapeItemChange(
                         "circle",
                         "fill",
-                        circle.id,
+                        circles[selectedId.circle - 1].id,
                         e.target.value
                       );
                     }}
@@ -1000,12 +993,12 @@ const Canvas: React.FC<canvasProps> = ({
                     type="color"
                     className="w-24"
                     placeholder="Change Stroke Color"
-                    defaultValue={circle.stroke}
+                    defaultValue={circles[selectedId.circle - 1].stroke}
                     onChange={(e) => {
                       handleShapeItemChange(
                         "circle",
                         "stroke",
-                        circle.id,
+                        circles[selectedId.circle - 1].id,
                         e.target.value
                       );
                     }}
@@ -1016,7 +1009,10 @@ const Canvas: React.FC<canvasProps> = ({
                   onClick={(e) => {
                     setbringToTop((p) => ({
                       ...p,
-                      circle: { count: p.circle.count + 1, id: circle.id },
+                      circle: {
+                        count: p.circle.count + 1,
+                        id: circles[selectedId.circle - 1].id,
+                      },
                     }));
                   }}
                   variant="contained"
@@ -1030,7 +1026,9 @@ const Canvas: React.FC<canvasProps> = ({
                     className="text-red-700 cursor-pointer"
                     onClick={(e) => {
                       setcircles((p: any) =>
-                        p.filter((i: any) => i.id !== circle.id)
+                        p.filter(
+                          (i: any) => i.id !== circles[selectedId.circle - 1].id
+                        )
                       );
                       setshapeIdSelected(false);
                     }}
@@ -1042,18 +1040,15 @@ const Canvas: React.FC<canvasProps> = ({
                   </Button>
                 </div>
               </div>
-            ))}
+            )}
           {(!shapeIdSelected ||
             Object.entries(selectedId).find(([i, a]) => a != 0)?.[0] ==
               "arrow") &&
-            selectedarrow?.map((arrow) => (
+            arrow[selectedId.arrow - 1] && (
               <div
-                className={`flex flex-row justify-around items-end space-x-2 ${
-                  selectedId.arrow === arrow.id
-                    ? " absolute top-6 bg-white w-full rounded-lg border-2 right-0 left-0 border-slate-50 p-4 mx-auto"
-                    : "hidden"
-                }`}
-                key={arrow.id}
+                className={`flex flex-row justify-around items-end space-x-2 absolute top-6 bg-white w-full rounded-lg border-2 right-0 left-0 border-slate-50 p-4 mx-auto
+                    
+                `}
               >
                 <div>
                   <h1>Change Color</h1>
@@ -1061,12 +1056,12 @@ const Canvas: React.FC<canvasProps> = ({
                     type="color"
                     className="w-24"
                     placeholder="Change Color"
-                    defaultValue={arrow.fill}
+                    defaultValue={arrow[selectedId.arrow - 1].fill}
                     onChange={(e) => {
                       handleShapeItemChange(
                         "arrow",
                         "fill",
-                        arrow.id,
+                        arrow[selectedId.arrow - 1].id,
                         e.target.value
                       );
                     }}
@@ -1078,12 +1073,12 @@ const Canvas: React.FC<canvasProps> = ({
                     type="color"
                     className="w-24"
                     placeholder="Change Stroke Color"
-                    defaultValue={arrow.stroke}
+                    defaultValue={arrow[selectedId.arrow - 1].stroke}
                     onChange={(e) => {
                       handleShapeItemChange(
                         "arrow",
                         "stroke",
-                        arrow.id,
+                        arrow[selectedId.arrow - 1].id,
                         e.target.value
                       );
                     }}
@@ -1094,7 +1089,10 @@ const Canvas: React.FC<canvasProps> = ({
                   onClick={(e) => {
                     setbringToTop((p) => ({
                       ...p,
-                      arrow: { count: p.arrow.count + 1, id: arrow.id },
+                      arrow: {
+                        count: p.arrow.count + 1,
+                        id: arrow[selectedId.arrow - 1].id,
+                      },
                     }));
                   }}
                   variant="contained"
@@ -1108,7 +1106,9 @@ const Canvas: React.FC<canvasProps> = ({
                     className="text-red-700 cursor-pointer"
                     onClick={(e) => {
                       setarrow((p: any) =>
-                        p.filter((i: any) => i.id !== arrow.id)
+                        p.filter(
+                          (i: any) => i.id !== arrow[selectedId.arrow - 1].id
+                        )
                       );
                       setshapeIdSelected(false);
                     }}
@@ -1120,18 +1120,14 @@ const Canvas: React.FC<canvasProps> = ({
                   </Button>
                 </div>
               </div>
-            ))}
+            )}
           {(!shapeIdSelected ||
             Object.entries(selectedId).find(([i, a]) => a != 0)?.[0] ==
               "polygon") &&
-            selectedpolygon?.map((polygon) => (
+            polygon[selectedId.polygon - 1] && (
               <div
-                className={`flex flex-row justify-around items-end space-x-2 ${
-                  selectedId.polygon === polygon.id
-                    ? " absolute top-6 bg-white w-full rounded-lg border-2 right-0 left-0 border-slate-50 p-4 mx-auto"
-                    : "hidden"
-                }`}
-                key={polygon.id}
+                className={`flex flex-row justify-around items-end space-x-2  absolute top-6 bg-white w-full rounded-lg border-2 right-0 left-0 border-slate-50 p-4 mx-auto
+                 `}
               >
                 <div>
                   <h1>Change Color</h1>
@@ -1139,12 +1135,12 @@ const Canvas: React.FC<canvasProps> = ({
                     type="color"
                     className="w-24"
                     placeholder="Change Color Size"
-                    defaultValue={polygon.fill}
+                    defaultValue={polygon[selectedId.polygon - 1].fill}
                     onChange={(e) => {
                       handleShapeItemChange(
                         "polygon",
                         "fill",
-                        polygon.id,
+                        polygon[selectedId.polygon - 1].id,
                         e.target.value
                       );
                     }}
@@ -1156,12 +1152,12 @@ const Canvas: React.FC<canvasProps> = ({
                     type="color"
                     className="w-24"
                     placeholder="Change Stroke"
-                    defaultValue={polygon.stroke}
+                    defaultValue={polygon[selectedId.polygon - 1].stroke}
                     onChange={(e) => {
                       handleShapeItemChange(
                         "polygon",
                         "stroke",
-                        polygon.id,
+                        polygon[selectedId.polygon - 1].id,
                         e.target.value
                       );
                     }}
@@ -1174,7 +1170,7 @@ const Canvas: React.FC<canvasProps> = ({
                       ...p,
                       polygon: {
                         count: p.polygon.count + 1,
-                        id: polygon.id,
+                        id: polygon[selectedId.polygon - 1].id,
                       },
                     }));
                   }}
@@ -1189,7 +1185,10 @@ const Canvas: React.FC<canvasProps> = ({
                     className="text-red-700 cursor-pointer"
                     onClick={(e) => {
                       setpolygon((p: any) =>
-                        p.filter((i: any) => i.id !== polygon.id)
+                        p.filter(
+                          (i: any) =>
+                            i.id !== polygon[selectedId.polygon - 1].id
+                        )
                       );
                       setshapeIdSelected(false);
                     }}
@@ -1201,19 +1200,15 @@ const Canvas: React.FC<canvasProps> = ({
                   </Button>
                 </div>
               </div>
-            ))}
+            )}
         </>
       )}
       {editType === "icon" && (
         <>
-          {selectedcardIcons?.map((c) => (
+          {cardIcons[selectedId.icon - 1] && (
             <div
-              className={`flex flex-row justify-around items-end space-x-2 ${
-                selectedId.icon === c.id
-                  ? " absolute top-6 bg-white w-full rounded-lg border-2 right-0 left-0 border-slate-50 p-4 mx-auto"
-                  : "hidden"
-              }`}
-              key={c.id}
+              className={`flex flex-row justify-around items-end space-x-2  absolute top-6 bg-white w-full rounded-lg border-2 right-0 left-0 border-slate-50 p-4 mx-auto
+             `}
             >
               <div>
                 <h1>Change Color</h1>
@@ -1221,9 +1216,13 @@ const Canvas: React.FC<canvasProps> = ({
                   type="color"
                   className="w-24"
                   placeholder="Change Color Size"
-                  defaultValue={c.color}
+                  defaultValue={cardIcons[selectedId.icon - 1].color}
                   onChange={(e) => {
-                    handleIconChange(c.id, "color", e.target.value);
+                    handleIconChange(
+                      cardIcons[selectedId.icon - 1].id,
+                      "color",
+                      e.target.value
+                    );
                   }}
                 />
               </div>
@@ -1233,7 +1232,10 @@ const Canvas: React.FC<canvasProps> = ({
                   setbringToTop((p) => ({
                     ...p,
 
-                    icon: { count: p.icon.count + 1, id: c.id },
+                    icon: {
+                      count: p.icon.count + 1,
+                      id: cardIcons[selectedId.icon - 1].id,
+                    },
                   }));
                 }}
                 variant="contained"
@@ -1248,9 +1250,13 @@ const Canvas: React.FC<canvasProps> = ({
                   type="color"
                   className="w-24"
                   placeholder="Change Stroke"
-                  defaultValue={c.color}
+                  defaultValue={cardIcons[selectedId.icon - 1].color}
                   onChange={(e) => {
-                    handleIconChange(c.id, "stroke", e.target.value);
+                    handleIconChange(
+                      cardIcons[selectedId.icon - 1].id,
+                      "stroke",
+                      e.target.value
+                    );
                   }}
                 />
               </div>
@@ -1259,7 +1265,9 @@ const Canvas: React.FC<canvasProps> = ({
                   className="text-red-700 cursor-pointer"
                   onClick={(e) => {
                     setcardIcons((p: any) =>
-                      p.filter((i: any) => i.id !== c.id)
+                      p.filter(
+                        (i: any) => i.id !== cardIcons[selectedId.icon - 1].id
+                      )
                     );
                     selectShape((p) => ({ ...p, icon: 0 }));
                   }}
@@ -1271,17 +1279,17 @@ const Canvas: React.FC<canvasProps> = ({
                 </Button>
               </div>
             </div>
-          ))}
+          )}
         </>
       )}
-      <section className="flex flex-row justify-start items-start h-full w-2/5 gap-5 relative top-10 ">
+      <section className="flex flex-row justify-start items-start h-full w-full md:w-2/5 gap-5 relative top-10 ">
         <div className="flex flex-col justify-start space-y-3 items-center px-5">
           <Button
             className="p-4 bg-blue-600 text-white rounded-md"
             onClick={(e) => {
               seteditType("text");
             }}
-            sx={{ padding: "20px" }}
+            sx={{ padding: "20px", paddingRight: "27px" }}
             variant="outlined"
             color="secondary"
             startIcon={<RiFontSize2 />}
@@ -1337,10 +1345,15 @@ const Canvas: React.FC<canvasProps> = ({
             Download
           </Button>
         </div>
-        <div className="flex flex-col p-5 gap-5 bg-white rounded-xl border-2 border-slate-300 min-h-96 w-3/5 items-start ">
-          <Typography variant="h4">Customize</Typography>
+        <div className="flex flex-col p-5 gap-5 bg-white rounded-xl border-2 border-slate-300 min-h-56 w-3/5 items-start ">
+          <Typography variant="h6" fontWeight={600}>
+            Customize
+          </Typography>
+          {!editType && <p>Click On an Item to Start Editing</p>}
           {editType === "text" && (
             <>
+              <p>Edit Your Text Here</p>
+
               {textboxes?.map((textbox) => (
                 <Box
                   className={`flex flex-row justify-around items-end space-x-2 `}
@@ -1380,6 +1393,7 @@ const Canvas: React.FC<canvasProps> = ({
                       rotation: 0,
                       x: width / 2,
                       y: height / 2,
+                      fontFamily: "sunflower",
                     },
                   ]);
                 }}
@@ -1470,6 +1484,10 @@ const Canvas: React.FC<canvasProps> = ({
                   </div>
                 </div>
               ))} */}
+              <p>
+                Accepted formats .jpg, .jpeg, .jfif, .bmp, .png, .gif, .heic,
+                .svg, .pdf, .psd, .ai, .eps, .ait, .ppt, .pptx, .tif, .tiff
+              </p>
               <Button
                 className="p-4 bg-blue-600 text-white rounded-md"
                 onClick={(e) => {
@@ -1521,306 +1539,316 @@ const Canvas: React.FC<canvasProps> = ({
           )}
         </div>
       </section>
-      <div className="w-2/5 relative top-10">
-        <div className="flex flex-row justify-center items-start">
-          <Stage
-            width={660}
-            height={350}
-            ref={canvasRef}
-            onMouseDown={CheckDeselect}
-            onTouchStart={CheckDeselect}
-          >
-            <Layer>
-              <Group width={660} height={350}>
-                <Rect
-                  fill={backgroundColor}
-                  width={660}
+      <div className="w-full md:w-2/5 relative top-10 flex flex-row">
+        <div>
+          <div className="flex flex-row justify-center items-start">
+            <Stage
+              style={{ height: "100%", width: "100%" }}
+              width={660} // Set a default width
+              height={350}
+              ref={canvasRef}
+              onMouseDown={CheckDeselect}
+              onTouchStart={CheckDeselect}
+            >
+              <Layer>
+                <Group
+                  width={660} // Set a default width
                   height={350}
-                  name="background"
-                />
-                {backgroundImage && (
-                  <Image
-                    width={660}
+                >
+                  <Rect
+                    fill={backgroundColor}
+                    width={660} // Set a default width
                     height={350}
-                    image={backgroundImage!}
-                    name="backgroundImage"
+                    name="background"
                   />
-                )}
-                {textboxes?.map((textbox) => {
-                  return (
-                    <TextImageItem
-                      textbox={textbox}
-                      canvasPadding={canvasPadding}
-                      handleTextAlignmentChange={handleTextAlignmentChange}
-                      height={height}
-                      width={width}
-                      key={textbox.id}
-                      onSelect={() => {
-                        selectShape((p) => ({ ...p, textbox: textbox.id }));
-                        seteditType("text");
-                      }}
-                      isSelected={selectedId.textbox == textbox.id}
-                      handleCardPosition={handleCardPositionChange}
-                      bringToTop={textbox.id === bringToTop.textbox.id}
-                      ToplayerCount={bringToTop.textbox.count}
+                  {backgroundImage && (
+                    <Image
+                      width={660}
+                      height={350}
+                      image={backgroundImage!}
+                      name="backgroundImage"
                     />
-                  );
-                })}
-                {cardImages &&
-                  cardImages.map((i) => (
-                    <React.Fragment key={i.id}>
-                      <CardImageItem
-                        Theight={height}
-                        Twidth={width}
-                        handleCardChange={handleCardChange}
+                  )}
+                  {textboxes?.map((textbox) => {
+                    return (
+                      <TextImageItem
+                        textbox={textbox}
                         canvasPadding={canvasPadding}
-                        {...i}
-                        setcardImages={setcardImages}
+                        handleTextAlignmentChange={handleTextAlignmentChange}
+                        height={height}
+                        width={width}
+                        key={textbox.id}
                         onSelect={() => {
-                          selectShape((p) => ({ ...p, image: i.id }));
-                          seteditType("image");
+                          selectShape((p) => ({ ...p, textbox: textbox.id }));
+                          seteditType("text");
                         }}
-                        isSelected={selectedId.image == i.id}
-                        bringToTop={bringToTop.image.id === i.id}
-                        ToplayerCount={bringToTop.image.count}
+                        isSelected={selectedId.textbox == textbox.id}
+                        handleCardPosition={handleCardPositionChange}
+                        bringToTop={textbox.id === bringToTop.textbox.id}
+                        ToplayerCount={bringToTop.textbox.count}
+                        fontFamily={textbox.fontFamily}
                       />
-                    </React.Fragment>
-                  ))}
-                {circles &&
-                  circles.map((c) => (
-                    <React.Fragment key={c.id}>
-                      <CircleComponent
-                        {...c}
-                        canvasPadding={canvasPadding}
-                        Theight={height}
-                        Twidth={width}
-                        handleShapeItemChange={handleShapeItemChange}
-                        onSelect={() => {
-                          selectShape((p) => ({ ...p, circle: c.id }));
-                          setshapeIdSelected(true);
-                          seteditType("shape");
-                        }}
-                        isSelected={selectedId.circle == c.id}
-                        bringToTop={c.id === bringToTop.circle.id}
-                        ToplayerCount={bringToTop.circle.count}
-                      />
-                    </React.Fragment>
-                  ))}
-                {stars &&
-                  stars.map((c) => (
-                    <React.Fragment key={c.id}>
-                      <StarComponent
-                        {...c}
-                        canvasPadding={canvasPadding}
-                        Theight={height}
-                        Twidth={width}
-                        handleShapeItemChange={handleShapeItemChange}
-                        onSelect={() => {
-                          selectShape((p) => ({ ...p, star: c.id }));
+                    );
+                  })}
+                  {cardImages &&
+                    cardImages.map((i) => (
+                      <React.Fragment key={i.id}>
+                        <CardImageItem
+                          Theight={height}
+                          Twidth={width}
+                          handleCardChange={handleCardChange}
+                          canvasPadding={canvasPadding}
+                          {...i}
+                          setcardImages={setcardImages}
+                          onSelect={() => {
+                            selectShape((p) => ({ ...p, image: i.id }));
+                            seteditType("image");
+                          }}
+                          isSelected={selectedId.image == i.id}
+                          bringToTop={bringToTop.image.id === i.id}
+                          ToplayerCount={bringToTop.image.count}
+                        />
+                      </React.Fragment>
+                    ))}
+                  {circles &&
+                    circles.map((c) => (
+                      <React.Fragment key={c.id}>
+                        <CircleComponent
+                          {...c}
+                          canvasPadding={canvasPadding}
+                          Theight={height}
+                          Twidth={width}
+                          handleShapeItemChange={handleShapeItemChange}
+                          onSelect={() => {
+                            selectShape((p) => ({ ...p, circle: c.id }));
+                            setshapeIdSelected(true);
+                            seteditType("shape");
+                          }}
+                          isSelected={selectedId.circle == c.id}
+                          bringToTop={c.id === bringToTop.circle.id}
+                          ToplayerCount={bringToTop.circle.count}
+                        />
+                      </React.Fragment>
+                    ))}
+                  {stars &&
+                    stars.map((c) => (
+                      <React.Fragment key={c.id}>
+                        <StarComponent
+                          {...c}
+                          canvasPadding={canvasPadding}
+                          Theight={height}
+                          Twidth={width}
+                          handleShapeItemChange={handleShapeItemChange}
+                          onSelect={() => {
+                            selectShape((p) => ({ ...p, star: c.id }));
 
-                          setshapeIdSelected(true);
-                          seteditType("shape");
-                        }}
-                        isSelected={selectedId.star == c.id}
-                        bringToTop={c.id === bringToTop.star.id}
-                        ToplayerCount={bringToTop.star.count}
-                      />
-                    </React.Fragment>
-                  ))}
-                {arrow &&
-                  arrow.map((c) => (
-                    <React.Fragment key={c.id}>
-                      <ArrowComponent
-                        {...c}
-                        canvasPadding={canvasPadding}
-                        Theight={height}
-                        Twidth={width}
-                        handleShapeItemChange={handleShapeItemChange}
-                        onSelect={() => {
-                          selectShape((p) => ({ ...p, arrow: c.id }));
+                            setshapeIdSelected(true);
+                            seteditType("shape");
+                          }}
+                          isSelected={selectedId.star == c.id}
+                          bringToTop={c.id === bringToTop.star.id}
+                          ToplayerCount={bringToTop.star.count}
+                        />
+                      </React.Fragment>
+                    ))}
+                  {arrow &&
+                    arrow.map((c) => (
+                      <React.Fragment key={c.id}>
+                        <ArrowComponent
+                          {...c}
+                          canvasPadding={canvasPadding}
+                          Theight={height}
+                          Twidth={width}
+                          handleShapeItemChange={handleShapeItemChange}
+                          onSelect={() => {
+                            selectShape((p) => ({ ...p, arrow: c.id }));
 
-                          setshapeIdSelected(true);
-                          seteditType("shape");
-                        }}
-                        isSelected={selectedId.arrow == c.id}
-                        bringToTop={c.id === bringToTop.arrow.id}
-                        ToplayerCount={bringToTop.arrow.count}
-                      />
-                    </React.Fragment>
-                  ))}
-                {square &&
-                  square.map((c) => (
-                    <React.Fragment key={c.id}>
-                      <SquareComponent
-                        {...c}
-                        canvasPadding={canvasPadding}
-                        Theight={height}
-                        Twidth={width}
-                        handleShapeItemChange={handleShapeItemChange}
-                        onSelect={() => {
-                          selectShape((p) => ({ ...p, square: c.id }));
+                            setshapeIdSelected(true);
+                            seteditType("shape");
+                          }}
+                          isSelected={selectedId.arrow == c.id}
+                          bringToTop={c.id === bringToTop.arrow.id}
+                          ToplayerCount={bringToTop.arrow.count}
+                        />
+                      </React.Fragment>
+                    ))}
+                  {square &&
+                    square.map((c) => (
+                      <React.Fragment key={c.id}>
+                        <SquareComponent
+                          {...c}
+                          canvasPadding={canvasPadding}
+                          Theight={height}
+                          Twidth={width}
+                          handleShapeItemChange={handleShapeItemChange}
+                          onSelect={() => {
+                            selectShape((p) => ({ ...p, square: c.id }));
 
-                          setshapeIdSelected(true);
-                          seteditType("shape");
-                        }}
-                        isSelected={selectedId.square == c.id}
-                        bringToTop={c.id === bringToTop.square.id}
-                        ToplayerCount={bringToTop.square.count}
-                      />
-                    </React.Fragment>
-                  ))}
-                {triangle &&
-                  triangle.map((c) => (
-                    <React.Fragment key={c.id}>
-                      <TriangleComponent
+                            setshapeIdSelected(true);
+                            seteditType("shape");
+                          }}
+                          isSelected={selectedId.square == c.id}
+                          bringToTop={c.id === bringToTop.square.id}
+                          ToplayerCount={bringToTop.square.count}
+                        />
+                      </React.Fragment>
+                    ))}
+                  {triangle &&
+                    triangle.map((c) => (
+                      <React.Fragment key={c.id}>
+                        <TriangleComponent
+                          {...c}
+                          canvasPadding={canvasPadding}
+                          Theight={height}
+                          Twidth={width}
+                          handleShapeItemChange={handleShapeItemChange}
+                          onSelect={() => {
+                            selectShape((p) => ({ ...p, triangle: c.id }));
+                            setshapeIdSelected(true);
+                            seteditType("shape");
+                          }}
+                          isSelected={selectedId.triangle == c.id}
+                          bringToTop={c.id === bringToTop.triangle.id}
+                          ToplayerCount={bringToTop.triangle.count}
+                        />
+                      </React.Fragment>
+                    ))}
+                  {polygon &&
+                    polygon.map((c) => (
+                      <React.Fragment key={c.id}>
+                        <PolygonShapeComponent
+                          {...c}
+                          canvasPadding={canvasPadding}
+                          Theight={height}
+                          Twidth={width}
+                          handleShapeItemChange={handleShapeItemChange}
+                          onSelect={() => {
+                            selectShape((p) => ({ ...p, polygon: c.id }));
+                            setshapeIdSelected(true);
+                            seteditType("shape");
+                          }}
+                          isSelected={selectedId.polygon == c.id}
+                          bringToTop={c.id === bringToTop.polygon.id}
+                          ToplayerCount={bringToTop.polygon.count}
+                        />
+                      </React.Fragment>
+                    ))}
+                  {cardIcons &&
+                    cardIcons.map((c) => (
+                      <IconComponent
+                        iconName={c.name}
+                        key={c.id}
                         {...c}
-                        canvasPadding={canvasPadding}
+                        color={c.color}
                         Theight={height}
                         Twidth={width}
-                        handleShapeItemChange={handleShapeItemChange}
                         onSelect={() => {
-                          selectShape((p) => ({ ...p, triangle: c.id }));
-                          setshapeIdSelected(true);
-                          seteditType("shape");
+                          selectShape((p) => ({ ...p, icon: c.id }));
+                          seteditType("icon");
                         }}
-                        isSelected={selectedId.triangle == c.id}
-                        bringToTop={c.id === bringToTop.triangle.id}
-                        ToplayerCount={bringToTop.triangle.count}
-                      />
-                    </React.Fragment>
-                  ))}
-                {polygon &&
-                  polygon.map((c) => (
-                    <React.Fragment key={c.id}>
-                      <PolygonShapeComponent
-                        {...c}
+                        isSelected={selectedId.icon == c.id}
+                        stroke={c.stroke}
+                        handleIconChange={handleIconChange}
                         canvasPadding={canvasPadding}
-                        Theight={height}
-                        Twidth={width}
-                        handleShapeItemChange={handleShapeItemChange}
-                        onSelect={() => {
-                          selectShape((p) => ({ ...p, polygon: c.id }));
-                          setshapeIdSelected(true);
-                          seteditType("shape");
-                        }}
-                        isSelected={selectedId.polygon == c.id}
-                        bringToTop={c.id === bringToTop.polygon.id}
-                        ToplayerCount={bringToTop.polygon.count}
+                        bringToTop={c.id === bringToTop.icon.id}
+                        ToplayerCount={bringToTop.icon.count}
                       />
-                    </React.Fragment>
-                  ))}
-                {cardIcons &&
-                  cardIcons.map((c) => (
-                    <IconComponent
-                      iconName={c.name}
-                      key={c.id}
-                      {...c}
-                      color={c.color}
-                      Theight={height}
-                      Twidth={width}
-                      onSelect={() => {
-                        selectShape((p) => ({ ...p, icon: c.id }));
-                        seteditType("icon");
-                      }}
-                      isSelected={selectedId.icon == c.id}
-                      stroke={c.stroke}
-                      handleIconChange={handleIconChange}
-                      canvasPadding={canvasPadding}
-                      bringToTop={c.id === bringToTop.icon.id}
-                      ToplayerCount={bringToTop.icon.count}
+                    ))}
+                  {backgroundImage && !isdownloading && (
+                    <Line
+                      points={[
+                        padding + borderPadding, // Index 0: X-coordinate of the top-left corner
+                        padding + borderPadding, // Index 1: Y-coordinate of the top-left corner
+                        660 - padding - borderPadding, // Index 2: X-coordinate of the top-right corner
+                        padding + borderPadding, // Index 3: Y-coordinate of the top-right corner
+                        660 - padding - borderPadding, // Index 4: X-coordinate of the bottom-right corner
+                        350 - padding - borderPadding, // Index 5: Y-coordinate of the bottom-right corner
+                        padding + borderPadding, // Index 6: X-coordinate of the bottom-left corner
+                        350 - padding - borderPadding, // Index 7: Y-coordinate of the bottom-left corner
+                        padding + borderPadding, // Index 8: X-coordinate of the top-left corner (to close the shape)
+                        padding + borderPadding, // Index 9: Y-coordinate of the top-left corner (to close the shape)
+                      ]}
+                      stroke="black"
+                      dash={[8, 5]} // Adjust the dash array for the desired dotted effect
                     />
-                  ))}
-                {backgroundImage && !isdownloading && (
-                  <Line
-                    points={[
-                      padding + borderPadding, // Index 0: X-coordinate of the top-left corner
-                      padding + borderPadding, // Index 1: Y-coordinate of the top-left corner
-                      width - padding - borderPadding, // Index 2: X-coordinate of the top-right corner
-                      padding + borderPadding, // Index 3: Y-coordinate of the top-right corner
-                      width - padding - borderPadding, // Index 4: X-coordinate of the bottom-right corner
-                      height - padding - borderPadding, // Index 5: Y-coordinate of the bottom-right corner
-                      padding + borderPadding, // Index 6: X-coordinate of the bottom-left corner
-                      height - padding - borderPadding, // Index 7: Y-coordinate of the bottom-left corner
-                      padding + borderPadding, // Index 8: X-coordinate of the top-left corner (to close the shape)
-                      padding + borderPadding, // Index 9: Y-coordinate of the top-left corner (to close the shape)
-                    ]}
-                    stroke="black"
-                    dash={[5, 5]} // Adjust the dash array for the desired dotted effect
-                  />
-                )}
-              </Group>
-            </Layer>
-          </Stage>
-        </div>
-        <input
-          type="file"
-          hidden
-          ref={cardImageRef}
-          onChange={(e) => {
-            const img = new window.Image();
-            img.src = URL.createObjectURL(e.target?.files?.[0]!);
-            img.onload = () => {
-              setcardImages((prevImages: any) => [
-                ...prevImages,
-                {
-                  width: 130,
-                  height: 190,
-                  source: img,
-                  id: (cardImages.length ?? 0) + 1,
-                  scaleX: 1,
-                  scaleY: 1,
-                  rotation: 0,
-                  x: width / 2,
-                  y: height / 2,
-                },
-              ]);
-            };
-          }}
-        />
-
-        <div className="w-full flex items-center gap-5 justify-start">
-          <TextField
-            type="color"
-            value={backgroundColor}
-            onChange={(e) => handleBackgroundColorChange(e.target.value)}
-            InputProps={{
-              // Style input element
-              style: {
-                width: "50px", // Set width of the input
-                height: "50px", // Set height of the input
-              },
+                  )}
+                </Group>
+              </Layer>
+            </Stage>
+          </div>
+          <input
+            type="file"
+            hidden
+            ref={cardImageRef}
+            onChange={(e) => {
+              const img = new window.Image();
+              img.src = URL.createObjectURL(e.target?.files?.[0]!);
+              img.onload = () => {
+                setcardImages((prevImages: any) => [
+                  ...prevImages,
+                  {
+                    width: 130,
+                    height: 190,
+                    source: img,
+                    id: (cardImages.length ?? 0) + 1,
+                    scaleX: 1,
+                    scaleY: 1,
+                    rotation: 0,
+                    x: width / 2,
+                    y: height / 2,
+                  },
+                ]);
+              };
             }}
           />
 
-          {/* <TextField
-          placeholder="Choose Background Image"
-          title="Choose Background Image"
-          type="file"
-          accept="image/*"
-          onChange={(e) =>
-            handleBackgroundImageChange(URL.createObjectURL(e.target.files![0]))
-          }
-        /> */}
-          <Button variant="outlined" component="label" color="secondary">
-            Upload Background Image
-            <input
-              type="file"
-              accept="image/*"
-              hidden
-              onChange={(e) =>
-                handleBackgroundImageChange(
-                  URL.createObjectURL(e.target.files![0])
-                )
-              }
+          <div className="w-full my-5 flex items-center gap-5 justify-start">
+            <TextField
+              type="color"
+              value={backgroundColor}
+              onChange={(e) => handleBackgroundColorChange(e.target.value)}
+              InputProps={{
+                // Style input element
+                style: {
+                  width: "50px", // Set width of the input
+                  height: "50px", // Set height of the input
+                },
+              }}
             />
-          </Button>
+
+            <Button variant="outlined" component="label" color="secondary">
+              Upload Background Image
+              <input
+                type="file"
+                accept="image/*"
+                hidden
+                onChange={(e) =>
+                  handleBackgroundImageChange(
+                    URL.createObjectURL(e.target.files![0])
+                  )
+                }
+              />
+            </Button>
+            <Button
+              variant="outlined"
+              component="label"
+              color="error"
+              onClick={(e) => {
+                console.log("pressed");
+                handleBackgroundImageChange("");
+              }}
+            >
+              Remove Background Image
+            </Button>
+          </div>
         </div>
+        <div></div>
       </div>
     </section>
   );
 };
 
-export default Canvas;
+export default React.memo(Canvas);
 
 function ShapeItemOptions({
   handleShapeAddition,

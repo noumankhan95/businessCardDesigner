@@ -32,8 +32,10 @@ function TextImageItem({
   fontFamily: string;
 }) {
   const shapeRef = React.useRef<any>();
-
+  console.log(textbox);
   const [transformerRef, setTransformerRef] = useState<any>(null);
+  const adjustmentFactorX = width / 660; // Assuming 660 is the original canvas width
+  const adjustmentFactorY = height / 350; // Assuming 350 is the original canvas height
   useEffect(() => {
     if (isSelected && transformerRef) {
       // we need to attach transformer manually
@@ -58,10 +60,9 @@ function TextImageItem({
         key={textbox.id}
         fontFamily={fontFamilies[fontFamily].style.fontFamily}
         x={
-          textbox.x // Align right
+          textbox.x * (width / 660) // Align right
         }
-        y={textbox.y}
-        
+        y={textbox.y * (height / 350)}
         scaleX={textbox.scaleX}
         scaleY={textbox.scaleY}
         rotation={textbox.rotation}
@@ -73,6 +74,8 @@ function TextImageItem({
         ref={shapeRef}
         wrap="word"
         onDragEnd={(e) => {
+          const adjustedX = e.target.x() * adjustmentFactorX;
+          const adjustedY = e.target.y() * adjustmentFactorY;
           if (e.target.x() >= width - canvasPadding) {
             console.log("true");
             handleTextAlignmentChange(textbox.id, "center");
@@ -102,8 +105,14 @@ function TextImageItem({
             handleTextAlignmentChange(textbox.id, "center");
             e.target?.getLayer()?.batchDraw();
           } else {
-            handleCardPosition(textbox.id, "x", e.target.x());
-            handleCardPosition(textbox.id, "y", e.target.y());
+            console.log(width, "canvas width");
+            console.log(height, "height canvas");
+
+            // Calculate adjusted positions based on the adjustment factor
+            const adjustedX = textbox.x * adjustmentFactorX;
+            const adjustedY = textbox.y * adjustmentFactorY;
+            handleCardPosition(textbox.id, "x", adjustedX);
+            handleCardPosition(textbox.id, "y", adjustedY);
           }
         }}
         onTransformEnd={(e) => {

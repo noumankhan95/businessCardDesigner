@@ -131,7 +131,7 @@ const BusinessCard: React.FC<BusinessCardProps> = ({
           setBackgroundImage={setBacksidebackgroundImage}
         />
       )}
-      <div className="flex flex-row justify-start items-center fixed right-6 top-32 ">
+      <div className="flex flex-row justify-start items-center fixed right-6 top-32 hidden lg:inline-block ">
         <Button
           onClick={() => {
             setshowFront((p) => !p);

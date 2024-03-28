@@ -953,10 +953,10 @@ const Canvas: React.FC<canvasProps> = ({
                       return (
                         <TextImageItem
                           textbox={textbox}
-                          canvasPadding={canvasPadding}
+                          canvasPadding={isMobile ? 1 : canvasPadding}
                           handleTextAlignmentChange={handleTextAlignmentChange}
-                          height={height}
-                          width={width}
+                          height={stageHeight}
+                          width={stageWidth}
                           key={textbox.id}
                           onSelect={() => {
                             selectShape((p) => ({ ...p, textbox: textbox.id }));
@@ -974,8 +974,8 @@ const Canvas: React.FC<canvasProps> = ({
                       Array.from(cardImages.values())?.map((i) => (
                         <React.Fragment key={i.id}>
                           <CardImageItem
-                            Theight={height}
-                            Twidth={width}
+                            Theight={stageHeight}
+                            Twidth={stageWidth}
                             handleCardChange={handleCardChange}
                             canvasPadding={canvasPadding}
                             {...i}
@@ -996,8 +996,8 @@ const Canvas: React.FC<canvasProps> = ({
                           <CircleComponent
                             {...c}
                             canvasPadding={canvasPadding}
-                            Theight={height}
-                            Twidth={width}
+                            Theight={stageHeight}
+                            Twidth={stageWidth}
                             handleShapeItemChange={handleShapeItemChange}
                             onSelect={() => {
                               selectShape((p) => ({ ...p, circle: c.id }));
@@ -1016,8 +1016,8 @@ const Canvas: React.FC<canvasProps> = ({
                           <StarComponent
                             {...c}
                             canvasPadding={canvasPadding}
-                            Theight={height}
-                            Twidth={width}
+                            Theight={stageHeight}
+                            Twidth={stageWidth}
                             handleShapeItemChange={handleShapeItemChange}
                             onSelect={() => {
                               selectShape((p) => ({ ...p, star: c.id }));
@@ -1037,8 +1037,8 @@ const Canvas: React.FC<canvasProps> = ({
                           <ArrowComponent
                             {...c}
                             canvasPadding={canvasPadding}
-                            Theight={height}
-                            Twidth={width}
+                            Theight={stageHeight}
+                            Twidth={stageWidth}
                             handleShapeItemChange={handleShapeItemChange}
                             onSelect={() => {
                               selectShape((p) => ({ ...p, arrow: c.id }));
@@ -1058,8 +1058,8 @@ const Canvas: React.FC<canvasProps> = ({
                           <SquareComponent
                             {...c}
                             canvasPadding={canvasPadding}
-                            Theight={height}
-                            Twidth={width}
+                            Theight={stageHeight}
+                            Twidth={stageWidth}
                             handleShapeItemChange={handleShapeItemChange}
                             onSelect={() => {
                               selectShape((p) => ({ ...p, square: c.id }));
@@ -1079,8 +1079,8 @@ const Canvas: React.FC<canvasProps> = ({
                           <TriangleComponent
                             {...c}
                             canvasPadding={canvasPadding}
-                            Theight={height}
-                            Twidth={width}
+                            Theight={stageHeight}
+                            Twidth={stageWidth}
                             handleShapeItemChange={handleShapeItemChange}
                             onSelect={() => {
                               selectShape((p) => ({ ...p, triangle: c.id }));
@@ -1099,8 +1099,8 @@ const Canvas: React.FC<canvasProps> = ({
                           <PolygonShapeComponent
                             {...c}
                             canvasPadding={canvasPadding}
-                            Theight={height}
-                            Twidth={width}
+                            Theight={stageHeight}
+                            Twidth={stageWidth}
                             handleShapeItemChange={handleShapeItemChange}
                             onSelect={() => {
                               selectShape((p) => ({ ...p, polygon: c.id }));
@@ -1139,12 +1139,12 @@ const Canvas: React.FC<canvasProps> = ({
                         points={[
                           padding + borderPadding, // Index 0: X-coordinate of the top-left corner
                           padding + borderPadding, // Index 1: Y-coordinate of the top-left corner
-                          660 - padding - borderPadding, // Index 2: X-coordinate of the top-right corner
+                          stageWidth - padding - borderPadding, // Index 2: X-coordinate of the top-right corner
                           padding + borderPadding, // Index 3: Y-coordinate of the top-right corner
-                          660 - padding - borderPadding, // Index 4: X-coordinate of the bottom-right corner
-                          350 - padding - borderPadding, // Index 5: Y-coordinate of the bottom-right corner
+                          stageWidth - padding - borderPadding, // Index 4: X-coordinate of the bottom-right corner
+                          stageHeight - padding - borderPadding, // Index 5: Y-coordinate of the bottom-right corner
                           padding + borderPadding, // Index 6: X-coordinate of the bottom-left corner
-                          350 - padding - borderPadding, // Index 7: Y-coordinate of the bottom-left corner
+                          stageHeight - padding - borderPadding, // Index 7: Y-coordinate of the bottom-left corner
                           padding + borderPadding, // Index 8: X-coordinate of the top-left corner (to close the shape)
                           padding + borderPadding, // Index 9: Y-coordinate of the top-left corner (to close the shape)
                         ]}

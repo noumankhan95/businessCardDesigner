@@ -27,6 +27,7 @@ import {
   Container,
   Typography,
   MenuItem,
+  useMediaQuery,
 } from "@mui/material";
 import { BsFonts } from "react-icons/bs";
 import { IoMdDownload } from "react-icons/io";
@@ -58,6 +59,7 @@ import EditCircleItem from "./EditItems/EditCircleItem";
 import EditArrowIten from "./EditItems/EditArrowIten";
 import EditPolygonItem from "./EditItems/EditPolygonItem";
 import EditIcon from "./EditItems/EditIcon";
+import { useTheme } from "@emotion/react";
 const padding = 6; // Padding value
 const borderPadding = 10;
 const Canvas: React.FC<canvasProps> = ({
@@ -91,11 +93,13 @@ const Canvas: React.FC<canvasProps> = ({
   const [isdownloading, setisdownloading] = useState<boolean>();
   const [forceRender, setForceRender] = useState(false);
   const canvasRef = useRef<any>(null);
-
+  const theme = useTheme();
+  const isMobile = useMediaQuery((theme: any) => theme.breakpoints.down("sm"));
   const cardImageRef = useRef<HTMLInputElement | null>(null);
   const [editType, seteditType] = useState<string>("");
   const imageRefs = useRef<(HTMLImageElement | null)[]>([]);
   const [shapeIdSelected, setshapeIdSelected] = useState<boolean>();
+  console.log(isMobile, "isMobile");
   const [selectedId, selectShape] = React.useState<{
     square: number;
     circle: number;
@@ -155,7 +159,7 @@ const Canvas: React.FC<canvasProps> = ({
               stroke: "black",
               x: width / 2,
               y: height / 2,
-           
+
               rotation: 0,
             })
           )
@@ -172,7 +176,7 @@ const Canvas: React.FC<canvasProps> = ({
               stroke: "black",
               x: width / 2,
               y: height / 2,
-            
+
               rotation: 0,
             })
           )
@@ -189,7 +193,7 @@ const Canvas: React.FC<canvasProps> = ({
               stroke: "black",
               x: width / 2,
               y: height / 2,
-            
+
               rotation: 0,
             })
           )
@@ -206,7 +210,7 @@ const Canvas: React.FC<canvasProps> = ({
               stroke: "black",
               x: width / 2,
               y: height / 2,
-            
+
               rotation: 0,
             })
           )
@@ -223,7 +227,7 @@ const Canvas: React.FC<canvasProps> = ({
               stroke: "black",
               x: width / 2,
               y: height / 2,
-            
+
               rotation: 0,
             })
           )
@@ -240,13 +244,42 @@ const Canvas: React.FC<canvasProps> = ({
               stroke: "black",
               x: width / 2,
               y: height / 2,
-            
+
               rotation: 0,
             })
           )
       );
     }
   }, []);
+  const [stageWidth, setStageWidth] = useState(() => (isMobile ? 340 : 660));
+  const [stageHeight, setStageHeight] = useState(() => (isMobile ? 190 : 350));
+  const containerRef = useRef<any>(null);
+  useEffect(() => {
+    const resizeStage = () => {
+      const container = containerRef.current;
+      if (container) {
+        console.log("changing");
+        const width = container.offsetWidth;
+        const height = container.offsetHeight;
+        setStageWidth(width);
+        setStageHeight(height);
+      }
+    };
+
+    // Resize the stage when the window is resized
+    window.addEventListener("resize", resizeStage);
+    resizeStage(); // Initialize stage dimensions
+    return () => {
+      window.removeEventListener("resize", resizeStage);
+    };
+  }, []);
+  console.log(stageWidth);
+  console.log(stageHeight);
+
+  useEffect(() => {
+    setStageWidth(() => (isMobile ? 340 : 660));
+    setStageHeight(() => (isMobile ? 190 : 350));
+  }, [isMobile]);
   const handleBackgroundImageChange = useCallback((url: string) => {
     console.log("url", url);
     if (!url) {
@@ -449,7 +482,6 @@ const Canvas: React.FC<canvasProps> = ({
     },
     []
   );
-
   const CheckDeselect = (
     e: KonvaEventObject<MouseEvent> | KonvaEventObject<TouchEvent>
   ) => {
@@ -493,7 +525,7 @@ const Canvas: React.FC<canvasProps> = ({
   console.log(selectedId, "selectedId");
 
   return (
-    <section className="space-y-4 w-full h-auto flex flex-col items-start md:flex-row md:justify-start gap-5 py-20 lg:px-0 px-10 my-10 ">
+    <section className="space-y-4 w-full h-screen md:h-auto flex flex-col-reverse items-start justify-end md:flex-row lg:justify-start gap-5 lg:py-20 lg:px-0 px-10 lg:my-10 ">
       {editType === "text" && (
         <>
           {textboxes.has(selectedId.textbox) && (
@@ -625,70 +657,107 @@ const Canvas: React.FC<canvasProps> = ({
           )}
         </>
       )}
-      <section className="flex flex-row justify-start items-start h-full w-full md:w-2/5 gap-5 relative top-10 ">
-        <div className="flex flex-col justify-start space-y-3 items-center px-5">
+      <section className=" flex flex-col-reverse w-full  fixed bottom-0 left-0  md:flex-row  md:justify-start md:items-start md:h-full w-full md:w-2/5 gap-5 md:relative md:top-10 ">
+        <div className="flex md:flex-col flex-row bg-black md:bg-transparent justify-between items-end gap-3 md:flex-col md:justify-start space-y-3 md:items-center px-5">
           <Button
-            className="p-4 bg-blue-600 text-white rounded-md"
+            className="p-4 bg-blue-600 text-white rounded-md flex flex-col items-center"
             onClick={(e) => {
               seteditType("text");
             }}
-            sx={{ padding: "20px", paddingRight: "27px" }}
+            sx={{
+              padding: "20px",
+              textAlign: "center",
+              ...(isMobile && {
+                padding: 1,
+                border: "none",
+                color: "white",
+              }),
+            }}
             variant="outlined"
             color="secondary"
             startIcon={<RiFontSize2 />}
           >
-            Text
+            <span>Text</span>
           </Button>
           <Button
-            className="p-4 bg-blue-600 text-white rounded-md"
+            className="p-4 bg-blue-600 text-white rounded-md flex flex-col items-center"
             onClick={(e) => {
               seteditType("image");
             }}
             variant="outlined"
             color="secondary"
-            sx={{ padding: "20px" }}
+            sx={{
+              padding: "20px",
+              ...(isMobile && {
+                color: "white",
+                padding: 1,
+                border: "none",
+              }),
+            }}
             startIcon={<FaRegImage />}
           >
-            Image
+            <span>Image</span>
           </Button>
 
           <Button
-            className="p-20"
+            className="p-20 flex flex-col items-center"
             onClick={(e) => {
               seteditType("shape");
             }}
             variant="outlined"
             color="secondary"
-            sx={{ padding: "20px" }}
+            sx={{
+              padding: "20px",
+              ...(isMobile && {
+                color: "white",
+                padding: 1,
+                border: "none",
+              }),
+            }}
             startIcon={<IoShapesOutline />}
           >
-            Shape
+            <span>Shape</span>
           </Button>
           <Button
-            className="p-4 bg-blue-600 text-white rounded-md"
+            className="p-4 bg-blue-600 text-white rounded-md flex flex-col items-center"
             onClick={(e) => {
               seteditType("icon");
             }}
             variant="outlined"
-            sx={{ padding: "20px" }}
+            sx={{
+              padding: "20px",
+              ...(isMobile && {
+                color: "white",
+                padding: 1,
+                border: "none",
+              }),
+            }}
             color="secondary"
             startIcon={<CgShapeHexagon />}
           >
-            Icons
+            <span>Icons</span>
           </Button>
-          <Button
+          {/* <Button
             onClick={() => {
               setisdownloading(true);
               handleDownload();
             }}
+            sx={{
+              ...(isMobile && {
+                color: "white",
+                padding:4
+              }),
+            }}
             variant="contained"
             color="secondary"
             startIcon={<IoMdDownload />}
+            hidden
           >
             Download
-          </Button>
+          </Button> */}
         </div>
-        <div className="flex flex-col p-5 gap-5 bg-white rounded-xl border-2 border-slate-300 min-h-56 w-3/5 items-start ">
+
+        <div className="flex flex-col p-5 gap-5 bg-white rounded-xl border-2 border-slate-300 max-h-64 md:max-h-none overflow-auto  lg:min-h-56 w-full  lg:w-3/5 items-start ">
           <Typography variant="h6" fontWeight={600}>
             Customize
           </Typography>
@@ -732,7 +801,7 @@ const Canvas: React.FC<canvasProps> = ({
                           fontSize: 16,
                           text: "Enter Text",
                           textAlign: "center",
-                    
+
                           rotation: 0,
                           x: width / 2,
                           y: height / 2,
@@ -806,7 +875,7 @@ const Canvas: React.FC<canvasProps> = ({
           )}
         </div>
       </section>
-      <div className="w-full md:w-2/5 relative top-10 flex flex-row">
+      <div className="w-full md:w-2/5 relative flex-col top-10 flex lg:flex-row">
         <div>
           <div
             style={{
@@ -815,7 +884,7 @@ const Canvas: React.FC<canvasProps> = ({
               alignItems: "flex-start",
             }}
           >
-            <div
+            {/* <div
               style={{
                 position: "absolute",
                 backgroundColor: "black",
@@ -831,9 +900,9 @@ const Canvas: React.FC<canvasProps> = ({
               id="verticalLine"
             >
               <span>9.4 cm</span>
-            </div>
+            </div> */}
             {/* Horizontal line */}
-            <div
+            {/* <div
               style={{
                 position: "absolute",
                 backgroundColor: "black",
@@ -849,31 +918,33 @@ const Canvas: React.FC<canvasProps> = ({
               id="horizontalLine"
             >
               <span style={{ marginLeft: 2 }}>5.4 cm</span>
-            </div>
-            <div className="flex flex-row justify-center items-start">
+            </div> */}
+            <div
+              className="flex flex-row justify-center items-start"
+              ref={containerRef}
+            >
               <Stage
-                style={{ height: "100%", width: "100%" }}
-                width={660} // Set a default width
-                height={350}
+                width={stageWidth} // Set a default width
+                height={stageHeight}
                 ref={canvasRef}
                 onMouseDown={CheckDeselect}
                 onTouchStart={CheckDeselect}
               >
                 <Layer>
                   <Group
-                    width={660} // Set a default width
-                    height={350}
+                    width={stageWidth} // Set a default width
+                    height={stageHeight}
                   >
                     <Rect
                       fill={backgroundColor}
-                      width={660} // Set a default width
-                      height={350}
+                      width={stageWidth} // Set a default width
+                      height={stageHeight}
                       name="background"
                     />
                     {backgroundImage && (
                       <Image
-                        width={660}
-                        height={350}
+                        width={stageWidth}
+                        height={stageHeight}
                         image={backgroundImage!}
                         name="backgroundImage"
                       />
@@ -1115,21 +1186,21 @@ const Canvas: React.FC<canvasProps> = ({
             }}
           />
 
-          <div className="w-full my-5 flex items-center gap-5 justify-start mt-16">
+          <div className="w-full my-5 flex items-center gap-5 justify-start lg:mt-16">
             <TextField
               type="color"
               value={backgroundColor}
               onChange={(e) => handleBackgroundColorChange(e.target.value)}
-              InputProps={{
-                // Style input element
-                style: {
-                  width: "50px", // Set width of the input
-                  height: "50px", // Set height of the input
-                },
-              }}
+              className="w-32"
             />
 
-            <Button variant="outlined" component="label" color="secondary">
+            <Button
+              variant="outlined"
+              component="label"
+              color="secondary"
+              className="text-sm"
+              style={{ fontSize: !isMobile ? 14 : 12 }}
+            >
               Upload Background Image
               <input
                 type="file"
@@ -1146,6 +1217,7 @@ const Canvas: React.FC<canvasProps> = ({
               variant="outlined"
               component="label"
               color="error"
+              style={{ fontSize: !isMobile ? 14 : 12 }}
               onClick={(e) => {
                 console.log("pressed");
                 handleBackgroundImageChange("");

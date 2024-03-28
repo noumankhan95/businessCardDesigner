@@ -521,11 +521,15 @@ const Canvas: React.FC<canvasProps> = ({
         )
     );
   }, []);
-  console.log(square, "square");
-  console.log(selectedId, "selectedId");
+  console.log(editType, "editType");
+  console.log(isMobile, "isMobile");
 
   return (
-    <section className="space-y-4 w-full h-screen md:h-auto flex flex-col-reverse items-start justify-end md:flex-row lg:justify-start gap-5 lg:py-20 lg:px-0 px-10 lg:my-10 ">
+    <section
+      className={`space-y-4 w-full h-screen md:h-auto flex flex-col-reverse items-start justify-end md:flex-row lg:justify-start gap-5 lg:py-20 lg:px-0 px-10 lg:my-10  ${
+        isMobile && editType ? "mt-32" : ""
+      }`}
+    >
       {editType === "text" && (
         <>
           {textboxes.has(selectedId.textbox) && (
@@ -801,10 +805,9 @@ const Canvas: React.FC<canvasProps> = ({
                           fontSize: 16,
                           text: "Enter Text",
                           textAlign: "center",
-
                           rotation: 0,
-                          x: width / 2,
-                          y: height / 2,
+                          x: width / 8,
+                          y: height / 8,
                           fontFamily: "sunflower",
                         })
                       )
@@ -875,7 +878,9 @@ const Canvas: React.FC<canvasProps> = ({
           )}
         </div>
       </section>
-      <div className="w-full md:w-2/5 relative flex-col top-10 flex lg:flex-row">
+      <div
+        className={`w-full md:w-2/5 relative flex-col top-10 flex lg:flex-row`}
+      >
         <div>
           <div
             style={{
@@ -953,6 +958,7 @@ const Canvas: React.FC<canvasProps> = ({
                       return (
                         <TextImageItem
                           textbox={textbox}
+                          isMobile={isMobile}
                           canvasPadding={isMobile ? 1 : canvasPadding}
                           handleTextAlignmentChange={handleTextAlignmentChange}
                           height={stageHeight}

@@ -13,6 +13,7 @@ function TextImageItem({
   ToplayerCount,
   bringToTop,
   fontFamily,
+  isMobile,
 }: {
   textbox: any;
   canvasPadding: number;
@@ -30,12 +31,11 @@ function TextImageItem({
   bringToTop: boolean;
   ToplayerCount: number;
   fontFamily: string;
+  isMobile: boolean;
 }) {
   const shapeRef = React.useRef<any>();
-  console.log(textbox);
+
   const [transformerRef, setTransformerRef] = useState<any>(null);
-  const adjustmentFactorX = width / 660; // Assuming 660 is the original canvas width
-  const adjustmentFactorY = height / 350; // Assuming 350 is the original canvas height
   useEffect(() => {
     if (isSelected && transformerRef) {
       // we need to attach transformer manually
@@ -52,6 +52,7 @@ function TextImageItem({
     }
   }, [bringToTop, ToplayerCount]);
   console.log(fontFamily, "fontfamily");
+
   return (
     <>
       <Text
@@ -60,9 +61,9 @@ function TextImageItem({
         key={textbox.id}
         fontFamily={fontFamilies[fontFamily].style.fontFamily}
         x={
-          textbox.x * (width / 660) // Align right
+          textbox.x // Align right
         }
-        y={textbox.y * (height / 350)}
+        y={textbox.y}
         scaleX={textbox.scaleX}
         scaleY={textbox.scaleY}
         rotation={textbox.rotation}
@@ -74,8 +75,10 @@ function TextImageItem({
         ref={shapeRef}
         wrap="word"
         onDragEnd={(e) => {
-          const adjustedX = e.target.x() * adjustmentFactorX;
-          const adjustedY = e.target.y() * adjustmentFactorY;
+          console.log(e.target.x(), "X");
+          console.log(e.target.y(), "y");
+          console.log("width", width - canvasPadding);
+          console.log("height", height - canvasPadding);
           if (e.target.x() >= width - canvasPadding) {
             console.log("true");
             handleTextAlignmentChange(textbox.id, "center");
@@ -93,26 +96,45 @@ function TextImageItem({
           }
           if (e.target.y() >= height - canvasPadding) {
             console.log("true");
-            handleTextAlignmentChange(textbox.id, "center");
-            const newX = height / 2;
-            e.currentTarget.y(newX);
+            // handleTextAlignmentChange(textbox.id, "center");
+            const newX = width / 2;
+            var newY;
+
+            if (isMobile) {
+              newY = height / 8;
+              console.log("new Y mobile", newY);
+            } else {
+              console.log("new Y UnMobile", newY);
+
+              newY = height / 2;
+            }
+
+            e.currentTarget.y(newY);
+            e.currentTarget.x(newX);
 
             e.target?.getLayer()?.batchDraw();
           } else if (e.target.y() < canvasPadding) {
             console.log("true here y");
-            const newX = height / 2;
-            e.currentTarget.y(newX);
-            handleTextAlignmentChange(textbox.id, "center");
+            const newX = width / 2;
+            var newY;
+
+            if (isMobile) {
+              newY = height / 8;
+
+              console.log("new Y Mobile", newY);
+            } else {
+              console.log("new Y UnMobile", newY);
+
+              newY = height / 2;
+            }
+            e.currentTarget.y(newY);
+            e.currentTarget.x(newX);
+
+            // handleTextAlignmentChange(textbox.id, "center");
             e.target?.getLayer()?.batchDraw();
           } else {
-            console.log(width, "canvas width");
-            console.log(height, "height canvas");
-
-            // Calculate adjusted positions based on the adjustment factor
-            const adjustedX = textbox.x * adjustmentFactorX;
-            const adjustedY = textbox.y * adjustmentFactorY;
-            handleCardPosition(textbox.id, "x", adjustedX);
-            handleCardPosition(textbox.id, "y", adjustedY);
+            handleCardPosition(textbox.id, "x", e.target.x());
+            handleCardPosition(textbox.id, "y", e.target.y());
           }
         }}
         onTransformEnd={(e) => {

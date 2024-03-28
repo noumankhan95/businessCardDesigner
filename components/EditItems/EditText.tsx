@@ -115,7 +115,7 @@ function EditText({
   return (
     <Box
       className={`flex flex-wrap flex-row justify-start lg:justify-around items-end space-x-2
-        absolute bottom-0 z-10 gap-2 lg:gap-1 lg:top-6 bg-white w-full rounded-lg border-2 right-0 left-0 border-slate-50 p-4 mx-auto
+        !fixed h-auto lg:h-32 bottom-0 z-10 gap-2 lg:gap-1 lg:top-6 bg-white w-full rounded-lg border-2 right-0 left-0 border-slate-50 p-4 mx-auto
     `}
     >
       <Box

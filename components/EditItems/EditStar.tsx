@@ -41,9 +41,8 @@ function EditStar({
 }) {
   return (
     <div
-      className={`flex flex-row justify-around items-end space-x-2  absolute top-6 bg-white w-full rounded-lg border-2 right-0 left-0 border-slate-50 p-4 mx-auto
-      
-    }`}
+      className={`flex flex-col items-start  !fixed h-auto lg:h-32 lg:flex-row justify-start flex-wrap lg:justify-around lg:items-end space-x-2 fixed gap-2 bottom-0 z-50 lg:top-6 bg-white w-full rounded-lg border-2 right-0 left-0 border-slate-50 p-4 mx-auto
+    `}
     >
       <div>
         <h1>Change Color</h1>

@@ -53,8 +53,8 @@ function EditImage({
   );
   return (
     <div
-      className={`flex flex-row justify-around items-end space-x-2
-  absolute top-6 bg-white w-full rounded-lg border-2 right-0 left-0 border-slate-50 p-4 mx-auto
+      className={`flex flex-wrap z-50 gap-2 flex-col items-start lg:flex-row justify-around lg:items-end lg:space-x-2
+      !fixed h-auto lg:h-32 bottom-0 lg:top-6 bg-white w-full rounded-lg border-2 right-0 left-0 border-slate-50 p-4 mx-auto
 `}
     >
       <div>

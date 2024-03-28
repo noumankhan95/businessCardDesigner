@@ -526,7 +526,7 @@ const Canvas: React.FC<canvasProps> = ({
 
   return (
     <section
-      className={`space-y-4 w-full h-screen md:h-auto flex flex-col-reverse items-start justify-end md:flex-row lg:justify-start gap-5 lg:py-20 lg:px-0 px-10 lg:my-10  ${
+      className={`space-y-4  w-full h-screen md:h-auto flex flex-col-reverse items-start justify-end md:flex-row lg:justify-start gap-5 lg:py-20 lg:px-0 px-10 lg:my-10  ${
         isMobile && editType ? "mt-32" : ""
       }`}
     >

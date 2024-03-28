@@ -42,7 +42,7 @@ function EditTriangleItem({
 }) {
   return (
     <div
-      className={`flex flex-col items-start lg:flex-row justify-start flex-wrap lg:justify-around lg:items-end space-x-2 fixed gap-2 bottom-0 z-50 lg:top-6 bg-white w-full rounded-lg border-2 right-0 left-0 border-slate-50 p-4 mx-auto
+      className={`flex flex-col  !fixed h-auto lg:h-32 items-start lg:flex-row justify-start flex-wrap lg:justify-around lg:items-end space-x-2 fixed gap-2 bottom-0 z-50 lg:top-6 bg-white w-full rounded-lg border-2 right-0 left-0 border-slate-50 p-4 mx-auto
     `}
     >
       <div>

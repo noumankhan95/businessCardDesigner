@@ -146,111 +146,114 @@ const Canvas: React.FC<canvasProps> = ({
     setBackgroundColor(color);
   };
 
-  const handleShapeAddition = useCallback((name: string) => {
-    if (name === "Circle") {
-      setcircles(
-        (p: any) =>
-          new Map(
-            p.set((p.size ?? 0) + 1, {
-              height: "20",
-              width: "20",
-              id: (p.size ?? 0) + 1,
-              fill: "black",
-              stroke: "black",
-              x: width / 2,
-              y: height / 2,
+  const handleShapeAddition = useCallback(
+    (name: string) => {
+      if (name === "Circle") {
+        setcircles(
+          (p: any) =>
+            new Map(
+              p.set((p.size ?? 0) + 1, {
+                height: "20",
+                width: "20",
+                id: (p.size ?? 0) + 1,
+                fill: "black",
+                stroke: "black",
+                x: isMobile ? width / 8 : width / 2,
+                y: isMobile ? height / 8 : height / 2,
 
-              rotation: 0,
-            })
-          )
-      );
-    } else if (name === "Arrow") {
-      setarrow(
-        (p: any) =>
-          new Map(
-            p.set((p.size ?? 0) + 1, {
-              height: "20",
-              width: "20",
-              id: (p.size ?? 0) + 1,
-              fill: "black",
-              stroke: "black",
-              x: width / 2,
-              y: height / 2,
+                rotation: 0,
+              })
+            )
+        );
+      } else if (name === "Arrow") {
+        setarrow(
+          (p: any) =>
+            new Map(
+              p.set((p.size ?? 0) + 1, {
+                height: "20",
+                width: "20",
+                id: (p.size ?? 0) + 1,
+                fill: "black",
+                stroke: "black",
+                x: isMobile ? width / 8 : width / 2,
+                y: isMobile ? height / 8 : height / 2,
 
-              rotation: 0,
-            })
-          )
-      );
-    } else if (name === "Star") {
-      setstars(
-        (p: any) =>
-          new Map(
-            p.set((p.size ?? 0) + 1, {
-              height: "20",
-              width: "20",
-              id: (p.size ?? 0) + 1,
-              fill: "black",
-              stroke: "black",
-              x: width / 2,
-              y: height / 2,
+                rotation: 0,
+              })
+            )
+        );
+      } else if (name === "Star") {
+        setstars(
+          (p: any) =>
+            new Map(
+              p.set((p.size ?? 0) + 1, {
+                height: "20",
+                width: "20",
+                id: (p.size ?? 0) + 1,
+                fill: "black",
+                stroke: "black",
+                x: isMobile ? width / 8 : width / 2,
+                y: isMobile ? height / 8 : height / 2,
 
-              rotation: 0,
-            })
-          )
-      );
-    } else if (name == "Square") {
-      setsquare(
-        (p: any) =>
-          new Map(
-            p.set((p.size ?? 0) + 1, {
-              height: "20",
-              width: "20",
-              id: (p.size ?? 0) + 1,
-              fill: "black",
-              stroke: "black",
-              x: width / 2,
-              y: height / 2,
+                rotation: 0,
+              })
+            )
+        );
+      } else if (name == "Square") {
+        setsquare(
+          (p: any) =>
+            new Map(
+              p.set((p.size ?? 0) + 1, {
+                height: "20",
+                width: "20",
+                id: (p.size ?? 0) + 1,
+                fill: "black",
+                stroke: "black",
+                x: isMobile ? width / 8 : width / 2,
+                y: isMobile ? height / 8 : height / 2,
 
-              rotation: 0,
-            })
-          )
-      );
-    } else if (name === "Triangle") {
-      settriangle(
-        (p: any) =>
-          new Map(
-            p.set((p.size ?? 0) + 1, {
-              height: "20",
-              width: "20",
-              id: (p.size ?? 0) + 1,
-              fill: "black",
-              stroke: "black",
-              x: width / 2,
-              y: height / 2,
+                rotation: 0,
+              })
+            )
+        );
+      } else if (name === "Triangle") {
+        settriangle(
+          (p: any) =>
+            new Map(
+              p.set((p.size ?? 0) + 1, {
+                height: "20",
+                width: "20",
+                id: (p.size ?? 0) + 1,
+                fill: "black",
+                stroke: "black",
+                x: isMobile ? width / 8 : width / 2,
+                y: isMobile ? height / 8 : height / 2,
 
-              rotation: 0,
-            })
-          )
-      );
-    } else if (name === "Polygon") {
-      setpolygon(
-        (p: any) =>
-          new Map(
-            p.set((p.size ?? 0) + 1, {
-              height: "20",
-              width: "20",
-              id: (p.size ?? 0) + 1,
-              fill: "black",
-              stroke: "black",
-              x: width / 2,
-              y: height / 2,
+                rotation: 0,
+              })
+            )
+        );
+      } else if (name === "Polygon") {
+        setpolygon(
+          (p: any) =>
+            new Map(
+              p.set((p.size ?? 0) + 1, {
+                height: "20",
+                width: "20",
+                id: (p.size ?? 0) + 1,
+                fill: "black",
+                stroke: "black",
+                x: isMobile ? width / 8 : width / 2,
+                y: isMobile ? height / 8 : height / 2,
 
-              rotation: 0,
-            })
-          )
-      );
-    }
-  }, []);
+                rotation: 0,
+              })
+            )
+        );
+      }
+    },
+    [isMobile]
+  );
   const [stageWidth, setStageWidth] = useState(() => (isMobile ? 340 : 660));
   const [stageHeight, setStageHeight] = useState(() => (isMobile ? 190 : 350));
   const containerRef = useRef<any>(null);
@@ -306,16 +309,27 @@ const Canvas: React.FC<canvasProps> = ({
       return newState;
     });
   }, []);
-
+  const handleTextStyle = useCallback((id: number, style: string) => {
+    setTextboxes((prevState: any) => {
+      const newState = new Map<number, TextBox>(prevState);
+      const updatedTextBox: TextBox = newState.get(id)!;
+      if (updatedTextBox) {
+        // Update the fontFamily property of the TextBox with the specified ID
+        updatedTextBox.fontStyle = style;
+        newState.set(id, updatedTextBox);
+      }
+      return newState;
+    });
+  }, []);
   const handleTextAlignmentChange = useCallback(
     (id: number, alignment: "left" | "center" | "right") => {
-      console.log("alignment", alignment);
+      console.log("alignment", stageWidth, "/2", stageWidth / 2);
       let x =
         alignment === "left"
           ? canvasPadding
           : alignment === "center"
-          ? width / 2
-          : width - canvasPadding * 10;
+          ? stageWidth / 2
+          : stageWidth - canvasPadding * 10;
       setTextboxes((prevState: any) => {
         const newState = new Map<number, TextBox>(prevState);
         const updatedTextBox: TextBox = newState.get(id)!;
@@ -328,7 +342,7 @@ const Canvas: React.FC<canvasProps> = ({
         return newState;
       });
     },
-    []
+    [stageWidth, canvasPadding]
   );
   const handleCardPositionChange = useCallback(
     (id: number, property: any, value: string | number) => {
@@ -412,6 +426,8 @@ const Canvas: React.FC<canvasProps> = ({
 
   const handleShapeItemChange = useCallback(
     (name: string, attr: string, id: number, value: string | number) => {
+      if (typeof value == "number" && isNaN(value as number))
+        value = stageWidth / 2;
       if (name === "circle") {
         setcircles((p: any) => {
           const newCircles = new Map(p);
@@ -480,7 +496,7 @@ const Canvas: React.FC<canvasProps> = ({
         });
       }
     },
-    []
+    [stageWidth]
   );
   const CheckDeselect = (
     e: KonvaEventObject<MouseEvent> | KonvaEventObject<TouchEvent>
@@ -503,26 +519,27 @@ const Canvas: React.FC<canvasProps> = ({
       setshapeIdSelected(false);
     }
   };
-  const handleIconAddition = useCallback((name: string) => {
-    setcardIcons(
-      (p: any) =>
-        new Map(
-          p.set((p.size ?? 0) + 1, {
-            id: (p.size ?? 0) + 1,
-            name,
-            color: "black",
-            stroke: "black",
-            x: width / 2,
-            y: height / 2,
-            scaleX: 0.09,
-            scaleY: 0.09,
-            rotation: 0,
-          })
-        )
-    );
-  }, []);
-  console.log(editType, "editType");
-  console.log(isMobile, "isMobile");
+  const handleIconAddition = useCallback(
+    (name: string) => {
+      setcardIcons(
+        (p: any) =>
+          new Map(
+            p.set((p.size ?? 0) + 1, {
+              id: (p.size ?? 0) + 1,
+              name,
+              color: "black",
+              stroke: "black",
+              x: isMobile ? width / 8 : width / 2,
+              y: isMobile ? height / 8 : height / 2,
+              scaleX: 0.09,
+              scaleY: 0.09,
+              rotation: 0,
+            })
+          )
+      );
+    },
+    [isMobile]
+  );
 
   return (
     <section
@@ -537,10 +554,11 @@ const Canvas: React.FC<canvasProps> = ({
               textboxes={textboxes}
               setTextboxes={setTextboxes}
               canvasPadding={canvasPadding}
-              width={width}
+              width={stageWidth}
               selectShape={selectShape}
               selectedId={selectedId}
               setbringToTop={setbringToTop}
+              handleTextStyle={handleTextStyle}
             />
           )}
         </>
@@ -806,8 +824,8 @@ const Canvas: React.FC<canvasProps> = ({
                           text: "Enter Text",
                           textAlign: "center",
                           rotation: 0,
-                          x: width / 8,
-                          y: height / 8,
+                          x: isMobile ? width / 8 : width / 2,
+                          y: isMobile ? height / 8 : height / 2,
                           fontFamily: "sunflower",
                         })
                       )
@@ -926,11 +944,13 @@ const Canvas: React.FC<canvasProps> = ({
             </div> */}
             <div
               className="flex flex-row justify-center items-start"
+              style={{ width: stageWidth, height: stageHeight }}
               ref={containerRef}
             >
               <Stage
-                width={stageWidth} // Set a default width
+                width={stageWidth}
                 height={stageHeight}
+                style={{ width: "100%", height: "100%" }}
                 ref={canvasRef}
                 onMouseDown={CheckDeselect}
                 onTouchStart={CheckDeselect}
@@ -1126,8 +1146,8 @@ const Canvas: React.FC<canvasProps> = ({
                           key={c.id}
                           {...c}
                           color={c.color}
-                          Theight={height}
-                          Twidth={width}
+                          Theight={stageHeight}
+                          Twidth={stageWidth}
                           onSelect={() => {
                             selectShape((p) => ({ ...p, icon: c.id }));
                             seteditType("icon");
@@ -1183,8 +1203,8 @@ const Canvas: React.FC<canvasProps> = ({
                         scaleX: 1,
                         scaleY: 1,
                         rotation: 0,
-                        x: width / 2,
-                        y: height / 2,
+                        x: isMobile ? width / 8 : width / 2,
+                        y: isMobile ? height / 8 : height / 2,
                       })
                     )
                 );

@@ -10,6 +10,7 @@ interface TextBox {
   scaleY: number;
   rotation: number;
   fontFamily: string;
+  fontStyle: string;
 }
 
 interface CardImage {

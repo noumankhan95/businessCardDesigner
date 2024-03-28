@@ -60,7 +60,6 @@ function SquareComponent({
   const SquareDragEnd = (e: KonvaEventObject<DragEvent>, id: number | null) => {
     if (!id) return;
 
-    if (!id) return;
 
     if (e.target.x() >= Twidth - canvasPadding) {
       console.log("true");
@@ -98,7 +97,6 @@ function SquareComponent({
       handleShapeItemChange("square", "y", id, e.currentTarget.y());
     }
   };
-  console.log("square", height, " ", typeof width);
   useEffect(() => {
     if (bringToTop) {
       console.log("top square", shapeRef.current.moveUp());

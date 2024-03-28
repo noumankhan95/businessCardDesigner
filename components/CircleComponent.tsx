@@ -61,7 +61,7 @@ function CircleComponent({
   const CircleDragEnd = (e: KonvaEventObject<DragEvent>, id: number) => {
     if (e.target.x() >= Twidth - canvasPadding) {
       console.log("true");
-      handleShapeItemChange("circle", "x", id, (Twidth / 2).toString());
+      handleShapeItemChange("circle", "x", id, Twidth / 2);
       const newX = Twidth / 2;
 
       e.currentTarget.x(newX);
@@ -71,13 +71,13 @@ function CircleComponent({
       console.log("true here");
       const newX = Twidth / 2;
       e.currentTarget.x(newX);
-      handleShapeItemChange("circle", "x", id, (Twidth / 2).toString());
+      handleShapeItemChange("circle", "x", id, Twidth / 2);
 
       e.target?.getLayer()?.batchDraw();
     }
     if (e.target.y() >= Theight - canvasPadding) {
       console.log("true");
-      handleShapeItemChange("circle", "y", id, (Theight / 2).toString());
+      handleShapeItemChange("circle", "y", id, Theight / 2);
 
       const newX = Theight / 2;
       e.currentTarget.y(newX);
@@ -87,7 +87,7 @@ function CircleComponent({
       console.log("true here y");
       const newX = Theight / 2;
       e.currentTarget.y(newX);
-      handleShapeItemChange("circle", "y", id, (Theight / 2).toString());
+      handleShapeItemChange("circle", "y", id, Theight / 2);
 
       e.target?.getLayer()?.batchDraw();
     } else {

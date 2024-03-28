@@ -58,6 +58,7 @@ function TextImageItem({
       <Text
         onClick={onSelect}
         onTap={onSelect}
+        fontStyle={textbox.fontStyle}
         key={textbox.id}
         fontFamily={fontFamilies[fontFamily].style.fontFamily}
         x={

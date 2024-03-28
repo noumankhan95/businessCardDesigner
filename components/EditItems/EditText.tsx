@@ -21,6 +21,7 @@ function EditText({
   canvasPadding,
   selectShape,
   setbringToTop,
+  handleTextStyle,
 }: {
   textboxes: Map<number, TextBox>;
   width: number;
@@ -39,6 +40,7 @@ function EditText({
   };
   setbringToTop: any;
   selectShape: any;
+  handleTextStyle: any;
 }) {
   function handleFontChange(id: number, value: number) {
     setTextboxes((prevState: any) => {
@@ -91,7 +93,8 @@ function EditText({
 
   const handleTextAlignmentChange = useCallback(
     (id: number, alignment: "left" | "center" | "right") => {
-      console.log("alignment", alignment);
+      console.log("alignment", width, "/2", width / 2);
+
       let x =
         alignment === "left"
           ? canvasPadding
@@ -172,6 +175,28 @@ function EditText({
           <MenuItem value="left">Left</MenuItem>
           <MenuItem value="center">Center</MenuItem>
           <MenuItem value="right">Right</MenuItem>
+        </Select>
+      </Box>
+      <Box
+        display={"flex"}
+        flexDirection={"row"}
+        alignItems="center"
+        className="space-x-3"
+      >
+        <FaAlignJustify />
+        <p>Font Style</p>
+        <Select
+          placeholder="Set Alignment"
+          label="Align"
+          value={textboxes.get(selectedId.textbox)?.fontStyle}
+          onChange={(e) => {
+            handleTextStyle(selectedId.textbox, e.target.value);
+          }}
+        >
+          <MenuItem value="bold">Bold</MenuItem>
+          <MenuItem value="italic">Italic</MenuItem>
+          <MenuItem value="normal">Normal</MenuItem>
+          <MenuItem value="bold italic">Bold Italic</MenuItem>
         </Select>
       </Box>
       <Box>
